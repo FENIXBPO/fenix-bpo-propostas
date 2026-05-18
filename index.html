@@ -330,13 +330,14 @@ Rua Iririú, nº 1327, Saguaçú, CEP: 89221-515, Joinville/SC
 Telefone: (47) 3028-6080 | WhatsApp: (47) 99964-0150
 contato01@fenixbpo.com.br | www.fenixbpo.com.br`;
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/propose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+        body: JSON.stringify({ prompt })
       });
       const data = await res.json();
-      const text = data.content?.map(b => b.text || '').join('') || '';
+      if (data.error) throw new Error(data.error);
+      const text = data.text || '';
       if (!text) throw new Error('Resposta vazia');
       setProposal(text);
       setView('proposal');
@@ -359,13 +360,14 @@ CONTRATANTE: ${form.razao} | CNPJ: ${form.cnpj} | Tel: ${form.telefone} | Email:
 
 Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo, valor e pagamento (da proposta), obrigações de ambas as partes, sigilo, rescisão, penalidades, disposições gerais, foro Joinville/SC, assinaturas e testemunhas.`;
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/propose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+        body: JSON.stringify({ prompt })
       });
       const data = await res.json();
-      const text = data.content?.map(b => b.text || '').join('') || '';
+      if (data.error) throw new Error(data.error);
+      const text = data.text || '';
       setContract(text);
       setView('contract');
     } catch (e) { setError('Erro ao gerar contrato.'); }
