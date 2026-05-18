@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fenix BPO — Gerador de Propostas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
+  
+  .topbar { background: #1a1a2e; color: #fff; padding: 14px 2rem; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  .topbar-logo { width: 36px; height: 36px; background: #e8c14b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #1a1a2e; letter-spacing: -0.5px; }
+  .topbar-title { font-size: 15px; font-weight: 500; }
+  .topbar-sub { font-size: 12px; opacity: 0.5; margin-left: auto; }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 1.5rem; }
+
+  .steps { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .step { flex: 1; height: 4px; border-radius: 2px; background: #e8e6e0; transition: background 0.3s; }
+  .step.active { background: #1a1a2e; }
+  .step.done { background: #2d8a5e; }
+  .step-labels { display: flex; justify-content: space-between; margin-bottom: 2rem; }
+  .step-labels span { font-size: 12px; color: #888; }
+  .step-labels span.cur { color: #1a1a2e; font-weight: 600; }
+
+  .section-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 1px solid #f0eeea; }
+
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: 500; }
+  .field label .req { color: #e24b4a; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 10px 12px; border: 1.5px solid #e8e6e0; border-radius: 8px;
+    font-size: 14px; background: #fff; color: #1a1a2e; transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #1a1a2e; }
+  .field textarea { height: 80px; resize: vertical; }
+  
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+  .checkbox-item { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1.5px solid #e8e6e0; border-radius: 8px; cursor: pointer; transition: all 0.15s; user-select: none; font-size: 13px; color: #555; }
+  .checkbox-item:hover { border-color: #1a1a2e; background: #f8f8f6; }
+  .checkbox-item.checked { border-color: #1a1a2e; background: #f0f0f8; color: #1a1a2e; font-weight: 500; }
+  .checkbox-item input { width: 15px; height: 15px; accent-color: #1a1a2e; cursor: pointer; flex-shrink: 0; }
+  .promo-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .promo-opt { border: 1.5px solid #e8e6e0; border-radius: 10px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.15s; }
+  .promo-opt:hover { border-color: #1a1a2e; }
+  .promo-opt.selected { border-color: #1a1a2e; background: #f0f0f8; }
+  .promo-opt .promo-val { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+  .promo-opt .promo-label { font-size: 11px; color: #888; margin-top: 2px; }
+  .promo-opt.selected .promo-label { color: #1a1a2e; }
+  .promo-hint { font-size: 12px; color: #888; margin-top: 8px; line-height: 1.5; padding: 10px 12px; background: #fffbf0; border-radius: 8px; border-left: 3px solid #e8c14b; }
+
+  .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #f0eeea; }
+  
+  .btn-primary { background: #1a1a2e; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; }
+  .btn-primary:hover { background: #2d2d4e; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-secondary { background: transparent; color: #555; border: 1.5px solid #e8e6e0; padding: 11px 20px; border-radius: 10px; font-size: 14px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+  .btn-secondary:hover { background: #f5f4f0; }
+  .btn-green { background: #2d8a5e; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; }
+  .btn-green:hover { background: #236b4a; }
+  .btn-green:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .loading-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 2rem; gap: 1rem; background: #fff; border-radius: 16px; }
+  .spinner { width: 36px; height: 36px; border: 3px solid #e8e6e0; border-top-color: #1a1a2e; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-box p { font-size: 14px; color: #888; }
+  .loading-box strong { color: #1a1a2e; }
+
+  .proposal-wrapper { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .proposal-topbar { background: #1a1a2e; color: #fff; padding: 1.5rem 2rem; }
+  .proposal-topbar .client { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .proposal-topbar .meta { font-size: 13px; opacity: 0.6; display: flex; gap: 16px; }
+  .proposal-topbar .badge { display: inline-block; background: #e8c14b; color: #1a1a2e; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 10px; }
+  .proposal-body { padding: 2rem; line-height: 1.75; }
+  .proposal-body h2 { font-size: 15px; font-weight: 600; color: #1a1a2e; margin: 1.5rem 0 0.75rem; border-bottom: 2px solid #f0eeea; padding-bottom: 8px; }
+  .proposal-body h3 { font-size: 14px; font-weight: 600; margin: 1rem 0 0.4rem; color: #333; }
+  .proposal-body p { font-size: 14px; color: #555; margin-bottom: 0.75rem; }
+  .proposal-body li { font-size: 14px; color: #555; margin-bottom: 4px; margin-left: 1.2rem; }
+  .proposal-body table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; border-radius: 8px; overflow: hidden; }
+  .proposal-body th { background: #f5f4f0; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; color: #888; }
+  .proposal-body td { padding: 10px 14px; border-bottom: 1px solid #f0eeea; }
+  .proposal-body strong { color: #1a1a2e; }
+
+  .contract-banner { background: #f0f9f4; border: 1.5px solid #9fe1cb; border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; gap: 1rem; }
+  .contract-banner p { font-size: 14px; color: #555; }
+  .contract-banner strong { color: #1a5c3a; }
+
+  .error-box { background: #fcebeb; border: 1.5px solid #f09595; border-radius: 10px; padding: 1rem 1.25rem; font-size: 13px; color: #791f1f; margin-top: 1rem; }
+
+  .tag { display: inline-block; font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+  .tag-pending { background: #faeeda; color: #854f0b; }
+  .tag-success { background: #e8f5ee; color: #1a5c3a; }
+
+  .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  .result-header-info h2 { font-size: 18px; font-weight: 600; }
+  .result-header-info p { font-size: 13px; color: #888; margin-top: 2px; }
+
+  @media print {
+    .topbar, .actions, .contract-banner, .result-header { display: none !important; }
+    body { background: #fff; }
+    .proposal-wrapper { box-shadow: none; }
+  }
+  @media (max-width: 600px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .contract-banner { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">BPO</div>
+  <div class="topbar-title">Fenix BPO Financeiro — Gerador de Propostas</div>
+  <span class="topbar-sub">CNPJ 41.212.822/0001-13 · Joinville/SC · (47) 3028-6080</span>
+</div>
+
+<div class="container">
+  <div id="root"></div>
+</div>
+
+<script>
+const { useState } = React;
+
+const STEPS = ['1. Empresa', '2. Financeiro', '3. RH & Extras', '4. Proposta'];
+
+const RAMOS = ['Serviços', 'Comércio', 'Indústria', 'Transporte', 'Saúde', 'Construção', 'Tecnologia', 'Agronegócio'];
+const PROMO_OPTS = [
+  { val: '0', label: 'Sem desconto', desc: 'Valor cheio desde o início' },
+  { val: '3', label: '3 meses', desc: '20% de desconto nos 3 primeiros meses' },
+  { val: '6', label: '6 meses', desc: '20% de desconto nos 6 primeiros meses (recomendado)' },
+  { val: '12', label: '12 meses', desc: '15% de desconto no primeiro ano' },
+];
+
+const INITIAL = {
+  razao: '', cnpj: '', telefone: '', email: '', descricao: '',
+  regime: 'Simples Nacional', ramos: ['Serviços'], contabilidade: 'Online/Digital',
+  sistema: '', bancos: '', contas_aplicacao: '0', cartoes: '0',
+  faturamento: '', recebimentos: '', notas: '', pagamentos: '',
+  socios: '1', funcionarios: '0', terceiros: '0',
+  obs: '', promo_meses: '6'
+};
+
+function Field({ label, required, children }) {
+  return React.createElement('div', { className: 'field' },
+    React.createElement('label', null, label, required && React.createElement('span', { className: 'req' }, ' *')),
+    children
+  );
+}
+
+function inp(form, set, k, extra = {}) {
+  return { value: form[k], onChange: e => set(f => ({ ...f, [k]: e.target.value })), ...extra };
+}
+
+function renderMD(md) {
+  if (!md) return null;
+  const lines = md.split('\n');
+  const elements = [];
+  let listItems = [];
+
+  const flushList = () => {
+    if (listItems.length) {
+      elements.push(React.createElement('ul', { key: 'ul' + elements.length }, listItems));
+      listItems = [];
+    }
+  };
+
+  lines.forEach((line, i) => {
+    if (line.startsWith('## ')) { flushList(); elements.push(React.createElement('h2', { key: i }, line.slice(3))); }
+    else if (line.startsWith('### ')) { flushList(); elements.push(React.createElement('h3', { key: i }, line.slice(4))); }
+    else if (line.startsWith('# ')) { flushList(); elements.push(React.createElement('p', { key: i, style: { fontWeight: 600, fontSize: 16, color: '#1a1a2e', marginBottom: 8 } }, line.slice(2))); }
+    else if (line.startsWith('- ') || line.startsWith('* ')) { listItems.push(React.createElement('li', { key: i }, line.slice(2))); }
+    else if (line.startsWith('|')) { flushList(); }
+    else if (line.trim() === '') { flushList(); elements.push(React.createElement('br', { key: i })); }
+    else { flushList(); elements.push(React.createElement('p', { key: i }, line)); }
+  });
+  flushList();
+  return elements;
+}
+
+function maskCNPJ(v) {
+  const d = v.replace(/\D/g, '').slice(0, 14);
+  if (d.length <= 2) return d;
+  if (d.length <= 5) return d.slice(0,2) + '.' + d.slice(2);
+  if (d.length <= 8) return d.slice(0,2) + '.' + d.slice(2,5) + '.' + d.slice(5);
+  if (d.length <= 12) return d.slice(0,2) + '.' + d.slice(2,5) + '.' + d.slice(5,8) + '/' + d.slice(8);
+  return d.slice(0,2) + '.' + d.slice(2,5) + '.' + d.slice(5,8) + '/' + d.slice(8,12) + '-' + d.slice(12);
+}
+
+function validateCNPJ(c) {
+  const digits = c.replace(/\D/g, '');
+  if (digits.length !== 14) return false;
+  if (/^(\d)\1+$/.test(digits)) return false;
+  const calcDigit = (arr, weights) => {
+    const s = weights.reduce((acc, w, i) => acc + parseInt(arr[i]) * w, 0);
+    const r = s % 11;
+    return r < 2 ? 0 : 11 - r;
+  };
+  const w1 = [5,4,3,2,9,8,7,6,5,4,3,2];
+  const w2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
+  const d1 = calcDigit(digits, w1);
+  const d2 = calcDigit(digits, w2);
+  return d1 === parseInt(digits[12]) && d2 === parseInt(digits[13]);
+}
+
+function App() {
+  const [step, setStep] = useState(0);
+  const [form, setForm] = useState(INITIAL);
+  const [loading, setLoading] = useState(false);
+  const [proposal, setProposal] = useState('');
+  const [error, setError] = useState('');
+  const [contract, setContract] = useState('');
+  const [loadingContract, setLoadingContract] = useState(false);
+  const [view, setView] = useState('form');
+  const [cnpjStatus, setCnpjStatus] = useState('idle'); // idle | loading | found | error | invalid
+
+  const s = (k, extra) => inp(form, setForm, k, extra);
+
+  const handleCNPJ = async (raw) => {
+    const masked = maskCNPJ(raw);
+    setForm(f => ({ ...f, cnpj: masked }));
+    const digits = masked.replace(/\D/g, '');
+    if (digits.length < 14) { setCnpjStatus('idle'); return; }
+    if (!validateCNPJ(masked)) { setCnpjStatus('invalid'); return; }
+    setCnpjStatus('loading');
+    // Try multiple APIs for CNPJ lookup
+    const apis = [
+      `https://brasilapi.com.br/api/cnpj/v1/${digits}`,
+      `https://publica.cnpj.ws/cnpj/${digits}`,
+    ];
+    let found = false;
+    for (const url of apis) {
+      try {
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) continue;
+        const data = await res.json();
+        // BrasilAPI format
+        const razao = data.razao_social || data.nome_empresarial || '';
+        const telRaw = (data.ddd_telefone_1 || data.telefone || '').replace(/\D/g,'');
+        const telFmt = telRaw.length >= 10
+          ? `(${telRaw.slice(0,2)}) ${telRaw.slice(2, telRaw.length===11?7:6)}-${telRaw.slice(telRaw.length===11?7:6)}`
+          : '';
+        const cnae = data.cnae_fiscal_descricao || data.cnae_principal?.descricao || '';
+        const porte = data.porte || data.porte_empresa || '';
+        if (razao) {
+          setForm(f => ({
+            ...f,
+            razao: razao || f.razao,
+            telefone: telFmt || f.telefone,
+            descricao: f.descricao || [cnae, porte ? 'Porte: ' + porte : ''].filter(Boolean).join(' · '),
+          }));
+          setCnpjStatus('found');
+          found = true;
+          break;
+        }
+      } catch { continue; }
+    }
+    if (!found) setCnpjStatus('valid'); // CNPJ is valid but API unavailable — allow manual fill
+  };
+
+  const generateProposal = async () => {
+    setLoading(true); setError('');
+    try {
+      const prompt = `Você é especialista em BPO Financeiro da empresa Fenix BPO Financeiro, de Joinville/SC. Gere uma proposta comercial profissional e personalizada.
+
+DADOS DO CLIENTE:
+- Razão Social: ${form.razao}
+- CNPJ: ${form.cnpj}
+- Telefone: ${form.telefone}
+- Email: ${form.email}
+- Ramos de atividade: ${form.ramos.join(', ')}
+- Regime tributário: ${form.regime}
+- Tipo de contabilidade: ${form.contabilidade}
+- Sistema atual: ${form.sistema || 'não informado'}
+- Descrição: ${form.descricao || 'não informado'}
+
+DADOS FINANCEIROS:
+- Faturamento médio mensal: R$ ${form.faturamento}
+- Recebimentos/mês: ${form.recebimentos}
+- Notas fiscais/mês: ${form.notas}
+- Pagamentos/mês: ${form.pagamentos}
+- Bancos: ${form.bancos}
+- Contas de aplicação: ${form.contas_aplicacao}
+- Cartões: ${form.cartoes}
+
+RH: Sócios: ${form.socios} | CLT: ${form.funcionarios} | PJ: ${form.terceiros}
+Meses de promoção: ${form.promo_meses}
+Observações: ${form.obs || 'nenhuma'}
+
+ESCOPO PADRÃO FENIX BPO:
+- Conciliação bancária diária (até 2 bancos; +R$150/banco adicional)
+- Lançamento e organização de despesas
+- Lançamento de notas no PlayBPO
+- Entrada de notas de compra (requer certificado A1)
+- Emissão de NFS-e (até 20/mês; +R$5/nota extra)
+- Contas a pagar e receber
+- Agendamentos bancários
+- Interface com contabilidade
+- Fluxo de caixa e relatório mensal
+- Ferramenta PlayBPO inclusa
+
+PRECIFICAÇÃO:
+- Faturamento até R$100k: mensalidade R$700–900
+- Faturamento R$100k–300k: mensalidade R$1.000–1.500
+- Faturamento acima R$300k: mensalidade R$1.500–2.500
+- Implantação: R$1.500–3.500 conforme complexidade
+- Mais de 5 CLTs: +R$200 (gestão de folha)
+- Promoção: desconto de 20% por ${form.promo_meses} meses
+- ContaAzul opcional: R$239,90/mês
+
+Gere em markdown estruturado com:
+1. Cabeçalho (nome do cliente, data de hoje: ${new Date().toLocaleDateString('pt-BR')})
+2. Apresentação da Fenix BPO (2-3 linhas): somos a Fenix Serviços de Apoio Administrativo e Financeiro Ltda, empresa especializada em BPO Financeiro localizada em Joinville/SC, CNPJ 41.212.822/0001-13, fundada em 2021
+3. Entendimento do negócio do cliente (personalizado)
+4. Escopo de serviços
+5. Tabela de investimento (implantação, mensalidade normal, mensalidade promocional)
+6. Condições e forma de pagamento
+7. Próximos passos
+8. Assinatura com dados completos:
+Maicon Deivid Klug | CEO
+Fenix Serviços de Apoio Administrativo e Financeiro Ltda
+CNPJ: 41.212.822/0001-13
+Rua Iririú, nº 1327, Saguaçú, CEP: 89221-515, Joinville/SC
+Telefone: (47) 3028-6080 | WhatsApp: (47) 99964-0150
+contato01@fenixbpo.com.br | www.fenixbpo.com.br`;
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const text = data.content?.map(b => b.text || '').join('') || '';
+      if (!text) throw new Error('Resposta vazia');
+      setProposal(text);
+      setView('proposal');
+    } catch (e) {
+      setError('Erro ao gerar proposta. Verifique sua conexão e tente novamente.');
+    }
+    setLoading(false);
+  };
+
+  const generateContract = async () => {
+    setLoadingContract(true);
+    try {
+      const prompt = `Com base na proposta aprovada abaixo, gere um CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE BPO FINANCEIRO completo para uso no Brasil.
+
+PROPOSTA:
+${proposal}
+
+CONTRATADA: Fenix Serviços de Apoio Administrativo e Financeiro Ltda (Fenix BPO Financeiro) | CNPJ: 41.212.822/0001-13 | Endereço: Rua Iririú, nº 1327, Saguaçú, CEP: 89221-515, Joinville/SC | Telefone: (47) 3028-6080 | WhatsApp: (47) 99964-0150 | E-mail: contato01@fenixbpo.com.br | Representante Legal: Maicon Deivid Klug, CEO
+CONTRATANTE: ${form.razao} | CNPJ: ${form.cnpj} | Tel: ${form.telefone} | Email: ${form.email}
+
+Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo, valor e pagamento (da proposta), obrigações de ambas as partes, sigilo, rescisão, penalidades, disposições gerais, foro Joinville/SC, assinaturas e testemunhas.`;
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const text = data.content?.map(b => b.text || '').join('') || '';
+      setContract(text);
+      setView('contract');
+    } catch (e) { setError('Erro ao gerar contrato.'); }
+    setLoadingContract(false);
+  };
+
+  if (loading) {
+    return React.createElement('div', { className: 'loading-box' },
+      React.createElement('div', { className: 'spinner' }),
+      React.createElement('p', null, 'Gerando proposta personalizada para '),
+      React.createElement('strong', null, form.razao),
+      React.createElement('p', { style: { fontSize: 12, color: '#aaa' } }, 'Isso pode levar alguns segundos...')
+    );
+  }
+
+  if (view === 'contract' && contract) {
+    return React.createElement('div', null,
+      React.createElement('div', { className: 'result-header' },
+        React.createElement('div', { className: 'result-header-info' },
+          React.createElement('h2', null, 'Contrato gerado'),
+          React.createElement('p', null, form.razao + ' · ' + new Date().toLocaleDateString('pt-BR'))
+        ),
+        React.createElement('span', { className: 'tag tag-success' }, '✓ Pronto para assinar')
+      ),
+      React.createElement('div', { className: 'proposal-wrapper' },
+        React.createElement('div', { className: 'proposal-topbar' },
+          React.createElement('div', { className: 'client' }, 'Contrato de Prestação de Serviços'),
+          React.createElement('div', { className: 'meta' },
+            React.createElement('span', null, form.razao),
+            React.createElement('span', null, new Date().toLocaleDateString('pt-BR'))
+          )
+        ),
+        React.createElement('div', { className: 'proposal-body' }, renderMD(contract))
+      ),
+      React.createElement('div', { className: 'actions' },
+        React.createElement('button', { className: 'btn-secondary', onClick: () => setView('proposal') }, '← Voltar à proposta'),
+        React.createElement('button', { className: 'btn-primary', onClick: () => window.print() }, '🖨️ Imprimir / Salvar PDF')
+      )
+    );
+  }
+
+  if (view === 'proposal' && proposal) {
+    return React.createElement('div', null,
+      React.createElement('div', { className: 'result-header' },
+        React.createElement('div', { className: 'result-header-info' },
+          React.createElement('h2', null, 'Proposta gerada'),
+          React.createElement('p', null, form.razao + ' · ' + new Date().toLocaleDateString('pt-BR'))
+        ),
+        React.createElement('span', { className: 'tag tag-pending' }, '⏳ Aguardando aprovação')
+      ),
+      React.createElement('div', { className: 'proposal-wrapper' },
+        React.createElement('div', { className: 'proposal-topbar' },
+          React.createElement('div', { className: 'client' }, form.razao),
+          React.createElement('div', { className: 'meta' },
+            React.createElement('span', null, '📅 ' + new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })),
+            React.createElement('span', null, '⏰ Válida por 15 dias')
+          ),
+          React.createElement('span', { className: 'badge' }, 'FENIX BPO FINANCEIRO')
+        ),
+        React.createElement('div', { className: 'proposal-body' }, renderMD(proposal))
+      ),
+      React.createElement('div', { className: 'contract-banner' },
+        React.createElement('p', null, React.createElement('strong', null, 'Proposta aprovada pelo cliente? '), 'Gere o contrato automaticamente com todos os dados preenchidos.'),
+        React.createElement('button', { className: 'btn-green', onClick: generateContract, disabled: loadingContract },
+          loadingContract ? 'Gerando...' : '📄 Gerar contrato'
+        )
+      ),
+      React.createElement('div', { className: 'actions' },
+        React.createElement('button', { className: 'btn-secondary', onClick: () => { setView('form'); setStep(0); setProposal(''); setForm(INITIAL); } }, '+ Nova proposta'),
+        React.createElement('button', { className: 'btn-primary', onClick: () => window.print() }, '🖨️ Imprimir / Salvar PDF')
+      )
+    );
+  }
+
+  const sel = (k, opts) => React.createElement('select', { ...s(k) }, opts.map(o => React.createElement('option', { key: o }, o)));
+  const PH = {
+    razao: 'Ex: Delta Comércio e Serviços Ltda',
+    cnpj: '11.234.567/0001-49',
+    telefone: '(47) 98834-5678',
+    email: 'financeiro@deltacomercio.com.br',
+    descricao: 'Ex: Empresa de comércio de materiais elétricos com loja física em Joinville/SC. Faturamento concentrado em clientes PJ da construção civil. Hoje o financeiro é gerenciado pelo próprio sócio em planilhas, sem controle de fluxo de caixa.',
+    sistema: 'Ex: Planilha Excel, sem sistema integrado',
+    bancos: 'Ex: Sicoob, Bradesco',
+    faturamento: 'Ex: 120.000',
+    recebimentos: 'Ex: 40',
+    notas: 'Ex: 18',
+    pagamentos: 'Ex: 50',
+    obs: 'Ex: Sócio quer se dedicar apenas às vendas e terceirizar 100% do financeiro. Tem urgência para iniciar até o próximo mês.',
+  };
+  const input = (k) => React.createElement('input', { ...s(k), placeholder: PH[k] || '' });
+  const textarea = (k) => React.createElement('textarea', { ...s(k), placeholder: PH[k] || '' });
+
+  return React.createElement('div', null,
+    React.createElement('div', { className: 'card' },
+      React.createElement('div', { className: 'steps' },
+        STEPS.map((_, i) => React.createElement('div', { key: i, className: 'step' + (i < step ? ' done' : i === step ? ' active' : '') }))
+      ),
+      React.createElement('div', { className: 'step-labels' },
+        STEPS.map((s, i) => React.createElement('span', { key: i, className: i === step ? 'cur' : '' }, s))
+      ),
+
+      step === 0 && React.createElement('div', null,
+        React.createElement('div', { className: 'section-title' }, 'Dados da empresa'),
+        React.createElement(Field, { label: 'Razão social', required: true }, input('razao')),
+        React.createElement('div', { className: 'grid2' },
+          React.createElement(Field, { label: 'CNPJ', required: true },
+            React.createElement('div', { style: { position: 'relative' } },
+              React.createElement('input', {
+                value: form.cnpj,
+                onChange: e => handleCNPJ(e.target.value),
+                placeholder: '00.000.000/0001-00',
+                style: { paddingRight: 36, borderColor: cnpjStatus === 'found' || cnpjStatus === 'valid' ? '#2d8a5e' : cnpjStatus === 'invalid' ? '#e24b4a' : '' }
+              }),
+              React.createElement('span', { style: { position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 16 } },
+                cnpjStatus === 'loading' ? '⏳' : cnpjStatus === 'found' ? '✅' : cnpjStatus === 'valid' ? '✅' : cnpjStatus === 'invalid' ? '❌' : cnpjStatus === 'error' ? '⚠️' : ''
+              )
+            ),
+            cnpjStatus === 'found' && React.createElement('div', { style: { fontSize: 11, color: '#2d8a5e', marginTop: 4 } }, '✓ Dados preenchidos automaticamente pela Receita Federal'),
+            cnpjStatus === 'valid' && React.createElement('div', { style: { fontSize: 11, color: '#2d8a5e', marginTop: 4 } }, '✓ CNPJ válido — preencha os dados manualmente'),
+            cnpjStatus === 'invalid' && React.createElement('div', { style: { fontSize: 11, color: '#e24b4a', marginTop: 4 } }, 'CNPJ inválido — verifique os números'),
+            cnpjStatus === 'error' && React.createElement('div', { style: { fontSize: 11, color: '#e8a000', marginTop: 4 } }, 'CNPJ válido — preenchimento automático indisponível, preencha manualmente')
+          ),
+          React.createElement(Field, { label: 'Telefone' }, input('telefone'))
+        ),
+        React.createElement(Field, { label: 'E-mail para a proposta', required: true }, input('email')),
+        React.createElement(Field, { label: 'Descrição do negócio' },
+          React.createElement('textarea', { ...s('descricao'), placeholder: 'Ex: Transportadora com frota própria, atua no Sul do Brasil. Faturamento concentrado em 3 clientes fixos. Não tem controle financeiro estruturado hoje.' })
+        ),
+        React.createElement('div', { className: 'section-title' }, 'Perfil fiscal'),
+        React.createElement('div', { className: 'grid2' },
+          React.createElement(Field, { label: 'Regime tributário' }, sel('regime', ['MEI', 'Simples Nacional', 'Lucro Presumido', 'Lucro Real'])),
+          React.createElement(Field, { label: 'Tipo de contabilidade' }, sel('contabilidade', ['Online/Digital', 'Convencional', 'Interna']))
+        ),
+        React.createElement(Field, { label: 'Ramo de atividade (pode selecionar mais de um)', required: true },
+          React.createElement('div', { className: 'checkbox-grid' },
+            RAMOS.map(r => React.createElement('label', { key: r, className: 'checkbox-item' + (form.ramos.includes(r) ? ' checked' : '') },
+              React.createElement('input', {
+                type: 'checkbox', checked: form.ramos.includes(r),
+                onChange: e => setForm(f => ({
+                  ...f,
+                  ramos: e.target.checked ? [...f.ramos, r] : f.ramos.filter(x => x !== r)
+                }))
+              }),
+              r
+            ))
+          )
+        ),
+        React.createElement(Field, { label: 'Sistema financeiro atual' }, input('sistema'))
+      ),
+
+      step === 1 && React.createElement('div', null,
+        React.createElement('div', { className: 'section-title' }, 'Dados financeiros mensais'),
+        React.createElement('div', { className: 'grid2' },
+          React.createElement(Field, { label: 'Faturamento médio (R$)', required: true }, input('faturamento')),
+          React.createElement(Field, { label: 'Qtd de recebimentos', required: true }, input('recebimentos'))
+        ),
+        React.createElement('div', { className: 'grid2' },
+          React.createElement(Field, { label: 'Notas fiscais emitidas', required: true }, input('notas')),
+          React.createElement(Field, { label: 'Pagamentos realizados', required: true }, input('pagamentos'))
+        ),
+        React.createElement('div', { className: 'section-title' }, 'Informações bancárias'),
+        React.createElement(Field, { label: 'Bancos com conta ativa' }, input('bancos')),
+        React.createElement('div', { className: 'grid2' },
+          React.createElement(Field, { label: 'Contas de aplicação' }, sel('contas_aplicacao', ['0','1','2','3','4','5+'])),
+          React.createElement(Field, { label: 'Cartões de crédito' }, sel('cartoes', ['0','1','2','3','4','5+']))
+        )
+      ),
+
+      step === 2 && React.createElement('div', null,
+        React.createElement('div', { className: 'section-title' }, 'Recursos humanos'),
+        React.createElement('div', { className: 'grid3' },
+          React.createElement(Field, { label: 'Sócios' }, sel('socios', ['1','2','3','4','5+'])),
+          React.createElement(Field, { label: 'Funcionários CLT' }, sel('funcionarios', ['0','1','2','3','4','5','6-10','11-20','21+'])),
+          React.createElement(Field, { label: 'Terceiros PJ' }, sel('terceiros', ['0','1','2','3','4','5+']))
+        ),
+        React.createElement('div', { className: 'section-title' }, 'Condições comerciais'),
+        React.createElement(Field, { label: 'Período de promoção inicial' },
+          React.createElement('div', { className: 'promo-options' },
+            PROMO_OPTS.map(opt => React.createElement('div', {
+              key: opt.val,
+              className: 'promo-opt' + (form.promo_meses === opt.val ? ' selected' : ''),
+              onClick: () => setForm(f => ({ ...f, promo_meses: opt.val }))
+            },
+              React.createElement('div', { className: 'promo-val' }, opt.val === '0' ? '—' : opt.val),
+              React.createElement('div', { className: 'promo-label' }, opt.val === '0' ? 'Sem desconto' : (opt.val === '1' ? 'mês' : 'meses'))
+            ))
+          ),
+          React.createElement('div', { className: 'promo-hint' },
+            '💡 ',
+            PROMO_OPTS.find(o => o.val === form.promo_meses)?.desc || '',
+            '. Após o período, o cliente paga o valor cheio calculado pelo seu faturamento.'
+          )
+        ),
+        React.createElement(Field, { label: 'Observações ou necessidades especiais' }, textarea('obs')),
+        error && React.createElement('div', { className: 'error-box' }, error)
+      ),
+
+      React.createElement('div', { className: 'actions' },
+        step > 0
+          ? React.createElement('button', { className: 'btn-secondary', onClick: () => setStep(s => s - 1) }, '← Voltar')
+          : React.createElement('div'),
+        step < 2
+          ? React.createElement('button', { className: 'btn-primary', onClick: () => setStep(s => s + 1), disabled: step === 0 && (!form.razao || !form.email) }, 'Próximo →')
+          : React.createElement('button', { className: 'btn-primary', onClick: generateProposal, disabled: !form.faturamento || !form.notas }, '✨ Gerar proposta com IA')
+      )
+    )
+  );
+}
+
+ReactDOM.render(React.createElement(App), document.getElementById('root'));
+</script>
+</body>
+</html>
