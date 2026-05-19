@@ -53,6 +53,9 @@
   .btn-green { background: #2d8a5e; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; }
   .btn-green:hover { background: #236b4a; }
   .btn-green:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-blue { background: #1a6fa8; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; }
+  .btn-blue:hover { background: #155a87; }
+  .btn-blue:disabled { opacity: 0.4; cursor: not-allowed; }
 
   .loading-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 2rem; gap: 1rem; background: #fff; border-radius: 16px; }
   .spinner { width: 36px; height: 36px; border: 3px solid #e8e6e0; border-top-color: #1a1a2e; border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -79,6 +82,16 @@
   .contract-banner p { font-size: 14px; color: #555; }
   .contract-banner strong { color: #1a5c3a; }
 
+  /* EMAIL BANNER */
+  .email-banner { background: #f0f6fd; border: 1.5px solid #a0c8f0; border-radius: 12px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
+  .email-banner-title { font-size: 13px; font-weight: 600; color: #1a4a6e; margin-bottom: 10px; }
+  .email-banner-row { display: flex; gap: 10px; align-items: center; }
+  .email-banner-row input { flex: 1; padding: 10px 12px; border: 1.5px solid #c0d8f0; border-radius: 8px; font-size: 14px; font-family: inherit; color: #1a1a2e; }
+  .email-banner-row input:focus { outline: none; border-color: #1a6fa8; }
+  .email-status { margin-top: 8px; font-size: 13px; }
+  .email-status.ok { color: #1a5c3a; }
+  .email-status.err { color: #791f1f; }
+
   .error-box { background: #fcebeb; border: 1.5px solid #f09595; border-radius: 10px; padding: 1rem 1.25rem; font-size: 13px; color: #791f1f; margin-top: 1rem; }
 
   .tag { display: inline-block; font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
@@ -89,14 +102,18 @@
   .result-header-info h2 { font-size: 18px; font-weight: 600; }
   .result-header-info p { font-size: 13px; color: #888; margin-top: 2px; }
 
+  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
   @media print {
-    .topbar, .actions, .contract-banner, .result-header { display: none !important; }
+    .topbar, .actions, .contract-banner, .email-banner, .result-header { display: none !important; }
     body { background: #fff; }
     .proposal-wrapper { box-shadow: none; }
   }
   @media (max-width: 600px) {
     .grid2, .grid3 { grid-template-columns: 1fr; }
     .contract-banner { flex-direction: column; align-items: flex-start; }
+    .email-banner-row { flex-direction: column; }
+    .actions-row { flex-direction: column; }
   }
 </style>
 </head>
@@ -105,7 +122,7 @@
 <div class="topbar">
   <div class="topbar-logo">BPO</div>
   <div class="topbar-title">Fenix BPO Financeiro — Gerador de Propostas</div>
-  <span class="topbar-sub">v1.0 · Joinville/SC</span>
+  <span class="topbar-sub">v1.1 · Joinville/SC</span>
 </div>
 
 <div class="container">
@@ -163,6 +180,70 @@ function renderMD(md) {
   return elements;
 }
 
+function EmailBanner({ defaultEmail, content, type }) {
+  const [emailTo, setEmailTo] = useState(defaultEmail || '');
+  const [sending, setSending] = useState(false);
+  const [status, setStatus] = useState('');
+
+  const send = async () => {
+    if (!emailTo) return;
+    setSending(true);
+    setStatus('');
+    try {
+      const subject = type === 'contract'
+        ? 'Contrato de Prestação de Serviços — Fenix BPO Financeiro'
+        : 'Proposta Comercial — Fenix BPO Financeiro';
+
+      const html = `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+        <div style="background:#1a1a2e;padding:20px 24px;border-radius:12px 12px 0 0;">
+          <span style="background:#e8c14b;color:#1a1a2e;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px;">FENIX BPO FINANCEIRO</span>
+          <h1 style="color:#fff;font-size:20px;margin-top:12px;">${subject}</h1>
+        </div>
+        <div style="background:#fff;padding:24px;border:1px solid #e8e6e0;border-radius:0 0 12px 12px;">
+          <p style="color:#555;font-size:14px;line-height:1.7;">Segue em anexo o documento solicitado. Em caso de dúvidas, entre em contato conosco.</p>
+          <hr style="border:none;border-top:1px solid #f0eeea;margin:20px 0;">
+          <p style="color:#888;font-size:12px;">Maicon Klug — CEO, Fenix BPO Financeiro<br>maiconklug@fenixbpo.com.br | Joinville/SC</p>
+        </div>
+      </div>`;
+
+      const res = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: emailTo, subject, html })
+      });
+
+      const data = await res.json();
+      if (data.ok) {
+        setStatus('ok');
+      } else {
+        setStatus('err:' + (data.error || 'Erro desconhecido'));
+      }
+    } catch (e) {
+      setStatus('err:' + e.message);
+    }
+    setSending(false);
+  };
+
+  return React.createElement('div', { className: 'email-banner' },
+    React.createElement('div', { className: 'email-banner-title' }, '📧 Enviar por e-mail'),
+    React.createElement('div', { className: 'email-banner-row' },
+      React.createElement('input', {
+        type: 'email',
+        placeholder: 'E-mail do cliente',
+        value: emailTo,
+        onChange: e => setEmailTo(e.target.value)
+      }),
+      React.createElement('button', {
+        className: 'btn-blue',
+        onClick: send,
+        disabled: sending || !emailTo
+      }, sending ? 'Enviando...' : '✉️ Enviar')
+    ),
+    status === 'ok' && React.createElement('div', { className: 'email-status ok' }, '✅ E-mail enviado com sucesso!'),
+    status.startsWith('err:') && React.createElement('div', { className: 'email-status err' }, '❌ Erro: ' + status.slice(4))
+  );
+}
+
 function App() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(INITIAL);
@@ -171,7 +252,7 @@ function App() {
   const [error, setError] = useState('');
   const [contract, setContract] = useState('');
   const [loadingContract, setLoadingContract] = useState(false);
-  const [view, setView] = useState('form'); // form | proposal | contract
+  const [view, setView] = useState('form');
 
   const s = (k, extra) => inp(form, setForm, k, extra);
 
@@ -305,6 +386,7 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
         ),
         React.createElement('div', { className: 'proposal-body' }, renderMD(contract))
       ),
+      React.createElement(EmailBanner, { defaultEmail: form.email, content: contract, type: 'contract' }),
       React.createElement('div', { className: 'actions' },
         React.createElement('button', { className: 'btn-secondary', onClick: () => setView('proposal') }, '← Voltar à proposta'),
         React.createElement('button', { className: 'btn-primary', onClick: () => window.print() }, '🖨️ Imprimir / Salvar PDF')
@@ -332,6 +414,7 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
         ),
         React.createElement('div', { className: 'proposal-body' }, renderMD(proposal))
       ),
+      React.createElement(EmailBanner, { defaultEmail: form.email, content: proposal, type: 'proposal' }),
       React.createElement('div', { className: 'contract-banner' },
         React.createElement('p', null, React.createElement('strong', null, 'Proposta aprovada pelo cliente? '), 'Gere o contrato automaticamente com todos os dados preenchidos.'),
         React.createElement('button', { className: 'btn-green', onClick: generateContract, disabled: loadingContract },
