@@ -10,7 +10,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
   .topbar { background: #1a1a2e; color: #fff; padding: 14px 2rem; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
-  .topbar-logo { width: 36px; height: 36px; background: #e8c14b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #1a1a2e; letter-spacing: -0.5px; }
+  .topbar-logo { width: 36px; height: 36px; background: #e8c14b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #1a1a2e; }
   .topbar-title { font-size: 15px; font-weight: 500; }
   .topbar-sub { font-size: 12px; opacity: 0.5; margin-left: auto; }
   .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
@@ -28,9 +28,29 @@
   .field label .req { color: #e24b4a; }
   .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #e8e6e0; border-radius: 8px; font-size: 14px; background: #fff; color: #1a1a2e; transition: border-color 0.2s; font-family: inherit; }
   .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #1a1a2e; }
+  .field input:disabled { background: #f8f7f4; color: #888; }
   .field textarea { height: 80px; resize: vertical; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+  /* CNPJ lookup row */
+  .cnpj-row { display: flex; gap: 8px; }
+  .cnpj-row input { flex: 1; }
+  .btn-lookup { background: #1a1a2e; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; font-family: inherit; transition: background 0.2s; }
+  .btn-lookup:hover { background: #2d2d4e; }
+  .btn-lookup:disabled { opacity: 0.5; cursor: not-allowed; }
+  .lookup-status { font-size: 12px; margin-top: 5px; }
+  .lookup-status.ok { color: #2d8a5e; }
+  .lookup-status.err { color: #c0392b; }
+  .lookup-status.loading { color: #888; }
+
+  /* Ramo checkboxes */
+  .ramo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+  .ramo-item { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border: 1.5px solid #e8e6e0; border-radius: 8px; cursor: pointer; transition: all 0.15s; font-size: 13px; color: #555; }
+  .ramo-item:hover { border-color: #1a1a2e; background: #f8f7f4; }
+  .ramo-item.selected { border-color: #1a1a2e; background: #f0f0f8; color: #1a1a2e; font-weight: 600; }
+  .ramo-item input[type=checkbox] { width: 14px; height: 14px; accent-color: #1a1a2e; cursor: pointer; }
+
   .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #f0eeea; }
   .btn-primary { background: #1a1a2e; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; }
   .btn-primary:hover { background: #2d2d4e; transform: translateY(-1px); }
@@ -58,7 +78,7 @@
   .proposal-body h3 { font-size: 14px; font-weight: 600; margin: 1rem 0 0.4rem; color: #333; }
   .proposal-body p { font-size: 14px; color: #555; margin-bottom: 0.75rem; }
   .proposal-body li { font-size: 14px; color: #555; margin-bottom: 4px; margin-left: 1.2rem; }
-  .proposal-body table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; border-radius: 8px; overflow: hidden; }
+  .proposal-body table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; }
   .proposal-body th { background: #f5f4f0; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; color: #888; }
   .proposal-body td { padding: 10px 14px; border-bottom: 1px solid #f0eeea; }
   .proposal-body strong { color: #1a1a2e; }
@@ -87,6 +107,7 @@
   }
   @media (max-width: 600px) {
     .grid2, .grid3 { grid-template-columns: 1fr; }
+    .ramo-grid { grid-template-columns: 1fr 1fr; }
     .contract-banner { flex-direction: column; align-items: flex-start; }
     .email-banner-row { flex-direction: column; }
   }
@@ -96,7 +117,7 @@
 <div class="topbar">
   <div class="topbar-logo">BPO</div>
   <div class="topbar-title">Fenix BPO Financeiro — Gerador de Propostas</div>
-  <span class="topbar-sub">v1.2 · Joinville/SC</span>
+  <span class="topbar-sub">v1.3 · Joinville/SC</span>
 </div>
 <div class="container">
   <div id="root"></div>
@@ -104,9 +125,10 @@
 <script>
 const { useState } = React;
 const STEPS = ['1. Empresa', '2. Financeiro', '3. RH & Extras', '4. Proposta'];
+const RAMOS = ['Serviços', 'Comércio', 'Indústria', 'Saúde', 'Educação', 'Tecnologia', 'Construção', 'Transporte', 'Alimentação'];
 const INITIAL = {
-  razao: '', cnpj: '', telefone: '', email: '', descricao: '',
-  regime: 'Simples Nacional', ramo: 'Serviços', contabilidade: 'Online/Digital',
+  cnpj: '', razao: '', telefone: '', email: '', descricao: '',
+  regime: 'Simples Nacional', ramos: [], contabilidade: 'Online/Digital',
   sistema: '', bancos: '', contas_aplicacao: '0', cartoes: '0',
   faturamento: '', recebimentos: '', notas: '', pagamentos: '',
   socios: '1', funcionarios: '0', terceiros: '0',
@@ -156,6 +178,82 @@ async function callAI(prompt) {
   return data.text;
 }
 
+function formatCNPJ(v) {
+  return v.replace(/\D/g, '').slice(0, 14)
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d)/, '$1-$2');
+}
+
+function CnpjField({ form, setForm }) {
+  const [status, setStatus] = useState('');
+
+  const lookup = async () => {
+    const digits = form.cnpj.replace(/\D/g, '');
+    if (digits.length !== 14) { setStatus('err:CNPJ deve ter 14 dígitos'); return; }
+    setStatus('loading');
+    try {
+      const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${digits}`);
+      if (!res.ok) throw new Error('CNPJ não encontrado');
+      const d = await res.json();
+      setForm(f => ({
+        ...f,
+        razao: d.razao_social || f.razao,
+        telefone: d.ddd_telefone_1 ? d.ddd_telefone_1.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3') : f.telefone,
+        regime: d.opcao_pelo_simples ? 'Simples Nacional' : f.regime,
+      }));
+      setStatus('ok:Dados preenchidos automaticamente ✓');
+    } catch (e) {
+      setStatus('err:' + e.message);
+    }
+  };
+
+  const statusClass = status.startsWith('ok') ? 'ok' : status.startsWith('err') ? 'err' : 'loading';
+  const statusMsg = status.startsWith('ok:') ? status.slice(3) : status.startsWith('err:') ? status.slice(4) : status === 'loading' ? 'Consultando Receita Federal...' : '';
+
+  return React.createElement('div', { className: 'field' },
+    React.createElement('label', null, 'CNPJ', React.createElement('span', { className: 'req' }, ' *')),
+    React.createElement('div', { className: 'cnpj-row' },
+      React.createElement('input', {
+        type: 'text',
+        placeholder: '00.000.000/0001-00',
+        value: form.cnpj,
+        onChange: e => setForm(f => ({ ...f, cnpj: formatCNPJ(e.target.value) })),
+        onKeyDown: e => e.key === 'Enter' && lookup()
+      }),
+      React.createElement('button', { className: 'btn-lookup', onClick: lookup, disabled: status === 'loading' },
+        status === 'loading' ? '...' : '🔍 Buscar'
+      )
+    ),
+    statusMsg && React.createElement('div', { className: 'lookup-status ' + statusClass }, statusMsg)
+  );
+}
+
+function RamoField({ form, setForm }) {
+  const toggle = (ramo) => {
+    setForm(f => ({
+      ...f,
+      ramos: f.ramos.includes(ramo) ? f.ramos.filter(r => r !== ramo) : [...f.ramos, ramo]
+    }));
+  };
+  return React.createElement('div', { className: 'field' },
+    React.createElement('label', null, 'Ramo(s) de atividade', React.createElement('span', { className: 'req' }, ' *')),
+    React.createElement('div', { className: 'ramo-grid' },
+      RAMOS.map(ramo =>
+        React.createElement('label', {
+          key: ramo,
+          className: 'ramo-item' + (form.ramos.includes(ramo) ? ' selected' : ''),
+          onClick: () => toggle(ramo)
+        },
+          React.createElement('input', { type: 'checkbox', checked: form.ramos.includes(ramo), onChange: () => toggle(ramo) }),
+          ramo
+        )
+      )
+    )
+  );
+}
+
 function EmailBanner({ defaultEmail }) {
   const [emailTo, setEmailTo] = useState(defaultEmail || '');
   const [sending, setSending] = useState(false);
@@ -170,7 +268,7 @@ function EmailBanner({ defaultEmail }) {
         body: JSON.stringify({
           to: emailTo,
           subject: 'Proposta Comercial — Fenix BPO Financeiro',
-          html: '<div style="font-family:sans-serif;max-width:600px;margin:0 auto;"><div style="background:#1a1a2e;padding:20px 24px;border-radius:12px 12px 0 0;"><span style="background:#e8c14b;color:#1a1a2e;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px;">FENIX BPO FINANCEIRO</span><h1 style="color:#fff;font-size:20px;margin-top:12px;">Proposta Comercial</h1></div><div style="background:#fff;padding:24px;border:1px solid #e8e6e0;border-radius:0 0 12px 12px;"><p style="color:#555;font-size:14px;line-height:1.7;">Segue em anexo a proposta comercial da Fenix BPO Financeiro. Em caso de duvidas, entre em contato conosco.</p><hr style="border:none;border-top:1px solid #f0eeea;margin:20px 0;"><p style="color:#888;font-size:12px;">Maicon Klug — CEO, Fenix BPO Financeiro<br>maiconklug@fenixbpo.com.br | Joinville/SC</p></div></div>'
+          html: '<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><div style="background:#1a1a2e;padding:20px 24px;border-radius:12px 12px 0 0"><span style="background:#e8c14b;color:#1a1a2e;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px">FENIX BPO FINANCEIRO</span><h1 style="color:#fff;font-size:20px;margin-top:12px">Proposta Comercial</h1></div><div style="background:#fff;padding:24px;border:1px solid #e8e6e0;border-radius:0 0 12px 12px"><p style="color:#555;font-size:14px;line-height:1.7">Segue a proposta comercial da Fenix BPO Financeiro. Em caso de duvidas, entre em contato.</p><hr style="border:none;border-top:1px solid #f0eeea;margin:20px 0"><p style="color:#888;font-size:12px">Maicon Klug — CEO, Fenix BPO Financeiro<br>maiconklug@fenixbpo.com.br | Joinville/SC</p></div></div>'
         })
       });
       const data = await res.json();
@@ -185,7 +283,7 @@ function EmailBanner({ defaultEmail }) {
       React.createElement('button', { className: 'btn-blue', onClick: send, disabled: sending || !emailTo }, sending ? 'Enviando...' : '✉️ Enviar')
     ),
     status === 'ok' && React.createElement('div', { className: 'email-status ok' }, '✅ E-mail enviado com sucesso!'),
-    status.startsWith('err:') && React.createElement('div', { className: 'email-status err' }, '❌ Erro: ' + status.slice(4))
+    status.startsWith('err:') && React.createElement('div', { className: 'email-status err' }, '❌ ' + status.slice(4))
   );
 }
 
@@ -200,9 +298,13 @@ function App() {
   const [view, setView] = useState('form');
   const s = (k, extra) => inp(form, setForm, k, extra);
 
+  const step0Valid = form.cnpj.replace(/\D/g,'').length === 14 && form.razao && form.email;
+  const step1Valid = form.faturamento && form.notas;
+
   const generateProposal = async () => {
     setLoading(true); setError('');
     try {
+      const ramoStr = form.ramos.length > 0 ? form.ramos.join(', ') : 'Não informado';
       const prompt = `Você é especialista em BPO Financeiro da empresa Fenix BPO Financeiro, de Joinville/SC. Gere uma proposta comercial profissional e personalizada.
 
 DADOS DO CLIENTE:
@@ -210,7 +312,7 @@ DADOS DO CLIENTE:
 - CNPJ: ${form.cnpj}
 - Telefone: ${form.telefone}
 - Email: ${form.email}
-- Ramo: ${form.ramo}
+- Ramo(s) de atividade: ${ramoStr}
 - Regime tributário: ${form.regime}
 - Tipo de contabilidade: ${form.contabilidade}
 - Sistema atual: ${form.sistema || 'não informado'}
@@ -250,19 +352,19 @@ PRECIFICAÇÃO:
 - Promoção: desconto de 20% por ${form.promo_meses} meses
 - ContaAzul opcional: R$239,90/mês
 
-Gere em markdown estruturado com:
-1. Cabeçalho (nome do cliente, data de hoje: ${new Date().toLocaleDateString('pt-BR')})
+Gere em markdown com:
+1. Cabeçalho (nome do cliente, data: ${new Date().toLocaleDateString('pt-BR')})
 2. Apresentação Fenix BPO (2-3 linhas)
-3. Entendimento do negócio do cliente (personalizado)
+3. Entendimento do negócio (personalizado para os ramos: ${ramoStr})
 4. Escopo de serviços
 5. Tabela de investimento (implantação, mensalidade normal, mensalidade promocional)
-6. Condições e forma de pagamento
+6. Condições e pagamento
 7. Próximos passos
 8. Assinatura Maicon Klug, CEO`;
       const text = await callAI(prompt);
       if (!text) throw new Error('Resposta vazia');
       setProposal(text); setView('proposal');
-    } catch (e) { setError('Erro ao gerar proposta: ' + e.message); }
+    } catch (e) { setError('Erro: ' + e.message); }
     setLoading(false);
   };
 
@@ -277,85 +379,76 @@ ${proposal}
 CONTRATADA: Fenix BPO Financeiro | CNPJ: [CNPJ_FENIX] | Joinville/SC | Rep: Maicon Klug, CEO
 CONTRATANTE: ${form.razao} | CNPJ: ${form.cnpj} | Tel: ${form.telefone} | Email: ${form.email}
 
-Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo, valor e pagamento (da proposta), obrigações de ambas as partes, sigilo, rescisão, penalidades, disposições gerais, foro Joinville/SC, assinaturas e testemunhas.`;
+Inclua em markdown: qualificação das partes, objeto, prazo, valor e pagamento, obrigações, sigilo, rescisão, penalidades, disposições gerais, foro Joinville/SC, assinaturas e testemunhas.`;
       const text = await callAI(prompt);
       setContract(text); setView('contract');
-    } catch (e) { setError('Erro ao gerar contrato: ' + e.message); }
+    } catch (e) { setError('Erro: ' + e.message); }
     setLoadingContract(false);
   };
 
-  if (loading) {
-    return React.createElement('div', { className: 'loading-box' },
-      React.createElement('div', { className: 'spinner' }),
-      React.createElement('p', null, 'Gerando proposta personalizada para '),
-      React.createElement('strong', null, form.razao),
-      React.createElement('p', { style: { fontSize: 12, color: '#aaa' } }, 'Isso pode levar alguns segundos...')
-    );
-  }
+  if (loading) return React.createElement('div', { className: 'loading-box' },
+    React.createElement('div', { className: 'spinner' }),
+    React.createElement('p', null, 'Gerando proposta para '),
+    React.createElement('strong', null, form.razao),
+    React.createElement('p', { style: { fontSize: 12, color: '#aaa' } }, 'Isso pode levar alguns segundos...')
+  );
 
-  if (view === 'contract' && contract) {
-    return React.createElement('div', null,
-      React.createElement('div', { className: 'result-header' },
-        React.createElement('div', { className: 'result-header-info' },
-          React.createElement('h2', null, 'Contrato gerado'),
-          React.createElement('p', null, form.razao + ' · ' + new Date().toLocaleDateString('pt-BR'))
-        ),
-        React.createElement('span', { className: 'tag tag-success' }, '✓ Pronto para assinar')
+  if (view === 'contract' && contract) return React.createElement('div', null,
+    React.createElement('div', { className: 'result-header' },
+      React.createElement('div', { className: 'result-header-info' },
+        React.createElement('h2', null, 'Contrato gerado'),
+        React.createElement('p', null, form.razao + ' · ' + new Date().toLocaleDateString('pt-BR'))
       ),
-      React.createElement('div', { className: 'proposal-wrapper' },
-        React.createElement('div', { className: 'proposal-topbar' },
-          React.createElement('div', { className: 'client' }, 'Contrato de Prestação de Serviços'),
-          React.createElement('div', { className: 'meta' },
-            React.createElement('span', null, form.razao),
-            React.createElement('span', null, new Date().toLocaleDateString('pt-BR'))
-          )
-        ),
-        React.createElement('div', { className: 'proposal-body' }, renderMD(contract))
+      React.createElement('span', { className: 'tag tag-success' }, '✓ Pronto para assinar')
+    ),
+    React.createElement('div', { className: 'proposal-wrapper' },
+      React.createElement('div', { className: 'proposal-topbar' },
+        React.createElement('div', { className: 'client' }, 'Contrato de Prestação de Serviços'),
+        React.createElement('div', { className: 'meta' }, React.createElement('span', null, form.razao), React.createElement('span', null, new Date().toLocaleDateString('pt-BR')))
       ),
-      React.createElement(EmailBanner, { defaultEmail: form.email }),
-      React.createElement('div', { className: 'actions' },
-        React.createElement('button', { className: 'btn-secondary', onClick: () => setView('proposal') }, '← Voltar à proposta'),
-        React.createElement('button', { className: 'btn-primary', onClick: () => window.print() }, '🖨️ Imprimir / Salvar PDF')
-      )
-    );
-  }
+      React.createElement('div', { className: 'proposal-body' }, renderMD(contract))
+    ),
+    React.createElement(EmailBanner, { defaultEmail: form.email }),
+    React.createElement('div', { className: 'actions' },
+      React.createElement('button', { className: 'btn-secondary', onClick: () => setView('proposal') }, '← Voltar à proposta'),
+      React.createElement('button', { className: 'btn-primary', onClick: () => window.print() }, '🖨️ Imprimir / Salvar PDF')
+    )
+  );
 
-  if (view === 'proposal' && proposal) {
-    return React.createElement('div', null,
-      React.createElement('div', { className: 'result-header' },
-        React.createElement('div', { className: 'result-header-info' },
-          React.createElement('h2', null, 'Proposta gerada'),
-          React.createElement('p', null, form.razao + ' · ' + new Date().toLocaleDateString('pt-BR'))
+  if (view === 'proposal' && proposal) return React.createElement('div', null,
+    React.createElement('div', { className: 'result-header' },
+      React.createElement('div', { className: 'result-header-info' },
+        React.createElement('h2', null, 'Proposta gerada'),
+        React.createElement('p', null, form.razao + ' · ' + new Date().toLocaleDateString('pt-BR'))
+      ),
+      React.createElement('span', { className: 'tag tag-pending' }, '⏳ Aguardando aprovação')
+    ),
+    React.createElement('div', { className: 'proposal-wrapper' },
+      React.createElement('div', { className: 'proposal-topbar' },
+        React.createElement('div', { className: 'client' }, form.razao),
+        React.createElement('div', { className: 'meta' },
+          React.createElement('span', null, '📅 ' + new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })),
+          React.createElement('span', null, '⏰ Válida por 15 dias')
         ),
-        React.createElement('span', { className: 'tag tag-pending' }, '⏳ Aguardando aprovação')
+        React.createElement('span', { className: 'badge' }, 'FENIX BPO FINANCEIRO')
       ),
-      React.createElement('div', { className: 'proposal-wrapper' },
-        React.createElement('div', { className: 'proposal-topbar' },
-          React.createElement('div', { className: 'client' }, form.razao),
-          React.createElement('div', { className: 'meta' },
-            React.createElement('span', null, '📅 ' + new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })),
-            React.createElement('span', null, '⏰ Válida por 15 dias')
-          ),
-          React.createElement('span', { className: 'badge' }, 'FENIX BPO FINANCEIRO')
-        ),
-        React.createElement('div', { className: 'proposal-body' }, renderMD(proposal))
-      ),
-      React.createElement(EmailBanner, { defaultEmail: form.email }),
-      React.createElement('div', { className: 'contract-banner' },
-        React.createElement('p', null, React.createElement('strong', null, 'Proposta aprovada pelo cliente? '), 'Gere o contrato automaticamente com todos os dados preenchidos.'),
-        React.createElement('button', { className: 'btn-green', onClick: generateContract, disabled: loadingContract },
-          loadingContract ? 'Gerando...' : '📄 Gerar contrato'
-        )
-      ),
-      React.createElement('div', { className: 'actions' },
-        React.createElement('button', { className: 'btn-secondary', onClick: () => { setView('form'); setStep(0); setProposal(''); setForm(INITIAL); } }, '+ Nova proposta'),
-        React.createElement('button', { className: 'btn-primary', onClick: () => window.print() }, '🖨️ Imprimir / Salvar PDF')
+      React.createElement('div', { className: 'proposal-body' }, renderMD(proposal))
+    ),
+    React.createElement(EmailBanner, { defaultEmail: form.email }),
+    React.createElement('div', { className: 'contract-banner' },
+      React.createElement('p', null, React.createElement('strong', null, 'Proposta aprovada? '), 'Gere o contrato automaticamente.'),
+      React.createElement('button', { className: 'btn-green', onClick: generateContract, disabled: loadingContract },
+        loadingContract ? 'Gerando...' : '📄 Gerar contrato'
       )
-    );
-  }
+    ),
+    React.createElement('div', { className: 'actions' },
+      React.createElement('button', { className: 'btn-secondary', onClick: () => { setView('form'); setStep(0); setProposal(''); setForm(INITIAL); } }, '+ Nova proposta'),
+      React.createElement('button', { className: 'btn-primary', onClick: () => window.print() }, '🖨️ Imprimir / Salvar PDF')
+    )
+  );
 
   const sel = (k, opts) => React.createElement('select', { ...s(k) }, opts.map(o => React.createElement('option', { key: o }, o)));
-  const input = (k, placeholder) => React.createElement('input', { ...s(k), placeholder });
+  const input = (k, placeholder, extra) => React.createElement('input', { ...s(k), placeholder, ...extra });
   const textarea = (k, placeholder) => React.createElement('textarea', { ...s(k), placeholder });
 
   return React.createElement('div', null,
@@ -366,11 +459,14 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
       React.createElement('div', { className: 'step-labels' },
         STEPS.map((s, i) => React.createElement('span', { key: i, className: i === step ? 'cur' : '' }, s))
       ),
+
       step === 0 && React.createElement('div', null,
-        React.createElement('div', { className: 'section-title' }, 'Dados da empresa'),
-        React.createElement(Field, { label: 'Razão social', required: true }, input('razao', 'Ex: MSB Transportes Ltda')),
+        React.createElement('div', { className: 'section-title' }, 'Identificação'),
+        React.createElement(CnpjField, { form, setForm }),
         React.createElement('div', { className: 'grid2' },
-          React.createElement(Field, { label: 'CNPJ', required: true }, input('cnpj', '00.000.000/0001-00')),
+          React.createElement(Field, { label: 'Razão Social', required: true },
+            React.createElement('input', { ...s('razao'), placeholder: 'Preenchido automaticamente ou manual' })
+          ),
           React.createElement(Field, { label: 'Telefone' }, input('telefone', '(47) 99999-0000'))
         ),
         React.createElement(Field, { label: 'E-mail para a proposta', required: true }, input('email', 'financeiro@empresa.com.br')),
@@ -378,13 +474,12 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
         React.createElement('div', { className: 'section-title' }, 'Perfil fiscal'),
         React.createElement('div', { className: 'grid2' },
           React.createElement(Field, { label: 'Regime tributário' }, sel('regime', ['MEI', 'Simples Nacional', 'Lucro Presumido', 'Lucro Real'])),
-          React.createElement(Field, { label: 'Ramo de atividade' }, sel('ramo', ['Serviços', 'Comércio', 'Indústria']))
+          React.createElement(Field, { label: 'Tipo de contabilidade' }, sel('contabilidade', ['Online/Digital', 'Convencional', 'Interna']))
         ),
-        React.createElement('div', { className: 'grid2' },
-          React.createElement(Field, { label: 'Tipo de contabilidade' }, sel('contabilidade', ['Online/Digital', 'Convencional', 'Interna'])),
-          React.createElement(Field, { label: 'Sistema financeiro atual' }, input('sistema', 'Ex: ContaAzul, Omie, planilha'))
-        )
+        React.createElement(RamoField, { form, setForm }),
+        React.createElement(Field, { label: 'Sistema financeiro atual' }, input('sistema', 'Ex: ContaAzul, Omie, planilha'))
       ),
+
       step === 1 && React.createElement('div', null,
         React.createElement('div', { className: 'section-title' }, 'Dados financeiros mensais'),
         React.createElement('div', { className: 'grid2' },
@@ -402,6 +497,7 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
           React.createElement(Field, { label: 'Cartões de crédito' }, sel('cartoes', ['0','1','2','3','4','5+']))
         )
       ),
+
       step === 2 && React.createElement('div', null,
         React.createElement('div', { className: 'section-title' }, 'Recursos humanos'),
         React.createElement('div', { className: 'grid3' },
@@ -414,13 +510,14 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
         React.createElement(Field, { label: 'Observações ou necessidades especiais' }, textarea('obs', 'Algum detalhe específico deste cliente...')),
         error && React.createElement('div', { className: 'error-box' }, error)
       ),
+
       React.createElement('div', { className: 'actions' },
         step > 0
           ? React.createElement('button', { className: 'btn-secondary', onClick: () => setStep(s => s - 1) }, '← Voltar')
           : React.createElement('div'),
         step < 2
-          ? React.createElement('button', { className: 'btn-primary', onClick: () => setStep(s => s + 1), disabled: step === 0 && (!form.razao || !form.email) }, 'Próximo →')
-          : React.createElement('button', { className: 'btn-primary', onClick: generateProposal, disabled: !form.faturamento || !form.notas }, '✨ Gerar proposta com IA')
+          ? React.createElement('button', { className: 'btn-primary', onClick: () => setStep(s => s + 1), disabled: step === 0 && !step0Valid }, 'Próximo →')
+          : React.createElement('button', { className: 'btn-primary', onClick: generateProposal, disabled: !step1Valid }, '✨ Gerar proposta com IA')
       )
     )
   );
