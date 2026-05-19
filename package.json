@@ -2,6 +2,7 @@
   "name": "fenix-bpo-propostas",
   "version": "1.0.0",
   "dependencies": {
-    "nodemailer": "^6.9.13"
+    "nodemailer": "^6.9.13",
+    "@anthropic-ai/sdk": "^0.24.0"
   }
 }
