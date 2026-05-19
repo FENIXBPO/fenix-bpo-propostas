@@ -9,16 +9,12 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
-  
   .topbar { background: #1a1a2e; color: #fff; padding: 14px 2rem; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
   .topbar-logo { width: 36px; height: 36px; background: #e8c14b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: #1a1a2e; letter-spacing: -0.5px; }
   .topbar-title { font-size: 15px; font-weight: 500; }
   .topbar-sub { font-size: 12px; opacity: 0.5; margin-left: auto; }
-
   .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
-
   .card { background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 1.5rem; }
-
   .steps { display: flex; gap: 8px; margin-bottom: 1rem; }
   .step { flex: 1; height: 4px; border-radius: 2px; background: #e8e6e0; transition: background 0.3s; }
   .step.active { background: #1a1a2e; }
@@ -26,25 +22,16 @@
   .step-labels { display: flex; justify-content: space-between; margin-bottom: 2rem; }
   .step-labels span { font-size: 12px; color: #888; }
   .step-labels span.cur { color: #1a1a2e; font-weight: 600; }
-
   .section-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 1px solid #f0eeea; }
-
   .field { margin-bottom: 1rem; }
   .field label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: 500; }
   .field label .req { color: #e24b4a; }
-  .field input, .field select, .field textarea {
-    width: 100%; padding: 10px 12px; border: 1.5px solid #e8e6e0; border-radius: 8px;
-    font-size: 14px; background: #fff; color: #1a1a2e; transition: border-color 0.2s;
-    font-family: inherit;
-  }
+  .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #e8e6e0; border-radius: 8px; font-size: 14px; background: #fff; color: #1a1a2e; transition: border-color 0.2s; font-family: inherit; }
   .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #1a1a2e; }
   .field textarea { height: 80px; resize: vertical; }
-  
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-
   .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #f0eeea; }
-  
   .btn-primary { background: #1a1a2e; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; }
   .btn-primary:hover { background: #2d2d4e; transform: translateY(-1px); }
   .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
@@ -56,13 +43,11 @@
   .btn-blue { background: #1a6fa8; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; }
   .btn-blue:hover { background: #155a87; }
   .btn-blue:disabled { opacity: 0.4; cursor: not-allowed; }
-
   .loading-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 2rem; gap: 1rem; background: #fff; border-radius: 16px; }
   .spinner { width: 36px; height: 36px; border: 3px solid #e8e6e0; border-top-color: #1a1a2e; border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading-box p { font-size: 14px; color: #888; }
   .loading-box strong { color: #1a1a2e; }
-
   .proposal-wrapper { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
   .proposal-topbar { background: #1a1a2e; color: #fff; padding: 1.5rem 2rem; }
   .proposal-topbar .client { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
@@ -77,12 +62,9 @@
   .proposal-body th { background: #f5f4f0; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; color: #888; }
   .proposal-body td { padding: 10px 14px; border-bottom: 1px solid #f0eeea; }
   .proposal-body strong { color: #1a1a2e; }
-
   .contract-banner { background: #f0f9f4; border: 1.5px solid #9fe1cb; border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; gap: 1rem; }
   .contract-banner p { font-size: 14px; color: #555; }
   .contract-banner strong { color: #1a5c3a; }
-
-  /* EMAIL BANNER */
   .email-banner { background: #f0f6fd; border: 1.5px solid #a0c8f0; border-radius: 12px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
   .email-banner-title { font-size: 13px; font-weight: 600; color: #1a4a6e; margin-bottom: 10px; }
   .email-banner-row { display: flex; gap: 10px; align-items: center; }
@@ -91,19 +73,13 @@
   .email-status { margin-top: 8px; font-size: 13px; }
   .email-status.ok { color: #1a5c3a; }
   .email-status.err { color: #791f1f; }
-
   .error-box { background: #fcebeb; border: 1.5px solid #f09595; border-radius: 10px; padding: 1rem 1.25rem; font-size: 13px; color: #791f1f; margin-top: 1rem; }
-
   .tag { display: inline-block; font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
   .tag-pending { background: #faeeda; color: #854f0b; }
   .tag-success { background: #e8f5ee; color: #1a5c3a; }
-
   .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
   .result-header-info h2 { font-size: 18px; font-weight: 600; }
   .result-header-info p { font-size: 13px; color: #888; margin-top: 2px; }
-
-  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
-
   @media print {
     .topbar, .actions, .contract-banner, .email-banner, .result-header { display: none !important; }
     body { background: #fff; }
@@ -113,27 +89,21 @@
     .grid2, .grid3 { grid-template-columns: 1fr; }
     .contract-banner { flex-direction: column; align-items: flex-start; }
     .email-banner-row { flex-direction: column; }
-    .actions-row { flex-direction: column; }
   }
 </style>
 </head>
 <body>
-
 <div class="topbar">
   <div class="topbar-logo">BPO</div>
   <div class="topbar-title">Fenix BPO Financeiro — Gerador de Propostas</div>
-  <span class="topbar-sub">v1.1 · Joinville/SC</span>
+  <span class="topbar-sub">v1.2 · Joinville/SC</span>
 </div>
-
 <div class="container">
   <div id="root"></div>
 </div>
-
 <script>
 const { useState } = React;
-
 const STEPS = ['1. Empresa', '2. Financeiro', '3. RH & Extras', '4. Proposta'];
-
 const INITIAL = {
   razao: '', cnpj: '', telefone: '', email: '', descricao: '',
   regime: 'Simples Nacional', ramo: 'Serviços', contabilidade: 'Online/Digital',
@@ -159,14 +129,9 @@ function renderMD(md) {
   const lines = md.split('\n');
   const elements = [];
   let listItems = [];
-
   const flushList = () => {
-    if (listItems.length) {
-      elements.push(React.createElement('ul', { key: 'ul' + elements.length }, listItems));
-      listItems = [];
-    }
+    if (listItems.length) { elements.push(React.createElement('ul', { key: 'ul' + elements.length }, listItems)); listItems = []; }
   };
-
   lines.forEach((line, i) => {
     if (line.startsWith('## ')) { flushList(); elements.push(React.createElement('h2', { key: i }, line.slice(3))); }
     else if (line.startsWith('### ')) { flushList(); elements.push(React.createElement('h3', { key: i }, line.slice(4))); }
@@ -180,64 +145,44 @@ function renderMD(md) {
   return elements;
 }
 
-function EmailBanner({ defaultEmail, content, type }) {
+async function callAI(prompt) {
+  const res = await fetch('/api/propose', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Erro na API');
+  return data.text;
+}
+
+function EmailBanner({ defaultEmail }) {
   const [emailTo, setEmailTo] = useState(defaultEmail || '');
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState('');
-
   const send = async () => {
     if (!emailTo) return;
-    setSending(true);
-    setStatus('');
+    setSending(true); setStatus('');
     try {
-      const subject = type === 'contract'
-        ? 'Contrato de Prestação de Serviços — Fenix BPO Financeiro'
-        : 'Proposta Comercial — Fenix BPO Financeiro';
-
-      const html = `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
-        <div style="background:#1a1a2e;padding:20px 24px;border-radius:12px 12px 0 0;">
-          <span style="background:#e8c14b;color:#1a1a2e;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px;">FENIX BPO FINANCEIRO</span>
-          <h1 style="color:#fff;font-size:20px;margin-top:12px;">${subject}</h1>
-        </div>
-        <div style="background:#fff;padding:24px;border:1px solid #e8e6e0;border-radius:0 0 12px 12px;">
-          <p style="color:#555;font-size:14px;line-height:1.7;">Segue em anexo o documento solicitado. Em caso de dúvidas, entre em contato conosco.</p>
-          <hr style="border:none;border-top:1px solid #f0eeea;margin:20px 0;">
-          <p style="color:#888;font-size:12px;">Maicon Klug — CEO, Fenix BPO Financeiro<br>maiconklug@fenixbpo.com.br | Joinville/SC</p>
-        </div>
-      </div>`;
-
       const res = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: emailTo, subject, html })
+        body: JSON.stringify({
+          to: emailTo,
+          subject: 'Proposta Comercial — Fenix BPO Financeiro',
+          html: '<div style="font-family:sans-serif;max-width:600px;margin:0 auto;"><div style="background:#1a1a2e;padding:20px 24px;border-radius:12px 12px 0 0;"><span style="background:#e8c14b;color:#1a1a2e;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px;">FENIX BPO FINANCEIRO</span><h1 style="color:#fff;font-size:20px;margin-top:12px;">Proposta Comercial</h1></div><div style="background:#fff;padding:24px;border:1px solid #e8e6e0;border-radius:0 0 12px 12px;"><p style="color:#555;font-size:14px;line-height:1.7;">Segue em anexo a proposta comercial da Fenix BPO Financeiro. Em caso de duvidas, entre em contato conosco.</p><hr style="border:none;border-top:1px solid #f0eeea;margin:20px 0;"><p style="color:#888;font-size:12px;">Maicon Klug — CEO, Fenix BPO Financeiro<br>maiconklug@fenixbpo.com.br | Joinville/SC</p></div></div>'
+        })
       });
-
       const data = await res.json();
-      if (data.ok) {
-        setStatus('ok');
-      } else {
-        setStatus('err:' + (data.error || 'Erro desconhecido'));
-      }
-    } catch (e) {
-      setStatus('err:' + e.message);
-    }
+      setStatus(data.ok ? 'ok' : 'err:' + (data.error || 'Erro'));
+    } catch (e) { setStatus('err:' + e.message); }
     setSending(false);
   };
-
   return React.createElement('div', { className: 'email-banner' },
     React.createElement('div', { className: 'email-banner-title' }, '📧 Enviar por e-mail'),
     React.createElement('div', { className: 'email-banner-row' },
-      React.createElement('input', {
-        type: 'email',
-        placeholder: 'E-mail do cliente',
-        value: emailTo,
-        onChange: e => setEmailTo(e.target.value)
-      }),
-      React.createElement('button', {
-        className: 'btn-blue',
-        onClick: send,
-        disabled: sending || !emailTo
-      }, sending ? 'Enviando...' : '✉️ Enviar')
+      React.createElement('input', { type: 'email', placeholder: 'E-mail do cliente', value: emailTo, onChange: e => setEmailTo(e.target.value) }),
+      React.createElement('button', { className: 'btn-blue', onClick: send, disabled: sending || !emailTo }, sending ? 'Enviando...' : '✉️ Enviar')
     ),
     status === 'ok' && React.createElement('div', { className: 'email-status ok' }, '✅ E-mail enviado com sucesso!'),
     status.startsWith('err:') && React.createElement('div', { className: 'email-status err' }, '❌ Erro: ' + status.slice(4))
@@ -253,7 +198,6 @@ function App() {
   const [contract, setContract] = useState('');
   const [loadingContract, setLoadingContract] = useState(false);
   const [view, setView] = useState('form');
-
   const s = (k, extra) => inp(form, setForm, k, extra);
 
   const generateProposal = async () => {
@@ -315,20 +259,10 @@ Gere em markdown estruturado com:
 6. Condições e forma de pagamento
 7. Próximos passos
 8. Assinatura Maicon Klug, CEO`;
-
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-      });
-      const data = await res.json();
-      const text = data.content?.map(b => b.text || '').join('') || '';
+      const text = await callAI(prompt);
       if (!text) throw new Error('Resposta vazia');
-      setProposal(text);
-      setView('proposal');
-    } catch (e) {
-      setError('Erro ao gerar proposta. Verifique sua conexão e tente novamente.');
-    }
+      setProposal(text); setView('proposal');
+    } catch (e) { setError('Erro ao gerar proposta: ' + e.message); }
     setLoading(false);
   };
 
@@ -344,17 +278,9 @@ CONTRATADA: Fenix BPO Financeiro | CNPJ: [CNPJ_FENIX] | Joinville/SC | Rep: Maic
 CONTRATANTE: ${form.razao} | CNPJ: ${form.cnpj} | Tel: ${form.telefone} | Email: ${form.email}
 
 Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo, valor e pagamento (da proposta), obrigações de ambas as partes, sigilo, rescisão, penalidades, disposições gerais, foro Joinville/SC, assinaturas e testemunhas.`;
-
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-      });
-      const data = await res.json();
-      const text = data.content?.map(b => b.text || '').join('') || '';
-      setContract(text);
-      setView('contract');
-    } catch (e) { setError('Erro ao gerar contrato.'); }
+      const text = await callAI(prompt);
+      setContract(text); setView('contract');
+    } catch (e) { setError('Erro ao gerar contrato: ' + e.message); }
     setLoadingContract(false);
   };
 
@@ -386,7 +312,7 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
         ),
         React.createElement('div', { className: 'proposal-body' }, renderMD(contract))
       ),
-      React.createElement(EmailBanner, { defaultEmail: form.email, content: contract, type: 'contract' }),
+      React.createElement(EmailBanner, { defaultEmail: form.email }),
       React.createElement('div', { className: 'actions' },
         React.createElement('button', { className: 'btn-secondary', onClick: () => setView('proposal') }, '← Voltar à proposta'),
         React.createElement('button', { className: 'btn-primary', onClick: () => window.print() }, '🖨️ Imprimir / Salvar PDF')
@@ -414,7 +340,7 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
         ),
         React.createElement('div', { className: 'proposal-body' }, renderMD(proposal))
       ),
-      React.createElement(EmailBanner, { defaultEmail: form.email, content: proposal, type: 'proposal' }),
+      React.createElement(EmailBanner, { defaultEmail: form.email }),
       React.createElement('div', { className: 'contract-banner' },
         React.createElement('p', null, React.createElement('strong', null, 'Proposta aprovada pelo cliente? '), 'Gere o contrato automaticamente com todos os dados preenchidos.'),
         React.createElement('button', { className: 'btn-green', onClick: generateContract, disabled: loadingContract },
@@ -440,7 +366,6 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
       React.createElement('div', { className: 'step-labels' },
         STEPS.map((s, i) => React.createElement('span', { key: i, className: i === step ? 'cur' : '' }, s))
       ),
-
       step === 0 && React.createElement('div', null,
         React.createElement('div', { className: 'section-title' }, 'Dados da empresa'),
         React.createElement(Field, { label: 'Razão social', required: true }, input('razao', 'Ex: MSB Transportes Ltda')),
@@ -460,7 +385,6 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
           React.createElement(Field, { label: 'Sistema financeiro atual' }, input('sistema', 'Ex: ContaAzul, Omie, planilha'))
         )
       ),
-
       step === 1 && React.createElement('div', null,
         React.createElement('div', { className: 'section-title' }, 'Dados financeiros mensais'),
         React.createElement('div', { className: 'grid2' },
@@ -478,7 +402,6 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
           React.createElement(Field, { label: 'Cartões de crédito' }, sel('cartoes', ['0','1','2','3','4','5+']))
         )
       ),
-
       step === 2 && React.createElement('div', null,
         React.createElement('div', { className: 'section-title' }, 'Recursos humanos'),
         React.createElement('div', { className: 'grid3' },
@@ -491,7 +414,6 @@ Inclua em markdown: qualificação das partes, objeto (escopo detalhado), prazo,
         React.createElement(Field, { label: 'Observações ou necessidades especiais' }, textarea('obs', 'Algum detalhe específico deste cliente...')),
         error && React.createElement('div', { className: 'error-box' }, error)
       ),
-
       React.createElement('div', { className: 'actions' },
         step > 0
           ? React.createElement('button', { className: 'btn-secondary', onClick: () => setStep(s => s - 1) }, '← Voltar')
