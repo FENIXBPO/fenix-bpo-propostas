@@ -34,7 +34,7 @@
 
 if(typeof window!=='undefined'&&typeof document!=='undefined'){
   const s=document.createElement('script');
-  s.src='ui-enhancements.js?v=1';
+  s.src='ui-enhancements.js?v=2';
   s.defer=true;
   document.head.appendChild(s);
 }
