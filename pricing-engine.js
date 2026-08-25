@@ -39,9 +39,14 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   document.head.appendChild(s);
 
   const h=document.createElement('script');
-  h.src='header-lock.js?v=1';
+  h.src='header-polish.js?v=3';
   h.defer=true;
   document.head.appendChild(h);
+
+  const f=document.createElement('script');
+  f.src='header-final-touch.js?v=3';
+  f.defer=true;
+  document.head.appendChild(f);
 
   const p=document.createElement('script');
   p.src='intake-persistence.js?v=2';
