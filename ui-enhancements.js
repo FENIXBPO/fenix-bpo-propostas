@@ -17,13 +17,16 @@
     ['Interface com contabilidade','Envio e organização de documentos para a contabilidade'],
     ['Fluxo de caixa e relatório mensal','Fluxo de caixa e relatório mensal de apoio à decisão']
   ];
+  const LOGO='assets/fenix-logo-transparent.webp';
   function applyBranding(){
     if(document.getElementById('fenix-branding'))return;
     const style=document.createElement('style');style.id='fenix-branding';style.textContent=`
-      :root{--fenix-navy:#101326;--fenix-navy-2:#171b32;--fenix-gold:#e9bc63;--fenix-gold-soft:#f7edda;--fenix-silver:#d7d3cb;--fenix-bg:#f5f3ee;--fenix-white:#ffffff;--fenix-text:#171820}
+      :root{--fenix-navy:#111428;--fenix-navy-2:#171b32;--fenix-gold:#c5a343;--fenix-gold-bright:#e5bd4f;--fenix-gold-soft:#f7efd9;--fenix-silver:#d7d3cb;--fenix-bg:#f5f3ee;--fenix-white:#ffffff;--fenix-text:#171820}
       body{background:var(--fenix-bg)!important;color:var(--fenix-text)!important}
-      .top{background:linear-gradient(135deg,#070910 0%,var(--fenix-navy) 58%,#181d36 100%)!important;border-bottom:3px solid var(--fenix-gold)!important}
-      .top strong{letter-spacing:.2px}.top small{color:#e7e7ea!important;opacity:.9!important}
+      .top{background:linear-gradient(135deg,#06070d 0%,var(--fenix-navy) 58%,#181d36 100%)!important;border-bottom:3px solid var(--fenix-gold)!important;padding:10px 22px!important;display:flex;align-items:center;gap:16px;min-height:82px}
+      .top .fenix-top-logo{width:190px;max-height:62px;object-fit:contain;object-position:left center;display:block}
+      .top .fenix-top-copy{display:flex;flex-direction:column;justify-content:center}
+      .top .fenix-top-copy strong{letter-spacing:.2px;color:#fff;font-size:17px}.top .fenix-top-copy small{color:#e7e7ea!important;opacity:.9!important;margin-top:3px}
       .card{border:1px solid #e8e2d7!important;box-shadow:0 5px 18px rgba(16,19,38,.07)!important}
       .section{color:var(--fenix-navy)!important;border-bottom-color:#e5dccb!important}
       .section:before{content:'';display:inline-block;width:18px;height:2px;background:var(--fenix-gold);vertical-align:middle;margin-right:7px}
@@ -33,13 +36,21 @@
       .metric{background:linear-gradient(180deg,#fff 0%,#faf8f3 100%)!important;border-color:#e7dfd0!important}
       .metric span{color:#6f6a61!important}.metric strong{color:var(--fenix-navy)!important}
       .proposal h1,.proposal h2{color:var(--fenix-navy)!important}.proposal h2{border-bottom:2px solid var(--fenix-gold)!important}
-      .proposal h3{color:#2a2d3f!important}
-      .proposal strong{color:var(--fenix-navy)}
-      .proposal [data-faturamento-proposta]{background:var(--fenix-gold-soft)!important;border-color:#ddc28b!important}
+      .proposal h3{color:#2a2d3f!important}.proposal strong{color:var(--fenix-navy)}
+      .proposal [data-faturamento-proposta]{background:var(--fenix-gold-soft)!important;border:1px solid #ddc98d!important}
+      .fenix-proposal-brand{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:8px 0 18px;margin-bottom:18px;border-bottom:2px solid var(--fenix-gold)}
+      .fenix-proposal-brand img{width:220px;max-height:90px;object-fit:contain;object-position:left center}.fenix-proposal-brand .brand-note{text-align:right;color:#6a665e;font-size:12px;line-height:1.4}
       .ok{background:#f4f8f6!important;border-color:#b8d0c4!important}.warn{background:#fff8e8!important;border-color:#e4c77e!important}
-      input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--fenix-gold)!important;box-shadow:0 0 0 3px rgba(233,188,99,.18)!important}
-      @media print{.top{background:white!important;color:var(--fenix-navy)!important;border-bottom:2px solid var(--fenix-gold)!important}.actions,.internal,#diagnostico{display:none!important}.card{box-shadow:none!important;border:0!important}.proposal h2{break-after:avoid}}
+      input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--fenix-gold)!important;box-shadow:0 0 0 3px rgba(197,163,67,.18)!important}
+      @media(max-width:650px){.top{align-items:flex-start}.top .fenix-top-logo{width:150px}.fenix-proposal-brand{align-items:flex-start;flex-direction:column}.fenix-proposal-brand .brand-note{text-align:left}}
+      @media print{body{background:#fff!important}.top{display:none!important}.actions,.internal,#diagnostico{display:none!important}.card{box-shadow:none!important;border:0!important}.proposal h2{break-after:avoid}.fenix-proposal-brand{display:flex!important}.fenix-proposal-brand img{width:200px!important}}
     `;document.head.appendChild(style);
+  }
+  function applyHeaderLogo(){
+    const top=document.querySelector('.top');if(!top||top.querySelector('.fenix-top-logo'))return;
+    const logo=document.createElement('img');logo.src=LOGO;logo.alt='Fênix Intelligent BPO';logo.className='fenix-top-logo';
+    const copy=document.createElement('div');copy.className='fenix-top-copy';copy.innerHTML='<strong>Diagnóstico CFO e Propostas</strong><small>Coleta → Diagnóstico CFO → Comercial → Proposta</small>';
+    top.innerHTML='';top.appendChild(logo);top.appendChild(copy);
   }
   function enhanceRamo(){
     const old=document.getElementById('ramos');
@@ -83,23 +94,28 @@
         .replace(/saúde financeira/gi,'visibilidade financeira');
     });
   }
+  function addProposalBrand(proposal){
+    if(!proposal||proposal.querySelector('.fenix-proposal-brand'))return;
+    const brand=document.createElement('div');brand.className='fenix-proposal-brand';
+    brand.innerHTML='<img src="'+LOGO+'" alt="Fênix Intelligent BPO"><div class="brand-note">Proposta Comercial<br>Apoio administrativo-financeiro com inteligência e tecnologia</div>';
+    proposal.prepend(brand);
+  }
   function enhanceProposal(){
     if(typeof window.gerarProposta!=='function'||window.gerarProposta.__enhanced)return;
     const original=window.gerarProposta;
     const wrapped=async function(){
       const r=await original.apply(this,arguments);
       const proposal=document.getElementById('proposal');
-      normalizeProposalLanguage(proposal);
+      normalizeProposalLanguage(proposal);addProposalBrand(proposal);
       if(proposal&&proposal.children.length&&!proposal.querySelector('[data-faturamento-proposta]')){
-        const box=document.createElement('div');box.setAttribute('data-faturamento-proposta','1');
-        box.style.cssText='border-radius:10px;padding:12px 14px;margin:12px 0 18px';
+        const box=document.createElement('div');box.setAttribute('data-faturamento-proposta','1');box.style.cssText='border-radius:10px;padding:12px 14px;margin:12px 0 18px';
         box.innerHTML='<strong>Faturamento médio informado:</strong> '+money(moneyFromInput(document.getElementById('faturamento')?.value));
-        const first=proposal.querySelector('h1,h2');if(first&&first.nextSibling)proposal.insertBefore(box,first.nextSibling);else proposal.prepend(box);
+        const first=proposal.querySelector('h1,h2');if(first&&first.nextSibling)proposal.insertBefore(box,first.nextSibling);else proposal.appendChild(box);
       }
       return r;
     };
     wrapped.__enhanced=true;window.gerarProposta=wrapped;
   }
-  function init(){applyBranding();enhanceRamo();enhanceEscopo();enhanceRecalculo();enhanceProposal()}
+  function init(){applyBranding();applyHeaderLogo();enhanceRamo();enhanceEscopo();enhanceRecalculo();enhanceProposal()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
