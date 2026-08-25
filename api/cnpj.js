@@ -2,8 +2,10 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método não permitido.' });
 
   const raw = String(req.query?.cnpj || '');
-  const cnpj = raw.replace(/\D/g, '');
-  if (cnpj.length !== 14) return res.status(400).json({ error: 'Informe um CNPJ com 14 dígitos.' });
+  const cnpj = raw.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (!/^[A-Z0-9]{12}\d{2}$/.test(cnpj)) {
+    return res.status(400).json({ error: 'Informe um CNPJ válido com 14 caracteres.' });
+  }
 
   try {
     const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`, {
