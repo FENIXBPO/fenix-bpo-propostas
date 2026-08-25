@@ -37,4 +37,8 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   s.src='ui-enhancements.js?v=2';
   s.defer=true;
   document.head.appendChild(s);
+  const b=document.createElement('script');
+  b.src='brand-fix.js?v=1';
+  b.defer=true;
+  document.head.appendChild(b);
 }
