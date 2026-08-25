@@ -2,7 +2,8 @@
   let cnpjData = null;
   let lookupTimer = null;
 
-  const digits = value => String(value || '').replace(/\D/g, '');
+  const normalizeCnpj = value => String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const validCnpj = value => /^[A-Z0-9]{12}\d{2}$/.test(normalizeCnpj(value));
   const el = id => document.getElementById(id);
 
   function ensureStatus(){
@@ -63,13 +64,13 @@
   async function lookupCnpj(){
     const input = el('cnpj');
     if(!input) return;
-    const cnpj = digits(input.value);
-    if(cnpj.length !== 14){
+    const cnpj = normalizeCnpj(input.value);
+    if(!validCnpj(cnpj)){
       cnpjData = null;
-      setStatus(cnpj.length ? 'Digite os 14 números do CNPJ.' : '', 'neutral');
+      setStatus(cnpj.length ? 'Digite os 14 caracteres do CNPJ.' : '', 'neutral');
       return;
     }
-    if(cnpjData && digits(cnpjData.cnpj) === cnpj) return;
+    if(cnpjData && normalizeCnpj(cnpjData.cnpj) === cnpj) return;
 
     setStatus('Buscando dados públicos do CNPJ...', 'neutral');
     try{
@@ -88,13 +89,14 @@
   }
 
   function validateForSave(form){
-    if(digits(form.cnpj).length !== 14) return 'Informe um CNPJ válido.';
+    if(!validCnpj(form.cnpj)) return 'Informe um CNPJ válido.';
     if(!String(form.razao || '').trim()) return 'Informe a razão social.';
     if(!String(form.email || '').trim()) return 'Informe o e-mail.';
     if(!String(form.dor || '').trim()) return 'Informe a principal dor financeira/administrativa.';
     if(!String(form.faturamento || '').trim()) return 'Informe o faturamento médio.';
     if(!String(form.recebimentos || '').trim()) return 'Informe os recebimentos mensais.';
     if(!String(form.pagamentos || '').trim()) return 'Informe os pagamentos mensais.';
+    if(!String(form.notas || '').trim()) return 'Informe as notas emitidas por mês.';
     if(!Array.isArray(form.escopo) || !form.escopo.length) return 'Selecione pelo menos um item de escopo.';
     return '';
   }
@@ -124,7 +126,8 @@
       const oldText = button?.textContent;
       if(button){ button.disabled = true; button.textContent = 'Salvando informações...'; }
       try{
-        if(digits(form.cnpj).length === 14 && (!cnpjData || digits(cnpjData.cnpj) !== digits(form.cnpj))) await lookupCnpj();
+        const normalized = normalizeCnpj(form.cnpj);
+        if(validCnpj(normalized) && (!cnpjData || normalizeCnpj(cnpjData.cnpj) !== normalized)) await lookupCnpj();
         await persistIntake(form);
         setStatus('Dados salvos com segurança na Fênix.', 'ok');
         original.apply(this, arguments);
@@ -144,8 +147,8 @@
       cnpjInput.addEventListener('input', ()=>{
         clearTimeout(lookupTimer);
         cnpjData = null;
-        const cnpj = digits(cnpjInput.value);
-        if(cnpj.length === 14) lookupTimer = setTimeout(lookupCnpj, 450);
+        const cnpj = normalizeCnpj(cnpjInput.value);
+        if(validCnpj(cnpj)) lookupTimer = setTimeout(lookupCnpj, 450);
       });
       cnpjInput.addEventListener('blur', lookupCnpj);
     }
