@@ -1,5 +1,5 @@
 (function(){
-  const HEADER_LOGO='assets/fenix-logo-header-crop.webp';
+  const HEADER_LOGO='assets/fenix-logo-transparent.webp';
   const DOC_LOGO='assets/fenix-logo-transparent.webp';
   function apply(){
     const header=document.querySelector('.fenix-top-logo');
