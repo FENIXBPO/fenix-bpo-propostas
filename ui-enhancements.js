@@ -47,12 +47,25 @@
     };
     wrapped.__enhanced=true;window.recalcular=wrapped;
   }
+  function normalizeProposalLanguage(root){
+    if(!root)return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(node=>{
+      node.nodeValue=node.nodeValue
+        .replace(/otimizar os processos financeiros e administrativos/gi,'estruturar e otimizar as rotinas administrativo-financeiras')
+        .replace(/processos financeiros e administrativos/gi,'rotinas administrativo-financeiras')
+        .replace(/saúde financeira operacional/gi,'visibilidade das informações e do fluxo financeiro')
+        .replace(/saúde financeira/gi,'visibilidade financeira');
+    });
+  }
   function enhanceProposal(){
     if(typeof window.gerarProposta!=='function'||window.gerarProposta.__enhanced)return;
     const original=window.gerarProposta;
     const wrapped=async function(){
       const r=await original.apply(this,arguments);
       const proposal=document.getElementById('proposal');
+      normalizeProposalLanguage(proposal);
       if(proposal&&proposal.children.length&&!proposal.querySelector('[data-faturamento-proposta]')){
         const box=document.createElement('div');box.setAttribute('data-faturamento-proposta','1');
         box.style.cssText='background:#f8f7f4;border:1px solid #ebe7dd;border-radius:10px;padding:12px 14px;margin:12px 0 18px';
