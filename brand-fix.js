@@ -1,11 +1,12 @@
 (function(){
-  const LOGO='assets/fenix-logo-transparent.webp';
+  const LOGO='assets/fenix-logo-header.webp';
   function apply(){
     const header=document.querySelector('.fenix-top-logo');
     if(header){
       if(header.getAttribute('src')!==LOGO) header.src=LOGO;
-      header.style.filter='brightness(0) invert(1)';
+      header.style.filter='none';
       header.style.opacity='1';
+      header.style.background='transparent';
     }
     document.querySelectorAll('.fenix-proposal-brand img').forEach(img=>{
       if(img.getAttribute('src')!==LOGO) img.src=LOGO;
