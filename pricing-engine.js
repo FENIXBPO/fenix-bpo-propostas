@@ -45,4 +45,8 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   h.src='header-polish.js?v=1';
   h.defer=true;
   document.head.appendChild(h);
+  const f=document.createElement('script');
+  f.src='header-final-touch.js?v=1';
+  f.defer=true;
+  document.head.appendChild(f);
 }
