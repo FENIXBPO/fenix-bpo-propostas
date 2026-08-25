@@ -45,10 +45,10 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   }
   (async()=>{
     try{
-      await loadScript('ui-enhancements.js?v=4');
-      await loadScript('header-polish.js?v=4');
-      await loadScript('header-final-touch.js?v=5');
-      await loadScript('intake-persistence.js?v=3');
+      await loadScript('ui-enhancements.js?v=5');
+      await loadScript('header-polish.js?v=5');
+      await loadScript('header-singular-safe.js?v=1');
+      await loadScript('intake-persistence.js?v=4');
     }catch(err){
       console.error('Fenix bootstrap error:',err);
     }
