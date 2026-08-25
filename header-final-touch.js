@@ -3,12 +3,12 @@
     const product=document.querySelector('.fenix-product-name');
     if(product){
       product.textContent='Proposta Comercial';
-      product.style.color='#c7c9ce';
+      product.style.color='#c8cbd1';
     }
     const flow=document.querySelector('.fenix-top-copy small');
     if(flow){
-      flow.style.color='#b8bcc4';
-      flow.style.opacity='0.95';
+      flow.style.color='#bfc3ca';
+      flow.style.opacity='0.96';
     }
   }
   function run(){
