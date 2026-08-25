@@ -46,7 +46,7 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   h.defer=true;
   document.head.appendChild(h);
   const f=document.createElement('script');
-  f.src='header-final-touch.js?v=1';
+  f.src='header-final-touch.js?v=2';
   f.defer=true;
   document.head.appendChild(f);
 }
