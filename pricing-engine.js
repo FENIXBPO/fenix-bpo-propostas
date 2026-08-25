@@ -47,7 +47,7 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
     try{
       await loadScript('ui-enhancements.js?v=4');
       await loadScript('header-polish.js?v=4');
-      await loadScript('header-final-touch.js?v=4');
+      await loadScript('header-final-touch.js?v=5');
       await loadScript('intake-persistence.js?v=3');
     }catch(err){
       console.error('Fenix bootstrap error:',err);
