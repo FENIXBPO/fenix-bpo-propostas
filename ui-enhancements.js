@@ -23,10 +23,10 @@
     const style=document.createElement('style');style.id='fenix-branding';style.textContent=`
       :root{--fenix-navy:#111428;--fenix-navy-2:#171b32;--fenix-gold:#c5a343;--fenix-gold-bright:#e5bd4f;--fenix-gold-soft:#f7efd9;--fenix-silver:#d7d3cb;--fenix-bg:#f5f3ee;--fenix-white:#ffffff;--fenix-text:#171820}
       body{background:var(--fenix-bg)!important;color:var(--fenix-text)!important}
-      .top{background:linear-gradient(135deg,#06070d 0%,var(--fenix-navy) 58%,#181d36 100%)!important;border-bottom:3px solid var(--fenix-gold)!important;padding:7px 20px!important;display:flex;align-items:center;gap:10px;min-height:78px}
-      .top .fenix-top-logo{width:225px;max-height:68px;object-fit:contain;object-position:left center;display:block;flex:0 0 auto}
-      .top .fenix-top-copy{display:flex;flex-direction:column;justify-content:center;margin-left:-2px}
-      .top .fenix-top-copy strong{letter-spacing:.2px;color:#fff;font-size:18px;line-height:1.15}.top .fenix-top-copy small{color:#e7e7ea!important;opacity:.9!important;margin-top:4px;line-height:1.25}
+      .top{background:linear-gradient(135deg,#06070d 0%,var(--fenix-navy) 58%,#181d36 100%)!important;border-bottom:3px solid var(--fenix-gold)!important;padding:6px 18px!important;display:flex;align-items:center;gap:8px;min-height:92px}
+      .top .fenix-top-logo{width:300px;max-height:82px;object-fit:contain;object-position:left center;display:block;flex:0 0 auto}
+      .top .fenix-top-copy{display:flex;flex-direction:column;justify-content:center;margin-left:-4px}
+      .top .fenix-top-copy strong{letter-spacing:.2px;color:#fff;font-size:19px;line-height:1.15}.top .fenix-top-copy small{color:#e7e7ea!important;opacity:.9!important;margin-top:4px;line-height:1.25}
       .card{border:1px solid #e8e2d7!important;box-shadow:0 5px 18px rgba(16,19,38,.07)!important}
       .section{color:var(--fenix-navy)!important;border-bottom-color:#e5dccb!important}
       .section:before{content:'';display:inline-block;width:18px;height:2px;background:var(--fenix-gold);vertical-align:middle;margin-right:7px}
@@ -41,16 +41,30 @@
       .fenix-proposal-brand{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:8px 0 18px;margin-bottom:18px;border-bottom:2px solid var(--fenix-gold)}
       .fenix-proposal-brand img{width:220px;max-height:90px;object-fit:contain;object-position:left center}.fenix-proposal-brand .brand-note{text-align:right;color:#6a665e;font-size:12px;line-height:1.4}
       .ok{background:#f4f8f6!important;border-color:#b8d0c4!important}.warn{background:#fff8e8!important;border-color:#e4c77e!important}
+      .internal-zone{border:1px dashed #c9b77f!important;background:#fbfaf6!important}
+      .internal-zone>.section:after{content:' • USO INTERNO FÊNIX';color:#9b7b22;font-size:9px;margin-left:6px;letter-spacing:.7px}
       input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--fenix-gold)!important;box-shadow:0 0 0 3px rgba(197,163,67,.18)!important}
-      @media(max-width:650px){.top{align-items:center;gap:8px;padding:7px 12px!important}.top .fenix-top-logo{width:165px;max-height:56px}.top .fenix-top-copy strong{font-size:15px}.top .fenix-top-copy small{font-size:11px}.fenix-proposal-brand{align-items:flex-start;flex-direction:column}.fenix-proposal-brand .brand-note{text-align:left}}
+      @media(max-width:650px){.top{align-items:center;gap:6px;padding:6px 10px!important;min-height:78px}.top .fenix-top-logo{width:205px;max-height:66px}.top .fenix-top-copy strong{font-size:15px}.top .fenix-top-copy small{font-size:11px}.fenix-proposal-brand{align-items:flex-start;flex-direction:column}.fenix-proposal-brand .brand-note{text-align:left}}
       @media print{body{background:#fff!important}.top{display:none!important}.actions,.internal,#diagnostico{display:none!important}.card{box-shadow:none!important;border:0!important}.proposal h2{break-after:avoid}.fenix-proposal-brand{display:flex!important}.fenix-proposal-brand img{width:200px!important}}
     `;document.head.appendChild(style);
   }
   function applyHeaderLogo(){
-    const top=document.querySelector('.top');if(!top||top.querySelector('.fenix-top-logo'))return;
-    const logo=document.createElement('img');logo.src=LOGO;logo.alt='Fênix Intelligent BPO';logo.className='fenix-top-logo';
-    const copy=document.createElement('div');copy.className='fenix-top-copy';copy.innerHTML='<strong>Diagnóstico CFO e Propostas</strong><small>Coleta → Diagnóstico CFO → Comercial → Proposta</small>';
+    const top=document.querySelector('.top');if(!top)return;
+    let logo=top.querySelector('.fenix-top-logo');
+    if(!logo){logo=document.createElement('img');logo.src=LOGO;logo.alt='Fênix Intelligent BPO';logo.className='fenix-top-logo';}
+    let copy=top.querySelector('.fenix-top-copy');
+    if(!copy){copy=document.createElement('div');copy.className='fenix-top-copy';}
+    copy.innerHTML='<strong>Fênix BPO | Propostas Comerciais</strong><small>Cadastro → Entendimento da operação → Análise Fênix → Proposta</small>';
     top.innerHTML='';top.appendChild(logo);top.appendChild(copy);
+    document.title='Fênix BPO | Propostas Comerciais';
+  }
+  function applyFriendlyLanguage(){
+    const sections=[...document.querySelectorAll('.section')];
+    const volume=sections.find(s=>s.textContent.includes('Volumetria e complexidade'));if(volume)volume.textContent='2. Entendimento da operação';
+    const diag=sections.find(s=>s.textContent.includes('Diagnóstico CFO'));if(diag){diag.textContent='4. Análise interna Fênix — precificação e aprovação';diag.parentElement?.classList.add('internal-zone')}
+    const cfo=sections.find(s=>s.textContent.trim()==='Análise CFO');if(cfo)cfo.textContent='Validação financeira interna';
+    const com=sections.find(s=>s.textContent.trim()==='Análise Comercial');if(com)com.textContent='Validação comercial interna';
+    const send=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Enviar para análise Fenix'));if(send)send.textContent='Enviar informações para análise da Fênix';
   }
   function enhanceRamo(){
     const old=document.getElementById('ramos');
@@ -116,6 +130,6 @@
     };
     wrapped.__enhanced=true;window.gerarProposta=wrapped;
   }
-  function init(){applyBranding();applyHeaderLogo();enhanceRamo();enhanceEscopo();enhanceRecalculo();enhanceProposal()}
+  function init(){applyBranding();applyHeaderLogo();applyFriendlyLanguage();enhanceRamo();enhanceEscopo();enhanceRecalculo();enhanceProposal()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
