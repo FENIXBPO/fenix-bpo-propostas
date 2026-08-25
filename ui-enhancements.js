@@ -68,10 +68,50 @@
   }
   function enhanceRamo(){
     const old=document.getElementById('ramos');
-    if(!old||old.tagName==='SELECT')return;
-    const sel=document.createElement('select');sel.id='ramos';sel.name='ramos';
-    RAMOS.forEach(x=>{const o=document.createElement('option');o.value=x==='Selecione...'?'':x;o.textContent=x;sel.appendChild(o)});
-    old.replaceWith(sel);
+    if(!old||old.dataset.multiRamo==='1')return;
+
+    const field=old.closest('.field');
+    if(!field)return;
+
+    const hidden=document.createElement('input');
+    hidden.type='hidden';
+    hidden.id='ramos';
+    hidden.name='ramos';
+    hidden.dataset.multiRamo='1';
+
+    const details=document.createElement('details');
+    details.style.cssText='position:relative;width:100%';
+    const summary=document.createElement('summary');
+    summary.textContent='Selecione...';
+    summary.style.cssText='list-style:none;width:100%;padding:10px;border:1px solid #ddd8ce;border-radius:8px;background:#fff;cursor:pointer;min-height:42px';
+    summary.addEventListener('click',()=>{});
+    details.appendChild(summary);
+
+    const menu=document.createElement('div');
+    menu.style.cssText='position:absolute;z-index:20;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid #ddd8ce;border-radius:8px;padding:8px 10px;box-shadow:0 8px 20px rgba(0,0,0,.10);max-height:240px;overflow:auto';
+
+    const selected=new Set();
+    const update=()=>{
+      const values=[...selected];
+      hidden.value=values.join(', ');
+      summary.textContent=values.length?values.join(', '):'Selecione...';
+    };
+
+    RAMOS.filter(x=>x!=='Selecione...').forEach(x=>{
+      const label=document.createElement('label');
+      label.style.cssText='display:flex;align-items:center;gap:8px;padding:7px 2px;cursor:pointer;font-size:13px';
+      const check=document.createElement('input');
+      check.type='checkbox';
+      check.value=x;
+      check.addEventListener('change',()=>{check.checked?selected.add(x):selected.delete(x);update()});
+      label.appendChild(check);
+      label.appendChild(document.createTextNode(x));
+      menu.appendChild(label);
+    });
+
+    details.appendChild(menu);
+    old.replaceWith(hidden);
+    field.appendChild(details);
   }
   function enhanceEscopo(){
     const cards=[...document.querySelectorAll('.card')];
