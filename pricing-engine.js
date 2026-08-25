@@ -34,21 +34,15 @@
 
 if(typeof window!=='undefined'&&typeof document!=='undefined'){
   const s=document.createElement('script');
-  s.src='ui-enhancements.js?v=2';
+  s.src='ui-enhancements.js?v=3';
   s.defer=true;
   document.head.appendChild(s);
-  const b=document.createElement('script');
-  b.src='brand-fix.js?v=1';
-  b.defer=true;
-  document.head.appendChild(b);
+
   const h=document.createElement('script');
-  h.src='header-polish.js?v=1';
+  h.src='header-lock.js?v=1';
   h.defer=true;
   document.head.appendChild(h);
-  const f=document.createElement('script');
-  f.src='header-final-touch.js?v=2';
-  f.defer=true;
-  document.head.appendChild(f);
+
   const p=document.createElement('script');
   p.src='intake-persistence.js?v=2';
   p.defer=true;
