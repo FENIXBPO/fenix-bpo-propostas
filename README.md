@@ -1,90 +1,47 @@
 # fenix-bpo-propostas
 
-Gerador interno de diagnóstico, proposta comercial e minuta contratual da Fenix BPO Financeiro.
+Fluxo interno da Fenix BPO para levantamento de dados, diagnóstico CFO/Comercial e geração de propostas.
 
-## Fluxo v1.4
+## Fluxo atual
 
-1. Preenchimento do cadastro e levantamento comercial do cliente.
-2. Levantamento do volume financeiro, estrutura bancária, RH, complexidade e escopo desejado.
-3. Geração de diagnóstico interno com estimativas operacionais.
-4. Análise CFO.
-5. Análise Comercial.
-6. Liberação da geração da proposta somente quando os dois pareceres estiverem como `Aprovado`.
-7. Geração da proposta via Anthropic.
-8. Envio por e-mail, impressão/PDF manual e geração opcional de minuta de contrato.
+1. Cadastro do cliente e contexto
+2. Volumetria financeira e estrutura bancária
+3. Escopo e implantação
+4. Diagnóstico interno
+5. Aprovação CFO
+6. Aprovação Comercial
+7. Geração da proposta pela IA usando somente escopo e valores aprovados
+8. Envio / impressão
+9. Minuta de contrato para revisão interna
 
-## Dados coletados
+## Precificação
 
-O formulário coleta identificação da empresa e do responsável, contato, endereço, ramo, regime tributário, contabilidade, sistema atual, dor principal, expectativa, faturamento, recebimentos, pagamentos, notas emitidas/recebidas, outros lançamentos, bancos, aplicações, cartões, centros de custo, múltiplos CNPJs, filiais, aprovações, sócios, CLTs, terceiros, situação de implantação, retrabalho inicial, escopo desejado e observações.
+A referência oficial da branch está documentada em `PRECIFICACAO_CFO.md` e implementada de forma isolada em `pricing-engine.js`.
 
-## Diagnóstico CFO e Comercial
+A matriz CFO v1.0 prioriza volumetria e complexidade, calcula adicionais operacionais, implantação, horas estimadas e piso por margem quando o custo-hora real é informado.
 
-O diagnóstico calcula:
+Importante: nesta etapa a engine foi adicionada separadamente para validação. O formulário principal ainda usa o cálculo v1.4 anterior até a integração final da matriz ao diagnóstico da interface.
 
-- volume mensal estimado;
-- complexidade operacional;
-- horas mensais estimadas;
-- riscos operacionais;
-- faixa-base comercial;
-- adicionais já previstos nas regras existentes;
-- mensalidade sugerida;
-- piso comercial interno;
-- implantação sugerida.
+## Integrações atuais
 
-O CFO pode revisar mensalidade, piso, implantação e informar o custo-hora interno. A margem estimada só é calculada quando o custo-hora é informado.
+- BrasilAPI: consulta de CNPJ
+- Anthropic: geração de proposta e minuta
+- SMTP/Nodemailer: envio de e-mail
 
-O Comercial pode definir o desconto máximo autorizado e registrar seu parecer e estratégia de negociação.
-
-A proposta permanece bloqueada até CFO e Comercial marcarem `Aprovado`.
-
-## Regras comerciais atualmente usadas no diagnóstico
-
-Estas regras preservam as faixas que já existiam na versão anterior do projeto:
-
-- faturamento até R$ 100 mil: faixa mensal de R$ 700 a R$ 900;
-- faturamento de R$ 100 mil a R$ 300 mil: faixa mensal de R$ 1.000 a R$ 1.500;
-- faturamento acima de R$ 300 mil: faixa mensal de R$ 1.500 a R$ 2.500;
-- mais de 2 bancos: adicional de R$ 150 por banco excedente;
-- mais de 5 CLTs: adicional de R$ 200;
-- implantação sugerida entre R$ 1.500 e R$ 3.500 conforme complexidade.
-
-Essas regras são referência inicial para revisão interna e não substituem o parecer CFO/Comercial.
-
-## Arquivos principais
-
-- `index.html`: formulário, diagnóstico, aprovação interna, proposta e minuta contratual.
-- `api/propose.js`: integração com Anthropic.
-- `api/send-email.js`: envio SMTP via Nodemailer.
-
-## Variáveis de ambiente
+## Variáveis necessárias
 
 - `ANTHROPIC_API_KEY`
 - `SMTP_HOST`
 - `SMTP_USER`
 - `SMTP_PASS`
 
-## Execução
+## Pendências estruturais
 
-O projeto foi estruturado para ambiente compatível com rotas serverless em `/api`, como Vercel.
-
-Instale as dependências:
-
-```bash
-npm install
-```
-
-Configure as variáveis de ambiente e publique/execute em um ambiente que exponha `api/propose.js` e `api/send-email.js` como endpoints HTTP.
-
-## Pendências conhecidas
-
-A v1.4 ainda não implementa:
-
-- banco de dados/persistência dos diagnósticos e propostas;
-- autenticação e perfis de acesso CFO/Comercial;
-- trilha de auditoria e histórico;
-- geração automática de PDF para anexo no e-mail;
-- integração com CRM, n8n, Make ou Zapier;
-- aprovação real pelo cliente e assinatura eletrônica;
-- testes automatizados.
-
-Esses itens devem ser tratados na próxima fase, após validação do fluxo interno.
+- integrar `pricing-engine.js` ao diagnóstico da interface;
+- persistência em banco;
+- autenticação e perfis CFO/Comercial;
+- histórico e auditoria;
+- geração automática de PDF e anexo real no e-mail;
+- CRM/automação pós-envio;
+- aprovação do cliente e assinatura eletrônica;
+- substituir geração livre de contrato por transposição controlada ao modelo contratual padrão.
