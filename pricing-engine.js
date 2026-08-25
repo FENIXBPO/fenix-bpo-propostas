@@ -33,23 +33,24 @@
 })(typeof window!=='undefined'?window:globalThis);
 
 if(typeof window!=='undefined'&&typeof document!=='undefined'){
-  const s=document.createElement('script');
-  s.src='ui-enhancements.js?v=3';
-  s.defer=true;
-  document.head.appendChild(s);
-
-  const h=document.createElement('script');
-  h.src='header-polish.js?v=3';
-  h.defer=true;
-  document.head.appendChild(h);
-
-  const f=document.createElement('script');
-  f.src='header-final-touch.js?v=3';
-  f.defer=true;
-  document.head.appendChild(f);
-
-  const p=document.createElement('script');
-  p.src='intake-persistence.js?v=2';
-  p.defer=true;
-  document.head.appendChild(p);
+  function loadScript(src){
+    return new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src=src;
+      s.async=false;
+      s.onload=resolve;
+      s.onerror=()=>reject(new Error('Falha ao carregar '+src));
+      document.head.appendChild(s);
+    });
+  }
+  (async()=>{
+    try{
+      await loadScript('ui-enhancements.js?v=4');
+      await loadScript('header-polish.js?v=4');
+      await loadScript('header-final-touch.js?v=4');
+      await loadScript('intake-persistence.js?v=3');
+    }catch(err){
+      console.error('Fenix bootstrap error:',err);
+    }
+  })();
 }
