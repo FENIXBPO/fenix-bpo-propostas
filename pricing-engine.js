@@ -49,4 +49,8 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   f.src='header-final-touch.js?v=2';
   f.defer=true;
   document.head.appendChild(f);
+  const p=document.createElement('script');
+  p.src='intake-persistence.js?v=1';
+  p.defer=true;
+  document.head.appendChild(p);
 }
