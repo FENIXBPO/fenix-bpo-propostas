@@ -1,29 +1,33 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://xfngupnsacddtdbcrkdk.supabase.co';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const cleanCnpj = value => String(value || '').replace(/\D/g, '');
+const cleanCnpj = value => String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const validCnpj = value => /^[A-Z0-9]{12}\d{2}$/.test(cleanCnpj(value));
 const toNumber = value => {
   const normalized = String(value ?? '').trim().replace(/\./g, '').replace(',', '.');
   const number = Number(normalized);
   return Number.isFinite(number) ? number : null;
 };
 const toInteger = value => {
-  const number = Number(String(value ?? '').replace(/\D/g, ''));
-  return Number.isFinite(number) ? number : null;
+  const match = String(value ?? '').match(/\d+/);
+  return match ? Number(match[0]) : null;
 };
 
 async function supabase(path, options = {}) {
+  const headers = {
+    apikey: SECRET_KEY,
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+  if (SECRET_KEY && SECRET_KEY.startsWith('eyJ')) headers.Authorization = `Bearer ${SECRET_KEY}`;
+
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     ...options,
-    headers: {
-      apikey: SERVICE_KEY,
-      Authorization: `Bearer ${SERVICE_KEY}`,
-      'Content-Type': 'application/json',
-      ...(options.headers || {})
-    }
+    headers
   });
   const text = await response.text();
-  const data = text ? JSON.parse(text) : null;
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch { data = text || null; }
   if (!response.ok) {
     const error = new Error(data?.message || data?.hint || `Supabase ${response.status}`);
     error.status = response.status;
@@ -34,14 +38,14 @@ async function supabase(path, options = {}) {
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
-  if (!SERVICE_KEY) return res.status(503).json({ error: 'Integração com banco ainda não configurada na Vercel.' });
+  if (!SECRET_KEY) return res.status(503).json({ error: 'Integração com banco ainda não configurada na Vercel.' });
 
   const body = req.body || {};
   const form = body.form || {};
   const lookup = body.cnpjData || {};
   const cnpj = cleanCnpj(form.cnpj || lookup.cnpj);
 
-  if (cnpj.length !== 14) return res.status(400).json({ error: 'CNPJ válido é obrigatório para salvar.' });
+  if (!validCnpj(cnpj)) return res.status(400).json({ error: 'CNPJ válido é obrigatório para salvar.' });
   if (!String(form.razao || lookup.razao_social || '').trim()) return res.status(400).json({ error: 'Razão social é obrigatória.' });
 
   try {
