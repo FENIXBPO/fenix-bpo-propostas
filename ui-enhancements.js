@@ -17,6 +17,30 @@
     ['Interface com contabilidade','Envio e organização de documentos para a contabilidade'],
     ['Fluxo de caixa e relatório mensal','Fluxo de caixa e relatório mensal de apoio à decisão']
   ];
+  function applyBranding(){
+    if(document.getElementById('fenix-branding'))return;
+    const style=document.createElement('style');style.id='fenix-branding';style.textContent=`
+      :root{--fenix-navy:#101326;--fenix-navy-2:#171b32;--fenix-gold:#e9bc63;--fenix-gold-soft:#f7edda;--fenix-silver:#d7d3cb;--fenix-bg:#f5f3ee;--fenix-white:#ffffff;--fenix-text:#171820}
+      body{background:var(--fenix-bg)!important;color:var(--fenix-text)!important}
+      .top{background:linear-gradient(135deg,#070910 0%,var(--fenix-navy) 58%,#181d36 100%)!important;border-bottom:3px solid var(--fenix-gold)!important}
+      .top strong{letter-spacing:.2px}.top small{color:#e7e7ea!important;opacity:.9!important}
+      .card{border:1px solid #e8e2d7!important;box-shadow:0 5px 18px rgba(16,19,38,.07)!important}
+      .section{color:var(--fenix-navy)!important;border-bottom-color:#e5dccb!important}
+      .section:before{content:'';display:inline-block;width:18px;height:2px;background:var(--fenix-gold);vertical-align:middle;margin-right:7px}
+      .primary,.green{background:var(--fenix-navy)!important;color:white!important;border:1px solid var(--fenix-navy)!important}
+      .primary:hover,.green:hover{background:#1c2240!important}
+      .ghost{color:var(--fenix-navy)!important;border-color:#cfc7b8!important}
+      .metric{background:linear-gradient(180deg,#fff 0%,#faf8f3 100%)!important;border-color:#e7dfd0!important}
+      .metric span{color:#6f6a61!important}.metric strong{color:var(--fenix-navy)!important}
+      .proposal h1,.proposal h2{color:var(--fenix-navy)!important}.proposal h2{border-bottom:2px solid var(--fenix-gold)!important}
+      .proposal h3{color:#2a2d3f!important}
+      .proposal strong{color:var(--fenix-navy)}
+      .proposal [data-faturamento-proposta]{background:var(--fenix-gold-soft)!important;border-color:#ddc28b!important}
+      .ok{background:#f4f8f6!important;border-color:#b8d0c4!important}.warn{background:#fff8e8!important;border-color:#e4c77e!important}
+      input:focus,select:focus,textarea:focus{outline:none!important;border-color:var(--fenix-gold)!important;box-shadow:0 0 0 3px rgba(233,188,99,.18)!important}
+      @media print{.top{background:white!important;color:var(--fenix-navy)!important;border-bottom:2px solid var(--fenix-gold)!important}.actions,.internal,#diagnostico{display:none!important}.card{box-shadow:none!important;border:0!important}.proposal h2{break-after:avoid}}
+    `;document.head.appendChild(style);
+  }
   function enhanceRamo(){
     const old=document.getElementById('ramos');
     if(!old||old.tagName==='SELECT')return;
@@ -68,7 +92,7 @@
       normalizeProposalLanguage(proposal);
       if(proposal&&proposal.children.length&&!proposal.querySelector('[data-faturamento-proposta]')){
         const box=document.createElement('div');box.setAttribute('data-faturamento-proposta','1');
-        box.style.cssText='background:#f8f7f4;border:1px solid #ebe7dd;border-radius:10px;padding:12px 14px;margin:12px 0 18px';
+        box.style.cssText='border-radius:10px;padding:12px 14px;margin:12px 0 18px';
         box.innerHTML='<strong>Faturamento médio informado:</strong> '+money(moneyFromInput(document.getElementById('faturamento')?.value));
         const first=proposal.querySelector('h1,h2');if(first&&first.nextSibling)proposal.insertBefore(box,first.nextSibling);else proposal.prepend(box);
       }
@@ -76,6 +100,6 @@
     };
     wrapped.__enhanced=true;window.gerarProposta=wrapped;
   }
-  function init(){enhanceRamo();enhanceEscopo();enhanceRecalculo();enhanceProposal()}
+  function init(){applyBranding();enhanceRamo();enhanceEscopo();enhanceRecalculo();enhanceProposal()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
