@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fenix BPO — Validação Matriz CFO</title>
+<script src="pricing-engine.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f4f0;color:#1a1a1a}.top{background:#1a1a2e;color:#fff;padding:18px 22px}.top strong{display:block;font-size:18px}.top small{opacity:.7}.wrap{max-width:1100px;margin:auto;padding:22px}.card{background:#fff;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 1px 5px rgba(0,0,0,.07)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.field label{display:block;font-size:12px;font-weight:700;color:#666;margin:0 0 5px}.field input,.field select{width:100%;padding:10px;border:1px solid #ddd8ce;border-radius:8px}.metric{background:#f8f7f4;border:1px solid #ebe7dd;border-radius:11px;padding:14px}.metric span{display:block;font-size:11px;color:#777;text-transform:uppercase}.metric strong{display:block;font-size:21px;margin-top:4px;color:#1a1a2e}.section{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#777;font-weight:800;border-bottom:1px solid #eee;padding-bottom:7px;margin-bottom:14px}.row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #eee;padding:8px 0;font-size:13px}.row:last-child{border-bottom:0}.warn{background:#fff6df;border:1px solid #efd18a;color:#6d5100;border-radius:9px;padding:10px 12px;margin:7px 0;font-size:13px}.ok{background:#eef9f3;border:1px solid #aedcc1;color:#205b3a;border-radius:9px;padding:10px 12px;font-size:13px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.note{font-size:12px;color:#777}.badge{display:inline-block;padding:4px 9px;border-radius:15px;font-size:11px;font-weight:800}.low{background:#e8f5ee;color:#1a5c3a}.mid{background:#fff1d6;color:#835b00}.high{background:#fbe7e7;color:#7c2525}@media(max-width:800px){.grid,.metrics,.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top"><strong>Fenix BPO Financeiro — Matriz CFO v1.0</strong><small>Tela de validação antes de substituir o cálculo do gerador de propostas</small></div>
+<div class="wrap">
+<div class="card">
+<div class="section">Dados para simulação</div>
+<div class="grid">
+<div class="field"><label>Faturamento médio (R$)</label><input id="faturamento" value="150000"></div>
+<div class="field"><label>Recebimentos/mês</label><input id="recebimentos" value="50"></div>
+<div class="field"><label>Pagamentos/mês</label><input id="pagamentos" value="80"></div>
+<div class="field"><label>Notas emitidas/mês</label><input id="notas" value="20"></div>
+<div class="field"><label>Notas recebidas/mês</label><input id="notas_recebidas" value="30"></div>
+<div class="field"><label>Outros lançamentos/mês</label><input id="lancamentos" value="20"></div>
+<div class="field"><label>Bancos ativos</label><input id="bancos" value="Itaú, Sicoob"></div>
+<div class="field"><label>Cartões</label><select id="cartoes"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5+</option></select></div>
+<div class="field"><label>Contas de aplicação</label><select id="contas_aplicacao"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select></div>
+<div class="field"><label>CNPJs na operação</label><select id="cnpjs"><option selected>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select></div>
+<div class="field"><label>Filiais</label><select id="filiais"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select></div>
+<div class="field"><label>Centros de custo</label><select id="centros_custo"><option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select></div>
+<div class="field"><label>Funcionários CLT</label><select id="funcionarios"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option selected>6-10</option><option>11-20</option><option>21+</option></select></div>
+<div class="field"><label>Situação de implantação</label><select id="implantacao_situacao"><option>Organizado</option><option selected>Parcialmente organizado</option><option>Desorganizado / saneamento necessário</option></select></div>
+<div class="field"><label>Atrasados/retrabalho?</label><select id="dor_atrasados"><option selected>Não</option><option>Sim</option></select></div>
+<div class="field"><label>Custo-hora interno (R$)</label><input id="costHour" value="60"></div>
+<div class="field"><label>Margem-alvo (%)</label><input id="targetMargin" value="50"></div>
+<div class="field"><label>Desconto comercial máximo (%)</label><input id="discount" value="10"></div>
+</div>
+<p class="note">Os três últimos parâmetros são internos da Fênix e nunca devem aparecer na proposta ao cliente.</p>
+</div>
+<div id="out"></div>
+</div>
+<script>
+const ids=['faturamento','recebimentos','pagamentos','notas','notas_recebidas','lancamentos','bancos','cartoes','contas_aplicacao','cnpjs','filiais','centros_custo','funcionarios','implantacao_situacao','dor_atrasados','costHour','targetMargin','discount'];
+const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function v(id){return document.getElementById(id).value}
+function render(){
+ const form={faturamento:v('faturamento'),recebimentos:v('recebimentos'),pagamentos:v('pagamentos'),notas:v('notas'),notas_recebidas:v('notas_recebidas'),lancamentos:v('lancamentos'),bancos:v('bancos'),cartoes:v('cartoes'),contas_aplicacao:v('contas_aplicacao'),cnpjs:v('cnpjs'),filiais:v('filiais'),centros_custo:v('centros_custo'),funcionarios:v('funcionarios'),implantacao_situacao:v('implantacao_situacao'),dor_atrasados:v('dor_atrasados')};
+ const d=FenixPricing.diagnose(form,{costHour:v('costHour'),targetMargin:Number(v('targetMargin'))/100,commercialDiscountLimit:Number(v('discount'))/100});
+ const cls=d.complexity==='Baixa'?'low':d.complexity==='Média'?'mid':'high';
+ document.getElementById('out').innerHTML=`
+ <div class="card"><div class="section">Resultado CFO</div><div class="metrics">
+ <div class="metric"><span>Movimentos/mês</span><strong>${d.movements}</strong></div>
+ <div class="metric"><span>Complexidade</span><strong><em class="badge ${cls}">${d.complexity}</em></strong></div>
+ <div class="metric"><span>Preço recomendado</span><strong>${money(d.suggested)}</strong></div>
+ <div class="metric"><span>Implantação</span><strong>${money(d.implantation)}</strong></div>
+ </div></div>
+ <div class="two">
+ <div class="card"><div class="section">Formação do preço</div>
+ <div class="row"><span>Faixa de volume</span><strong>${d.tier.label}</strong></div>
+ <div class="row"><span>Base da faixa</span><strong>${money(d.tier.base)}</strong></div>
+ <div class="row"><span>Adicionais estruturais</span><strong>${money(d.extrasTotal)}</strong></div>
+ <div class="row"><span>Fator de complexidade</span><strong>${(d.complexityFactor*100).toFixed(0)}%</strong></div>
+ <div class="row"><span>Preço estrutural</span><strong>${money(d.structuralPrice)}</strong></div>
+ <div class="row"><span>Piso comercial</span><strong>${money(d.commercialFloor)}</strong></div>
+ </div>
+ <div class="card"><div class="section">Rentabilidade</div>
+ <div class="row"><span>Horas estimadas/mês</span><strong>${d.hours} h</strong></div>
+ <div class="row"><span>Custo-hora informado</span><strong>${d.costHour?money(d.costHour):'não informado'}</strong></div>
+ <div class="row"><span>Custo mensal estimado</span><strong>${d.costMonthly?money(d.costMonthly):'—'}</strong></div>
+ <div class="row"><span>Piso pela margem-alvo</span><strong>${d.marginFloor?money(d.marginFloor):'—'}</strong></div>
+ <div class="row"><span>Margem no recomendado</span><strong>${d.margin!==null?(d.margin*100).toFixed(1)+'%':'—'}</strong></div>
+ </div></div>
+ <div class="card"><div class="section">Adicionais</div>${Object.entries(d.extras).map(([k,x])=>`<div class="row"><span>${k}</span><strong>${money(x)}</strong></div>`).join('')}</div>
+ <div class="card"><div class="section">Alertas de risco</div>${d.risks.map(x=>`<div class="warn">${x}</div>`).join('')}${d.manualReview?'<div class="warn"><strong>Revisão manual obrigatória antes de aprovar preço.</strong></div>':'<div class="ok">Dentro da matriz padrão. Ainda exige aprovação CFO + Comercial.</div>'}</div>`;
+}
+ids.forEach(id=>document.getElementById(id).addEventListener('input',render));render();
+</script>
+</body>
+</html>
