@@ -50,7 +50,7 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   f.defer=true;
   document.head.appendChild(f);
   const p=document.createElement('script');
-  p.src='intake-persistence.js?v=1';
+  p.src='intake-persistence.js?v=2';
   p.defer=true;
   document.head.appendChild(p);
 }
