@@ -31,3 +31,10 @@
   }
   const api={VERSION,DEFAULTS,VOLUME_TIERS,diagnose};if(typeof module!=='undefined'&&module.exports)module.exports=api;root.FenixPricing=api;
 })(typeof window!=='undefined'?window:globalThis);
+
+if(typeof window!=='undefined'&&typeof document!=='undefined'){
+  const s=document.createElement('script');
+  s.src='ui-enhancements.js?v=1';
+  s.defer=true;
+  document.head.appendChild(s);
+}
