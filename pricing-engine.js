@@ -41,4 +41,8 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   b.src='brand-fix.js?v=1';
   b.defer=true;
   document.head.appendChild(b);
+  const h=document.createElement('script');
+  h.src='header-polish.js?v=1';
+  h.defer=true;
+  document.head.appendChild(h);
 }
