@@ -49,6 +49,7 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
       await loadScript('header-polish.js?v=5');
       await loadScript('header-singular-safe.js?v=1');
       await loadScript('intake-persistence.js?v=4');
+      await loadScript('proposal-standard.js?v=1');
     }catch(err){
       console.error('Fenix bootstrap error:',err);
     }
