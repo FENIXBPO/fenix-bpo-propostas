@@ -53,6 +53,7 @@
     document.body.classList.add('fenix-internal-mode');
     document.body.classList.remove('fenix-client-mode');
     setHeader(true);
+    window.dispatchEvent(new CustomEvent('fenix:internal-authenticated'));
   }
 
   function applyClientMode(){
