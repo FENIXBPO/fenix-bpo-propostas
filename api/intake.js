@@ -88,6 +88,8 @@ module.exports = async function handler(req, res) {
       notas_emitidas_mes: toInteger(form.notas),
       notas_recebidas_mes: toInteger(form.notas_recebidas),
       outros_lancamentos_mes: toInteger(form.lancamentos),
+      contratos_novos_mes: toInteger(form.contratos_novos),
+      comissoes_lancadas_mes: toInteger(form.comissoes_lancadas),
       bancos_ativos: String(form.bancos || '').trim() || null,
       cartoes: String(form.cartoes || '').trim() || null,
       contas_aplicacao: String(form.contas_aplicacao || '').trim() || null,
