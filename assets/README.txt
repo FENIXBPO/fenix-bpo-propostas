@@ -1,0 +1,1 @@
+Fenix BPO brand assets used by the proposal preview.
