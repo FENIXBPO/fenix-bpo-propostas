@@ -113,6 +113,15 @@
     return data;
   }
 
+  function showClientConfirmation(){
+    const scopeCard=[...document.querySelectorAll('.card')].find(c=>c.querySelector('.section')?.textContent.includes('Escopo desejado'));
+    if(!scopeCard)return;
+    let box=document.getElementById('fenix-client-confirmation');
+    if(!box){box=document.createElement('div');box.id='fenix-client-confirmation';box.className='ok';box.style.cssText='margin-top:16px;padding:16px';scopeCard.appendChild(box)}
+    box.innerHTML='<strong>Informações recebidas com sucesso.</strong><br>Nossa equipe irá analisar sua operação e preparar a proposta comercial. Entraremos em contato pelos dados informados.';
+    box.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+
   function hookAnalyze(){
     if(typeof window.analisar !== 'function' || window.__fenixAnalyzeHooked) return;
     const original = window.analisar;
@@ -124,13 +133,20 @@
 
       const button = [...document.querySelectorAll('button')].find(b => /Enviar informações para análise|Enviar para análise Fenix/i.test(b.textContent || ''));
       const oldText = button?.textContent;
-      if(button){ button.disabled = true; button.textContent = 'Salvando informações...'; }
+      if(button){ button.disabled = true; button.textContent = 'Enviando informações...'; }
       try{
         const normalized = normalizeCnpj(form.cnpj);
         if(validCnpj(normalized) && (!cnpjData || normalizeCnpj(cnpjData.cnpj) !== normalized)) await lookupCnpj();
         await persistIntake(form);
         setStatus('Dados salvos com segurança na Fênix.', 'ok');
-        original.apply(this, arguments);
+        if(window.FENIX_INTERNAL_MODE){
+          original.apply(this, arguments);
+        }else{
+          document.getElementById('diagnostico')?.classList.add('hidden');
+          document.getElementById('saida')?.classList.add('hidden');
+          document.getElementById('contratoBox')?.classList.add('hidden');
+          showClientConfirmation();
+        }
       }catch(err){
         alert(err.message || 'Não foi possível salvar os dados. Tente novamente.');
       }finally{
