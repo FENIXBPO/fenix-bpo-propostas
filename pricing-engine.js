@@ -46,7 +46,7 @@ if(typeof window!=='undefined'&&typeof document!=='undefined'){
   (async()=>{
     try{
       await loadScript('ui-enhancements.js?v=5');
-      await loadScript('ramo-multiselect-fix.js?v=1');
+      await loadScript('ramo-multiselect-fix.js?v=2');
       await loadScript('header-polish.js?v=5');
       await loadScript('header-singular-safe.js?v=1');
       await loadScript('contracts-commissions.js?v=1');
