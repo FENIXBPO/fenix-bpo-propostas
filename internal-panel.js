@@ -2,7 +2,7 @@
   function loadDashboard(){
     if(document.querySelector('script[data-fenix-internal-dashboard]')) return;
     const s=document.createElement('script');
-    s.src='internal-dashboard.js?v=2';
+    s.src='internal-dashboard.js?v=3';
     s.async=false;
     s.dataset.fenixInternalDashboard='1';
     s.onerror=()=>console.error('Falha ao carregar internal-dashboard.js');
