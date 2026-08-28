@@ -1,51 +1,55 @@
 (function(){
   const REQUESTED_INTERNAL=new URLSearchParams(location.search).get('interno')==='1';
   if(!REQUESTED_INTERNAL)return;
-
-  function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+  function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0})}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#039;'}[c]))}
   function val(id,v){const e=document.getElementById(id);if(e)e.value=v??''}
-  function checkScope(values){
-    const set=new Set(Array.isArray(values)?values:[]);
-    document.querySelectorAll('input[name=escopo]').forEach(i=>i.checked=set.has(i.value));
-  }
-  function fill(item){
-    const f=item.raw_payload?.form||{};const c=item.client||{};
-    val('cnpj',f.cnpj||c.cnpj);val('razao',f.razao||c.razao_social);val('responsavel',f.responsavel||c.responsavel);val('email',f.email||c.email);val('telefone',f.telefone||c.telefone);val('ramos',f.ramos||item.ramo);
-    val('descricao',f.descricao||item.descricao_negocio);val('dor',f.dor||item.dor);val('expectativa',f.expectativa||item.expectativa);val('faturamento',f.faturamento||item.faturamento);
-    val('recebimentos',f.recebimentos||item.recebimentos_mes);val('pagamentos',f.pagamentos||item.pagamentos_mes);val('notas',f.notas||item.notas_emitidas_mes);val('notas_recebidas',f.notas_recebidas||item.notas_recebidas_mes);val('lancamentos',f.lancamentos||item.outros_lancamentos_mes);
-    val('contratos_novos',f.contratos_novos||item.contratos_novos_mes);val('comissoes_lancadas',f.comissoes_lancadas||item.comissoes_lancadas_mes);val('bancos',f.bancos||item.bancos_ativos);val('cartoes',f.cartoes||item.cartoes);val('contas_aplicacao',f.contas_aplicacao||item.contas_aplicacao);val('cnpjs',f.cnpjs||item.cnpjs_operacao);val('filiais',f.filiais||item.filiais);val('centros_custo',f.centros_custo||item.centros_custo);val('funcionarios',f.funcionarios||item.funcionarios_clt);val('implantacao_situacao',f.implantacao_situacao||item.situacao_atual);val('dor_atrasados',f.dor_atrasados||(item.atrasados_retrabalho?'Sim':'Não'));
-    checkScope(f.escopo||item.escopo);
-    window.__fenixLoadedIntakeId=item.id;
-    document.getElementById('diagnostico')?.classList.remove('hidden');
-    if(typeof window.recalcular==='function')window.recalcular();
-    document.getElementById('diagnostico')?.scrollIntoView({behavior:'smooth'});
-  }
+  function num(id){const e=document.getElementById(id);return Number(String(e?.value||'0').replace(/[^0-9.-]/g,''))||0}
+  function checkScope(values){const set=new Set(Array.isArray(values)?values:[]);document.querySelectorAll('input[name=escopo]').forEach(i=>i.checked=set.has(i.value))}
+  function currentScope(){return [...document.querySelectorAll('input[name=escopo]:checked')].map(x=>x.value)}
+  function managerialDefault(scope){return scope.includes('Fluxo de caixa e relatório mensal')?['Fluxo de caixa previsto e realizado','Relatório mensal de apoio à decisão']:[]}
 
-  function render(items){
-    let box=document.getElementById('fenix-internal-dashboard');
-    if(!box){box=document.createElement('div');box.id='fenix-internal-dashboard';box.className='card';box.style.marginBottom='16px';document.querySelector('.wrap')?.prepend(box)}
-    const rows=(items||[]).map((item,idx)=>{
-      const c=item.client||{};const name=c.razao_social||c.nome_fantasia||'Cliente sem nome';
-      const date=item.created_at?new Date(item.created_at).toLocaleString('pt-BR'):'';
-      return `<div class="row" style="align-items:center;gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:240px"><strong>${esc(name)}</strong><br><small>${esc(c.cnpj||'')} · ${esc(date)} · ${esc(item.status||'recebido')}</small></div><div><strong>${money(item.faturamento)}</strong></div><button class="btn ghost" data-open-intake="${idx}">Abrir análise</button></div>`;
-    }).join('');
-    box.innerHTML=`<div class="section">Levantamentos recebidos</div>${rows||'<div class="ok">Nenhum levantamento recebido ainda.</div>'}`;
-    box.querySelectorAll('[data-open-intake]').forEach(btn=>btn.onclick=()=>fill(items[Number(btn.dataset.openIntake)]));
-  }
-
-  async function load(){
-    if(!window.FENIX_INTERNAL_MODE)return;
+  async function loadProposal(item){
+    let box=document.getElementById('fenix-cfo-approval');
+    if(!box){box=document.createElement('div');box.id='fenix-cfo-approval';box.className='card';document.getElementById('diagnostico')?.appendChild(box)}
+    box.innerHTML='<div class="section">Painel CFO — carregando...</div>';
     try{
-      const r=await fetch('/api/internal-intakes',{credentials:'same-origin'});const d=await r.json().catch(()=>({}));
-      if(!r.ok)throw new Error(d.error||'Falha ao carregar.');render(d.items||[]);
-    }catch(e){
-      let box=document.getElementById('fenix-internal-dashboard');
-      if(!box){box=document.createElement('div');box.id='fenix-internal-dashboard';box.className='card';document.querySelector('.wrap')?.prepend(box)}
-      box.innerHTML=`<div class="section">Levantamentos recebidos</div><div class="err">${esc(e.message||'Não foi possível carregar os levantamentos.')}</div>`;
-    }
+      const r=await fetch(`/api/internal-proposal?intake_id=${encodeURIComponent(item.id)}`,{credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Falha ao carregar proposta.');
+      const p=d.proposal||{};const t=p.commercial_terms||{};const a=p.cfo_analysis||{};const s=p.approved_scope||{};const cnpjCount=Number(String(item.cnpjs_operacao||item.raw_payload?.form?.cnpjs||'1').replace(/\D/g,''))||1;
+      const suggestedFinal=Number(document.getElementById('mensalidade')?.value||0)||0;const suggestedImpl=Number(document.getElementById('implantacao')?.value||0)||0;
+      const operational=(s.operational?.length?s.operational:currentScope());const managerial=(s.managerial?.length?s.managerial:managerialDefault(currentScope()));
+      box.innerHTML=`<div class="section">Painel CFO — condição comercial aprovada</div>
+      <div class="metrics"><div class="metric"><span>Status</span><strong>${esc(p.status||'rascunho')}</strong></div><div class="metric"><span>Versão</span><strong>v${esc(p.version||1)}</strong></div><div class="metric"><span>CNPJs</span><strong>${cnpjCount}</strong></div><div class="metric"><span>Cliente</span><strong style="font-size:14px">${esc(item.client?.razao_social||'')}</strong></div></div>
+      <div class="grid" style="margin-top:16px">
+        <div class="field"><label>Pacote base (R$)</label><input id="cfoBase" value="${t.base_monthly??suggestedFinal}"></div>
+        <div class="field"><label>Desconto (R$)</label><input id="cfoDiscount" value="${t.discount??0}"></div>
+        <div class="field"><label>Mensalidade final (R$)</label><input id="cfoFinal" value="${t.final_monthly??suggestedFinal}"></div>
+        <div class="field"><label>Implantação (R$)</label><input id="cfoImpl" value="${t.implementation??suggestedImpl}"></div>
+        <div class="field"><label>Software</label><input id="cfoSoftwareName" value="${esc(t.software_name||'Conta Azul')}"></div>
+        <div class="field"><label>Software por CNPJ (R$)</label><input id="cfoSoftwareEach" value="${t.software_per_cnpj??0}"></div>
+        <div class="field"><label>Total software/mês (R$)</label><input id="cfoSoftwareTotal" value="${t.software_total??0}"></div>
+        <div class="field"><label>Limite por CNPJ</label><input id="cfoLimitEach" value="${t.launch_limit_per_cnpj??250}"></div>
+        <div class="field"><label>Limite do grupo</label><input id="cfoLimitGroup" value="${t.launch_limit_group??(250*cnpjCount)}"></div>
+        <div class="field"><label>Contas bancárias incluídas</label><input id="cfoBanks" value="${t.bank_accounts_included??2}"></div>
+        <div class="field"><label>Banco adicional (R$/mês)</label><input id="cfoBankExtra" value="${t.additional_bank_account??150}"></div>
+        <div class="field"><label>Motivo do desconto</label><input id="cfoDiscountReason" value="${esc(t.discount_reason||'')}"></div>
+      </div>
+      <div class="two" style="margin-top:16px"><div class="field"><label>Escopo operacional aprovado — 1 item por linha</label><textarea id="cfoOperational">${esc(operational.join('\n'))}</textarea></div><div class="field"><label>Escopo gerencial aprovado — 1 item por linha</label><textarea id="cfoManagerial">${esc(managerial.join('\n'))}</textarea></div></div>
+      <div class="two"><div class="field"><label>Complexidade</label><select id="cfoComplexity"><option ${a.complexity==='baixa'?'selected':''}>baixa</option><option ${!a.complexity||a.complexity==='media'?'selected':''}>media</option><option ${a.complexity==='alta'?'selected':''}>alta</option></select></div><div class="field"><label>Observações CFO</label><textarea id="cfoApprovalObs">${esc(a.notes||'')}</textarea></div></div>
+      <div id="cfoCalc" class="internal" style="margin-top:14px"></div><div id="cfoSaveStatus"></div>
+      <div class="actions" style="margin-top:14px"><button class="btn ghost" id="cfoSaveBtn">Salvar rascunho</button><button class="btn green" id="cfoApproveBtn">Aprovar proposta</button></div>`;
+      const recalc=()=>{const base=num('cfoBase'),discount=num('cfoDiscount');if(document.activeElement?.id!=='cfoFinal')document.getElementById('cfoFinal').value=Math.max(0,base-discount);const final=num('cfoFinal'),each=num('cfoSoftwareEach');if(document.activeElement?.id!=='cfoSoftwareTotal')document.getElementById('cfoSoftwareTotal').value=each*cnpjCount;document.getElementById('cfoCalc').innerHTML=`Mensalidade final: <strong>${money(final)}</strong> · Por CNPJ: <strong>${money(final/cnpjCount)}</strong> · Software total: <strong>${money(num('cfoSoftwareTotal'))}</strong>`};
+      ['cfoBase','cfoDiscount','cfoFinal','cfoSoftwareEach','cfoSoftwareTotal'].forEach(id=>document.getElementById(id)?.addEventListener('input',recalc));recalc();
+      async function save(action){const st=document.getElementById('cfoSaveStatus');st.className='warn';st.textContent=action==='approve'?'Aprovando proposta...':'Salvando rascunho...';const final=num('cfoFinal');if(action==='approve'&&final<=0){st.className='err';st.textContent='Informe uma mensalidade final válida.';return}
+        const body={intake_id:item.id,action,cfo_analysis:{complexity:document.getElementById('cfoComplexity').value,notes:document.getElementById('cfoApprovalObs').value},commercial_terms:{base_monthly:num('cfoBase'),discount:num('cfoDiscount'),final_monthly:final,cnpjs:cnpjCount,per_cnpj:Math.round(final/cnpjCount),implementation:num('cfoImpl'),software_name:document.getElementById('cfoSoftwareName').value,software_per_cnpj:num('cfoSoftwareEach'),software_total:num('cfoSoftwareTotal'),software_prepaid:true,launch_limit_per_cnpj:num('cfoLimitEach'),launch_limit_group:num('cfoLimitGroup'),bank_accounts_included:num('cfoBanks'),additional_bank_account:num('cfoBankExtra'),discount_reason:document.getElementById('cfoDiscountReason').value},approved_scope:{operational:document.getElementById('cfoOperational').value.split('\n').map(x=>x.trim()).filter(Boolean),managerial:document.getElementById('cfoManagerial').value.split('\n').map(x=>x.trim()).filter(Boolean)},assumptions:{legal_positioning:'apoio administrativo-financeiro/BPO',extra_work_requires_prior_authorization:true,commercial_review_on_scope_or_volume_change:true}};
+        try{const r=await fetch('/api/internal-proposal',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Falha ao salvar.');st.className='ok';st.textContent=action==='approve'?`Proposta v${d.proposal?.version||1} aprovada pelo CFO.`:'Rascunho salvo.';if(action==='approve')document.getElementById('cfoApproveBtn').textContent='Aprovada ✓';}
+        catch(e){st.className='err';st.textContent=e.message}}
+      document.getElementById('cfoSaveBtn').onclick=()=>save('save');document.getElementById('cfoApproveBtn').onclick=()=>save('approve');
+    }catch(e){box.innerHTML=`<div class="section">Painel CFO</div><div class="err">${esc(e.message)}</div>`}
   }
 
-  window.addEventListener('fenix:internal-authenticated',load);
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(load,150));else setTimeout(load,150);
+  function fill(item){const f=item.raw_payload?.form||{};const c=item.client||{};val('cnpj',f.cnpj||c.cnpj);val('razao',f.razao||c.razao_social);val('responsavel',f.responsavel||c.responsavel);val('email',f.email||c.email);val('telefone',f.telefone||c.telefone);val('ramos',f.ramos||item.ramo);val('descricao',f.descricao||item.descricao_negocio);val('dor',f.dor||item.dor);val('expectativa',f.expectativa||item.expectativa);val('faturamento',f.faturamento||item.faturamento);val('recebimentos',f.recebimentos||item.recebimentos_mes);val('pagamentos',f.pagamentos||item.pagamentos_mes);val('notas',f.notas||item.notas_emitidas_mes);val('notas_recebidas',f.notas_recebidas||item.notas_recebidas_mes);val('lancamentos',f.lancamentos||item.outros_lancamentos_mes);val('contratos_novos',f.contratos_novos||item.contratos_novos_mes);val('comissoes_lancadas',f.comissoes_lancadas||item.comissoes_lancadas_mes);val('bancos',f.bancos||item.bancos_ativos);val('cartoes',f.cartoes||item.cartoes);val('contas_aplicacao',f.contas_aplicacao||item.contas_aplicacao);val('cnpjs',f.cnpjs||item.cnpjs_operacao);val('filiais',f.filiais||item.filiais);val('centros_custo',f.centros_custo||item.centros_custo);val('funcionarios',f.funcionarios||item.funcionarios_clt);val('implantacao_situacao',f.implantacao_situacao||item.situacao_atual);val('dor_atrasados',f.dor_atrasados||(item.atrasados_retrabalho?'Sim':'Não'));checkScope(f.escopo||item.escopo);window.__fenixLoadedIntakeId=item.id;document.getElementById('diagnostico')?.classList.remove('hidden');if(typeof window.recalcular==='function')window.recalcular();loadProposal(item);document.getElementById('diagnostico')?.scrollIntoView({behavior:'smooth'})}
+  function render(items){let box=document.getElementById('fenix-internal-dashboard');if(!box){box=document.createElement('div');box.id='fenix-internal-dashboard';box.className='card';box.style.marginBottom='16px';document.querySelector('.wrap')?.prepend(box)}const rows=(items||[]).map((item,idx)=>{const c=item.client||{},name=c.razao_social||c.nome_fantasia||'Cliente sem nome',date=item.created_at?new Date(item.created_at).toLocaleString('pt-BR'):'';return `<div class="row" style="align-items:center;gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:240px"><strong>${esc(name)}</strong><br><small>${esc(c.cnpj||'')} · ${esc(date)} · ${esc(item.status||'recebido')}</small></div><div><strong>${money(item.faturamento)}</strong></div><button class="btn ghost" data-open-intake="${idx}">Abrir análise CFO</button></div>`}).join('');box.innerHTML=`<div class="section">Levantamentos recebidos</div>${rows||'<div class="ok">Nenhum levantamento recebido ainda.</div>'}`;box.querySelectorAll('[data-open-intake]').forEach(btn=>btn.onclick=()=>fill(items[Number(btn.dataset.openIntake)]))}
+  async function load(){if(!window.FENIX_INTERNAL_MODE)return;try{const r=await fetch('/api/internal-intakes',{credentials:'same-origin'}),d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Falha ao carregar.');render(d.items||[])}catch(e){let box=document.getElementById('fenix-internal-dashboard');if(!box){box=document.createElement('div');box.id='fenix-internal-dashboard';box.className='card';document.querySelector('.wrap')?.prepend(box)}box.innerHTML=`<div class="section">Levantamentos recebidos</div><div class="err">${esc(e.message||'Não foi possível carregar os levantamentos.')}</div>`}}
+  window.addEventListener('fenix:internal-authenticated',load);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(load,150));else setTimeout(load,150);
 })();
