@@ -1,13 +1,17 @@
 (function(){
-  function loadDashboard(){
-    if(document.querySelector('script[data-fenix-internal-dashboard]')) return;
+  function loadScript(src,attr){
+    if(document.querySelector(`script[${attr}]`)) return;
     const s=document.createElement('script');
-    s.src='internal-dashboard.js?v=3';
+    s.src=src;
     s.async=false;
-    s.dataset.fenixInternalDashboard='1';
-    s.onerror=()=>console.error('Falha ao carregar internal-dashboard.js');
+    s.setAttribute(attr,'1');
+    s.onerror=()=>console.error(`Falha ao carregar ${src}`);
     document.head.appendChild(s);
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',loadDashboard,{once:true});
-  else loadDashboard();
+  function loadInternal(){
+    loadScript('internal-dashboard.js?v=4','data-fenix-internal-dashboard');
+    loadScript('cfo-separation.js?v=1','data-fenix-cfo-separation');
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',loadInternal,{once:true});
+  else loadInternal();
 })();
