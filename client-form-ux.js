@@ -31,11 +31,30 @@
     'Acompanhamento de parcelas contratuais':['Acompanhamento de parcelas contratuais','Controle administrativo das parcelas previstas, recebidas e pendentes.']
   };
 
+  function ensureAlignmentStyles(){
+    if(document.getElementById('fenix-form-alignment'))return;
+    const style=document.createElement('style');
+    style.id='fenix-form-alignment';
+    style.textContent=`
+      .card .grid{align-items:start}
+      .card .grid>.field{display:flex;flex-direction:column;min-width:0;height:100%}
+      .card .grid>.field>label{display:flex;align-items:flex-end;min-height:34px;margin-bottom:6px;line-height:1.25}
+      .card .grid>.field>input,
+      .card .grid>.field>select{height:44px;min-height:44px}
+      .card .grid>.field>[data-fenix-helper]{display:block;min-height:31px;margin-top:6px!important}
+      @media(max-width:800px){
+        .card .grid>.field>label{min-height:auto}
+        .card .grid>.field>[data-fenix-helper]{min-height:auto}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function helperFor(field,id){
     if(!field||field.querySelector('[data-fenix-helper="'+id+'"]'))return;
     const text=HELPERS[id];if(!text)return;
     const small=document.createElement('div');small.dataset.fenixHelper=id;small.textContent=text;
-    small.style.cssText='font-size:11px;line-height:1.35;color:#77736b;margin-top:5px';
+    small.style.cssText='font-size:11px;line-height:1.35;color:#77736b;margin-top:6px';
     field.appendChild(small);
   }
 
@@ -76,7 +95,7 @@
     }
   }
 
-  function init(){improveFields();improveScope()}
+  function init(){ensureAlignmentStyles();improveFields();improveScope()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   [300,900,1800].forEach(ms=>setTimeout(init,ms));
 })();
