@@ -11,6 +11,7 @@
   function loadInternal(){
     loadScript('internal-dashboard.js?v=4','data-fenix-internal-dashboard');
     loadScript('cfo-separation.js?v=1','data-fenix-cfo-separation');
+    loadScript('cfo-publish.js?v=1','data-fenix-cfo-publish');
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',loadInternal,{once:true});
   else loadInternal();
