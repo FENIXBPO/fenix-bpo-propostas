@@ -5,6 +5,41 @@
   function text(el){return String(el?.textContent||'').trim()}
   let scheduled=false;
 
+  function hideFieldById(id){
+    const el=document.getElementById(id);if(!el)return;
+    const field=el.closest('.field')||el.closest('label');
+    if(field)field.style.display='none';
+  }
+
+  function simplifyLegacyValidation(){
+    const costHour=document.getElementById('costHour');
+    const financialCard=costHour?.closest('.card');
+    if(financialCard&&!financialCard.dataset.fenixMatrixSimplified){
+      financialCard.dataset.fenixMatrixSimplified='1';
+      const sec=financialCard.querySelector('.section');
+      if(sec)sec.innerHTML='PARÂMETROS INTERNOS DA MATRIZ <span style="font-size:10px;color:#9a6b00;letter-spacing:.05em">• REFERÊNCIA • NÃO PUBLICA</span>';
+      hideFieldById('cfoStatus');
+      hideFieldById('cfoObs');
+      const exception=document.getElementById('excecao')?.closest('label');
+      if(exception)exception.style.display='none';
+      if(!financialCard.querySelector('[data-fenix-matrix-note]')){
+        const note=document.createElement('div');
+        note.dataset.fenixMatrixNote='1';
+        note.className='internal';
+        note.style.marginTop='12px';
+        note.innerHTML='<strong>Uso interno:</strong> estes parâmetros ajustam somente a sugestão automática. A condição comercial que vale para proposta e contrato é definida exclusivamente no Painel CFO abaixo.';
+        financialCard.appendChild(note);
+      }
+    }
+
+    const commercial=document.getElementById('comercialStatus');
+    const commercialCard=commercial?.closest('.card');
+    if(commercialCard&&!commercialCard.dataset.fenixCommercialHidden){
+      commercialCard.dataset.fenixCommercialHidden='1';
+      commercialCard.style.display='none';
+    }
+  }
+
   function patchSuggestion(){
     document.querySelectorAll('.section').forEach(el=>{
       const t=text(el).toUpperCase();
@@ -18,8 +53,9 @@
       const t=text(el);
       if(t==='Mensalidade aprovada'&&!el.dataset.fenixSuggestionLabel){el.dataset.fenixSuggestionLabel='1';el.textContent='Mensalidade sugerida pela matriz'}
       if(t==='Implantação aprovada'&&!el.dataset.fenixSuggestionLabel){el.dataset.fenixSuggestionLabel='1';el.textContent='Implantação sugerida pela matriz'}
-      if(t==='Parecer CFO'&&!el.dataset.fenixSuggestionLabel){el.dataset.fenixSuggestionLabel='1';el.textContent='Parecer sobre a sugestão automática'}
     });
+
+    simplifyLegacyValidation();
 
     const oldBtn=document.getElementById('gerarPropostaBtn');
     if(oldBtn&&!oldBtn.dataset.fenixSuggestionDisabled){
