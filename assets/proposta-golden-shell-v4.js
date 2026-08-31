@@ -8,7 +8,10 @@
       host.innerHTML='<div class="miniBrand"><span>FÊNIX</span><small>INTELLIGENT BPO</small></div>';
       host.setAttribute('aria-label','FÊNIX Intelligent BPO');
     });
+    document.querySelectorAll('.footer b').forEach(el=>{el.textContent='INTELIGÊNCIA QUE TRANSFORMA. RESULTADOS QUE PERMANECEM.'});
     document.querySelectorAll('.page .wing').forEach(host=>host.setAttribute('aria-hidden','true'));
+    const gov=document.querySelector('.governance');
+    if(gov)gov.textContent='Seu aceite será registrado e encaminhado para validação interna da FÊNIX antes da geração do contrato.';
   }
   function normalizeEmptyManagerialScope(){
     const list=document.getElementById('managerialScope');
