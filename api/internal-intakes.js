@@ -21,14 +21,22 @@ module.exports=async function handler(req,res){
   if(!authorized(req))return res.status(401).json({error:'Acesso não autorizado.'});
   try{
     const intakes=await sb('bpo_intakes?select=id,client_id,created_at,status,ramo,faturamento,recebimentos_mes,pagamentos_mes,notas_emitidas_mes,notas_recebidas_mes,outros_lancamentos_mes,contratos_novos_mes,comissoes_lancadas_mes,bancos_ativos,cartoes,contas_aplicacao,cnpjs_operacao,filiais,centros_custo,funcionarios_clt,situacao_atual,atrasados_retrabalho,escopo,descricao_negocio,dor,expectativa,raw_payload&order=created_at.desc&limit=100');
-    const ids=[...new Set((intakes||[]).map(x=>x.client_id).filter(Boolean))];
+    const clientIds=[...new Set((intakes||[]).map(x=>x.client_id).filter(Boolean))];
     let clients=[];
-    if(ids.length){
-      const filter=encodeURIComponent(`(${ids.join(',')})`);
+    if(clientIds.length){
+      const filter=encodeURIComponent(`(${clientIds.join(',')})`);
       clients=await sb(`bpo_clients?select=id,cnpj,razao_social,nome_fantasia,responsavel,email,telefone&id=in.${filter}`);
     }
+    const intakeIds=(intakes||[]).map(x=>x.id).filter(Boolean);
+    let proposals=[];
+    if(intakeIds.length){
+      const filter=encodeURIComponent(`(${intakeIds.join(',')})`);
+      proposals=await sb(`bpo_proposals?select=id,intake_id,version,status,commercial_terms,public_url,public_slug,updated_at,approved_at,published_at&intake_id=in.${filter}&order=version.desc`);
+    }
+    const latestProposal={};
+    for(const p of proposals||[]){if(!latestProposal[p.intake_id])latestProposal[p.intake_id]=p}
     const byId=Object.fromEntries((clients||[]).map(c=>[c.id,c]));
-    return res.status(200).json({items:(intakes||[]).map(i=>({...i,client:byId[i.client_id]||null}))});
+    return res.status(200).json({items:(intakes||[]).map(i=>({...i,client:byId[i.client_id]||null,proposal:latestProposal[i.id]||null}))});
   }catch(err){
     console.error('Internal intakes error:',err);
     return res.status(500).json({error:'Não foi possível carregar os levantamentos.'});
