@@ -1,58 +1,55 @@
 @import url('/assets/proposta-fenix-golden-v3.css?v=20260831-3');
 
-/* FÊNIX GOLDEN REFERENCE V4 — correção cirúrgica de marca e moldura */
+/* FÊNIX GOLDEN REFERENCE V5 — marca visível, asa presente e moldura equilibrada */
 .logo:before,.wing:before,.footer .miniLogo:before{content:none!important;display:none!important}
-.logo{left:54px!important;top:30px!important;width:465px!important;height:132px!important;display:block!important;overflow:visible!important;z-index:20!important}
+.logo{left:54px!important;top:30px!important;width:360px!important;height:92px!important;display:block!important;overflow:visible!important;z-index:20!important}
 .logoImg{display:block;width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(0 8px 22px rgba(0,0,0,.58))}
-.footer .miniLogo{display:block!important;width:170px!important;height:42px!important;overflow:visible!important}
+.footer .miniLogo{display:block!important;width:150px!important;height:34px!important;overflow:visible!important}
 .miniLogoImg{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}
 
-/* Asa parcial: a arte existe, mas só as penas à direita entram na composição */
-.wing{right:-6%!important;top:3%!important;width:37%!important;height:82%!important;opacity:.14!important;filter:grayscale(1) brightness(.34) contrast(1.32)!important;clip-path:polygon(28% 0,100% 0,100% 100%,0 100%,34% 54%)!important;overflow:hidden!important;z-index:1!important}
-.wingImg{position:absolute;display:block;width:128%;height:auto;max-width:none;right:-34%;top:-3%;transform:scale(1.72);transform-origin:top right;opacity:1}
+/* Asa/Fênix: presença visual clara sem competir com o conteúdo */
+.wing{right:-2%!important;top:7%!important;width:34%!important;height:72%!important;opacity:.19!important;filter:grayscale(1) brightness(.62) contrast(1.18)!important;clip-path:polygon(20% 0,100% 0,100% 100%,0 100%,28% 52%)!important;overflow:hidden!important;z-index:1!important}
+.wingImg{position:absolute;display:block;width:112%;height:auto;max-width:none;right:-10%;top:0;transform:scale(1.22);transform-origin:top right;opacity:1}
 
-/* Moldura direita: duas diagonais independentes, mais próximas do Golden Reference */
+/* Moldura direita: linhas independentes e sem interferir na numeração */
 .diagTop,.diagBottom{height:2px!important;right:-56px!important;pointer-events:none!important;z-index:4!important;background:linear-gradient(90deg,transparent 0%,rgba(164,103,8,.15) 4%,#bd7d12 24%,#ffe097 60%,#d3921c 82%,rgba(147,91,8,.30) 100%)!important;box-shadow:0 0 3px rgba(255,226,154,.96),0 0 8px rgba(235,165,38,.50),0 0 18px rgba(204,133,20,.20)!important;transform-origin:right center!important}
-.diagTop{top:177px!important;width:520px!important;transform:rotate(35deg)!important}
-.diagBottom{top:auto!important;bottom:128px!important;width:440px!important;transform:rotate(-46deg)!important}
-.diagTop:after,.diagBottom:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#ffe59e;box-shadow:0 0 7px #ffd778,0 0 16px rgba(232,164,37,.70);opacity:.9}
+.diagTop{top:160px!important;width:470px!important;transform:rotate(35deg)!important}
+.diagBottom{top:auto!important;bottom:118px!important;width:400px!important;transform:rotate(-46deg)!important}
+.diagTop:after,.diagBottom:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:#ffe59e;box-shadow:0 0 7px #ffd778,0 0 16px rgba(232,164,37,.70);opacity:.85}
 .diagTop:after{left:57%;top:-2px}.diagBottom:after{left:52%;top:-2px}
 
-/* Metal inferior menor, escuro e texturizado */
-.goldCorner{right:-1%!important;bottom:-4%!important;width:21%!important;height:16%!important;background:radial-gradient(circle at 58% 25%,rgba(255,222,125,.16),transparent 21%),linear-gradient(145deg,#302006 0%,#684506 38%,#a96f10 68%,#4a3005 100%)!important;border-top:1px solid rgba(225,172,63,.72)!important;box-shadow:inset 0 0 34px rgba(255,218,112,.10),0 0 14px rgba(178,114,12,.09)!important}
+.goldCorner{right:-1%!important;bottom:-4%!important;width:20%!important;height:15%!important;background:radial-gradient(circle at 58% 25%,rgba(255,222,125,.16),transparent 21%),linear-gradient(145deg,#302006 0%,#684506 38%,#a96f10 68%,#4a3005 100%)!important;border-top:1px solid rgba(225,172,63,.72)!important;box-shadow:inset 0 0 34px rgba(255,218,112,.10),0 0 14px rgba(178,114,12,.09)!important}
 
-/* Capa: respiro equivalente ao material aprovado */
-.hero{padding-top:165px!important}
+.hero{padding-top:145px!important}
 .safe{max-width:1100px!important}
 .heroTitle{max-width:1080px!important;line-height:.91!important}
 .eyebrow{font-size:16px!important;letter-spacing:.32em!important}
 .infoBar{max-width:1060px!important;margin-top:28px!important}
 
-/* Rodapé: marca real + frase legível sem competir com o canto dourado */
-.footer{left:54px!important;right:54px!important;bottom:17px!important;min-height:53px!important;padding-top:9px!important;justify-content:flex-start!important;gap:48px!important}
+.footer{left:54px!important;right:54px!important;bottom:17px!important;min-height:47px!important;padding-top:9px!important;justify-content:flex-start!important;gap:40px!important}
 .footer b{font-size:10px!important;color:#d6a136!important;letter-spacing:.21em!important;text-shadow:none!important}
 
-/* Controles web não fazem parte da arte */
 .printBtn{top:13px!important;right:13px!important;padding:8px 13px!important;font-size:11px!important;opacity:.82}
 .printBtn:hover{opacity:1}
-
-/* Longos nomes empresariais: no máximo duas linhas, com respiro */
+.pageNo{right:40px!important;top:68px!important;z-index:12!important;font-size:20px!important}
 .heroTitle[data-long-name="1"]{letter-spacing:-.006em!important}
 
 @media(max-width:1100px){
- .logo{left:20px!important;top:18px!important;width:300px!important;height:96px!important}
- .wing{right:-18%!important;width:50%!important;opacity:.09!important}
- .wingImg{transform:scale(1.55)}
- .diagTop{right:-155px!important;top:170px!important;width:500px!important}
- .diagBottom{right:-145px!important;bottom:115px!important;width:410px!important}
- .hero{padding-top:135px!important}
+ .logo{left:20px!important;top:18px!important;width:270px!important;height:78px!important}
+ .wing{right:-12%!important;width:48%!important;opacity:.12!important}
+ .wingImg{transform:scale(1.15)}
+ .diagTop{right:-155px!important;top:145px!important;width:470px!important}
+ .diagBottom{right:-145px!important;bottom:105px!important;width:380px!important}
+ .hero{padding-top:120px!important}
+ .pageNo{right:20px!important;top:66px!important}
 }
 @media(max-width:650px){
- .logo{width:240px!important;height:80px!important}
- .wing{right:-38%!important;width:72%!important;opacity:.065!important}
- .diagTop{right:-240px!important;top:150px!important}
- .diagBottom{right:-225px!important;bottom:105px!important}
- .goldCorner{width:38%!important;height:13%!important}
+ .logo{width:225px!important;height:68px!important}
+ .wing{right:-28%!important;width:65%!important;opacity:.09!important}
+ .diagTop{right:-240px!important;top:132px!important}
+ .diagBottom{right:-225px!important;bottom:95px!important}
+ .goldCorner{width:36%!important;height:12%!important}
+ .pageNo{top:60px!important}
 }
 @media print{
  .printBtn{display:none!important}
