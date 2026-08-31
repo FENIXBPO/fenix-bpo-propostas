@@ -1,4 +1,6 @@
 (function(){
+  const LOGO='/assets/fenix-logo-header-crop.webp?v=golden-v5';
+  const WING='/assets/fenix-symbol.png?v=golden-v5';
   function img(src, cls, alt){
     const el=document.createElement('img');
     el.src=src;
@@ -10,17 +12,14 @@
   }
   function mount(){
     document.querySelectorAll('.page .logo').forEach(host=>{
-      if(host.querySelector('img'))return;
-      host.replaceChildren(img('/assets/fenix-logo-transparent.webp?v=golden-v4','logoImg','FÊNIX Intelligent BPO'));
+      host.replaceChildren(img(LOGO,'logoImg','FÊNIX Intelligent BPO'));
     });
     document.querySelectorAll('.page .wing').forEach(host=>{
-      if(host.querySelector('img'))return;
-      host.replaceChildren(img('/assets/fenix-symbol.png?v=golden-v4','wingImg',''));
+      host.replaceChildren(img(WING,'wingImg',''));
       host.setAttribute('aria-hidden','true');
     });
     document.querySelectorAll('.footer .miniLogo').forEach(host=>{
-      if(host.querySelector('img'))return;
-      host.replaceChildren(img('/assets/fenix-logo-transparent.webp?v=golden-v4','miniLogoImg','FÊNIX Intelligent BPO'));
+      host.replaceChildren(img(LOGO,'miniLogoImg','FÊNIX Intelligent BPO'));
     });
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});
