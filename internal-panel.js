@@ -12,6 +12,7 @@
     loadScript('internal-shell.js?v=1','data-fenix-internal-shell');
     loadScript('internal-dashboard.js?v=5','data-fenix-internal-dashboard');
     loadScript('dashboard-enhance.js?v=3','data-fenix-dashboard-enhance');
+    loadScript('dashboard-proposal-link-v2.js?v=1','data-fenix-dashboard-link-v2');
     loadScript('cfo-separation.js?v=1','data-fenix-cfo-separation');
     loadScript('cfo-publish.js?v=1','data-fenix-cfo-publish');
     loadScript('contract-approval.js?v=2','data-fenix-contract-approval');
