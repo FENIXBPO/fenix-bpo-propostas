@@ -13,7 +13,8 @@
     lancamentos:'Outros lançamentos financeiros por mês',
     contratos_novos:'Quantos novos contratos precisam ser cadastrados por mês?',
     comissoes_lancadas:'Quantas comissões precisam ser lançadas por mês?',
-    dor_atrasados:'Existem lançamentos atrasados ou retrabalho para organizar?'
+    dor_atrasados:'Existem lançamentos atrasados ou retrabalho para organizar?',
+    cnpjs:'Empresas/CNPJs atendidos'
   };
   const SCOPE={
     'Conciliação bancária diária':['Conciliação bancária diária','Conferência das movimentações bancárias e identificação de divergências.'],
@@ -25,10 +26,12 @@
     'Entrada de notas de compra':['Entrada de notas de compra','Organização e lançamento das notas de compra recebidas.'],
     'Emissão de NFS-e':['Emissão de NFS-e','Emissão de notas fiscais de serviço conforme informações fornecidas pelo cliente.'],
     'Interface com contabilidade':['Envio de documentos à contabilidade','Organização e envio das informações necessárias para a contabilidade.'],
-    'Fluxo de caixa e relatório mensal':['Fluxo de caixa e relatório mensal','Organização das informações para acompanhamento e apoio à decisão.'],
+    'Relatório de fluxo de caixa realizado':['Relatório de fluxo de caixa realizado','Consolidação das entradas e saídas efetivamente ocorridas no período para acompanhamento do caixa.'],
+    'Relatório de fluxo de caixa projetado':['Relatório de fluxo de caixa projetado','Projeção de entradas, saídas e compromissos futuros com base nas informações disponíveis.'],
     'Contratos a receber':['Cadastro de contratos e parcelas a receber','Registro dos contratos e das parcelas previstas para recebimento.'],
     'Comissões a pagar':['Lançamento de comissões a pagar','Registro de comissões de vendedores, corretores ou parceiros conforme orientação do cliente.'],
-    'Acompanhamento de parcelas contratuais':['Acompanhamento de parcelas contratuais','Controle administrativo das parcelas previstas, recebidas e pendentes.']
+    'Acompanhamento de parcelas contratuais':['Acompanhamento de parcelas contratuais','Controle administrativo das parcelas previstas, recebidas e pendentes.'],
+    'Outros':['Outros serviços necessários','Descreva abaixo alguma necessidade que não apareceu nas opções acima.']
   };
 
   function ensureAlignmentStyles(){
@@ -39,13 +42,12 @@
       .card .grid{align-items:start}
       .card .grid>.field{display:flex;flex-direction:column;min-width:0;height:100%}
       .card .grid>.field>label{display:flex;align-items:flex-end;min-height:34px;margin-bottom:6px;line-height:1.25}
-      .card .grid>.field>input,
-      .card .grid>.field>select{height:44px;min-height:44px}
+      .card .grid>.field>input,.card .grid>.field>select{height:44px;min-height:44px}
       .card .grid>.field>[data-fenix-helper]{display:block;min-height:31px;margin-top:6px!important}
-      @media(max-width:800px){
-        .card .grid>.field>label{min-height:auto}
-        .card .grid>.field>[data-fenix-helper]{min-height:auto}
-      }
+      #fenix-scope-other-wrap{grid-column:1/-1;display:none;margin-top:2px}
+      #fenix-scope-other-wrap label{display:block;font-size:12px;font-weight:700;color:#666;margin-bottom:6px}
+      #fenix-scope-other{width:100%;min-height:82px;padding:11px 12px;border:1px solid #ddd8ce;border-radius:9px;font:inherit;resize:vertical;background:#fff}
+      @media(max-width:800px){.card .grid>.field>label{min-height:auto}.card .grid>.field>[data-fenix-helper]{min-height:auto}}
     `;
     document.head.appendChild(style);
   }
@@ -66,36 +68,67 @@
       helperFor(field,id);
       if(el.tagName==='INPUT'&&!el.placeholder)el.placeholder='0';
     });
+    const filiais=document.getElementById('filiais');
+    const field=filiais?.closest('.field');
+    if(field){field.style.display='none';filiais.value='0';}
+  }
+
+  function makeScopeLabel(value){
+    const label=document.createElement('label');label.className='check';label.dataset.fenixDynamicScope='1';
+    const input=document.createElement('input');input.type='checkbox';input.name='escopo';input.value=value;
+    label.appendChild(input);return label;
+  }
+
+  function ensureScopeOptions(grid){
+    const old=[...grid.querySelectorAll('input[name="escopo"]')].find(i=>i.value==='Fluxo de caixa e relatório mensal');
+    if(old)old.value='Relatório de fluxo de caixa realizado';
+    if(!grid.querySelector('input[value="Relatório de fluxo de caixa projetado"]'))grid.appendChild(makeScopeLabel('Relatório de fluxo de caixa projetado'));
+    if(!grid.querySelector('input[value="Outros"]'))grid.appendChild(makeScopeLabel('Outros'));
+    let wrap=document.getElementById('fenix-scope-other-wrap');
+    if(!wrap){
+      wrap=document.createElement('div');wrap.id='fenix-scope-other-wrap';
+      wrap.innerHTML='<label for="fenix-scope-other">Conte um pouco mais sobre essa necessidade</label><textarea id="fenix-scope-other" placeholder="Ex.: controle específico, relatório, rotina administrativa ou outra demanda que você gostaria que a Fênix avaliasse."></textarea>';
+      grid.appendChild(wrap);
+    }
+    const other=grid.querySelector('input[value="Outros"]');
+    if(other&&!other.dataset.fenixOtherHook){other.dataset.fenixOtherHook='1';other.addEventListener('change',()=>{wrap.style.display=other.checked?'block':'none';if(other.checked)setTimeout(()=>document.getElementById('fenix-scope-other')?.focus(),0)});}
   }
 
   function improveScope(){
     const card=[...document.querySelectorAll('.card')].find(c=>c.querySelector('.section')?.textContent.includes('Escopo desejado'));
     if(!card)return;
     let intro=card.querySelector('[data-scope-intro]');
-    if(!intro){
-      intro=document.createElement('div');intro.dataset.scopeIntro='1';
-      intro.textContent='Selecione as atividades em que sua empresa precisa de apoio. Você pode marcar mais de uma opção.';
-      intro.style.cssText='font-size:13px;color:#66625b;margin:-3px 0 14px;line-height:1.45';
-      card.querySelector('.section')?.insertAdjacentElement('afterend',intro);
-    }
+    if(!intro){intro=document.createElement('div');intro.dataset.scopeIntro='1';intro.textContent='Selecione as atividades em que sua empresa precisa de apoio. Você pode marcar mais de uma opção e incluir uma necessidade que não esteja listada.';intro.style.cssText='font-size:13px;color:#66625b;margin:-3px 0 14px;line-height:1.45';card.querySelector('.section')?.insertAdjacentElement('afterend',intro)}
     const grid=card.querySelector('.grid');if(!grid)return;
-    grid.style.gridTemplateColumns='repeat(2,minmax(0,1fr))';
-    grid.style.gap='10px';
+    grid.style.gridTemplateColumns='repeat(2,minmax(0,1fr))';grid.style.gap='10px';
+    ensureScopeOptions(grid);
     [...grid.querySelectorAll('label.check')].forEach(label=>{
-      const input=label.querySelector('input[name="escopo"]');if(!input)return;
-      const copy=SCOPE[input.value];if(!copy)return;
+      const input=label.querySelector('input[name="escopo"]');if(!input)return;const copy=SCOPE[input.value];if(!copy)return;
       label.style.cssText='display:flex;align-items:flex-start;gap:10px;margin:0;padding:12px 13px;border:1px solid #e5ded1;border-radius:10px;background:#fff;cursor:pointer;min-height:72px';
       input.style.cssText='width:16px!important;height:16px!important;min-width:16px!important;flex:0 0 16px!important;margin:2px 0 0!important;padding:0!important';
-      let wrap=label.querySelector('[data-scope-copy]');
-      if(!wrap){wrap=document.createElement('span');wrap.dataset.scopeCopy='1';while(input.nextSibling)input.nextSibling.remove();label.appendChild(wrap)}
-      wrap.innerHTML='<strong style="display:block;font-size:13px;color:#272a34;margin-bottom:3px">'+copy[0]+'</strong><small style="display:block;font-size:11px;line-height:1.35;color:#77736b">'+copy[1]+'</small>';
+      let copyWrap=label.querySelector('[data-scope-copy]');if(!copyWrap){copyWrap=document.createElement('span');copyWrap.dataset.scopeCopy='1';while(input.nextSibling)input.nextSibling.remove();label.appendChild(copyWrap)}
+      copyWrap.innerHTML='<strong style="display:block;font-size:13px;color:#272a34;margin-bottom:3px">'+copy[0]+'</strong><small style="display:block;font-size:11px;line-height:1.35;color:#77736b">'+copy[1]+'</small>';
     });
-    if(!document.getElementById('fenix-scope-responsive')){
-      const style=document.createElement('style');style.id='fenix-scope-responsive';style.textContent='@media(max-width:800px){.card:has(.section) .grid{grid-template-columns:1fr}.check[data-contract-scope],label.check{min-height:auto!important}}';document.head.appendChild(style);
-    }
+    if(!document.getElementById('fenix-scope-responsive')){const style=document.createElement('style');style.id='fenix-scope-responsive';style.textContent='@media(max-width:800px){.card:has(.section) .grid{grid-template-columns:1fr}.check[data-contract-scope],label.check{min-height:auto!important}#fenix-scope-other-wrap{grid-column:1}}';document.head.appendChild(style)}
   }
 
-  function init(){ensureAlignmentStyles();improveFields();improveScope()}
+  function patchFormData(){
+    if(typeof window.formData!=='function'||window.__fenixScopeFormDataPatched)return;
+    const original=window.formData;
+    window.formData=function(){
+      const data=original.apply(this,arguments);
+      if(Array.isArray(data.escopo)){
+        data.escopo=data.escopo.map(v=>v==='Fluxo de caixa e relatório mensal'?'Relatório de fluxo de caixa realizado':v);
+        const idx=data.escopo.indexOf('Outros');
+        if(idx>=0){const text=String(document.getElementById('fenix-scope-other')?.value||'').trim();data.escopo[idx]=text?'Outros: '+text:'Outros — detalhamento não informado';}
+      }
+      data.filiais='0';
+      return data;
+    };
+    window.__fenixScopeFormDataPatched=true;
+  }
+
+  function init(){ensureAlignmentStyles();improveFields();improveScope();patchFormData()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   [300,900,1800].forEach(ms=>setTimeout(init,ms));
 })();
