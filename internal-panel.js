@@ -10,6 +10,7 @@
   }
   function loadInternal(){
     loadScript('internal-dashboard.js?v=4','data-fenix-internal-dashboard');
+    loadScript('dashboard-enhance.js?v=2','data-fenix-dashboard-enhance');
     loadScript('cfo-separation.js?v=1','data-fenix-cfo-separation');
     loadScript('cfo-publish.js?v=1','data-fenix-cfo-publish');
     loadScript('contract-approval.js?v=2','data-fenix-contract-approval');
