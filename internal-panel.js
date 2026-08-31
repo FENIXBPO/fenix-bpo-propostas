@@ -13,6 +13,7 @@
     loadScript('cfo-separation.js?v=1','data-fenix-cfo-separation');
     loadScript('cfo-publish.js?v=1','data-fenix-cfo-publish');
     loadScript('contract-approval.js?v=2','data-fenix-contract-approval');
+    loadScript('cfo-software-default.js?v=1','data-fenix-cfo-software-default');
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',loadInternal,{once:true});
   else loadInternal();
