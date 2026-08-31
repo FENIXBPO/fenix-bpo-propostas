@@ -3,23 +3,27 @@
   if(!INTERNAL)return;
 
   function text(el){return String(el?.textContent||'').trim()}
+  let scheduled=false;
+
   function patchSuggestion(){
     document.querySelectorAll('.section').forEach(el=>{
       const t=text(el).toUpperCase();
-      if(t.includes('4. ANÁLISE INTERNA FÊNIX')&&t.includes('PRECIFICAÇÃO')){
+      if(t.includes('4. ANÁLISE INTERNA FÊNIX')&&t.includes('PRECIFICAÇÃO')&&!el.dataset.fenixSuggestionPatched){
+        el.dataset.fenixSuggestionPatched='1';
         el.innerHTML='4. SUGESTÃO AUTOMÁTICA DE PRECIFICAÇÃO <span style="font-size:10px;color:#9a6b00;letter-spacing:.06em">• REFERÊNCIA INTERNA • NÃO PUBLICA</span>';
       }
     });
 
     document.querySelectorAll('label').forEach(el=>{
       const t=text(el);
-      if(t==='Mensalidade aprovada') el.textContent='Mensalidade sugerida pela matriz';
-      if(t==='Implantação aprovada') el.textContent='Implantação sugerida pela matriz';
-      if(t==='Parecer CFO') el.textContent='Parecer sobre a sugestão automática';
+      if(t==='Mensalidade aprovada'&&!el.dataset.fenixSuggestionLabel){el.dataset.fenixSuggestionLabel='1';el.textContent='Mensalidade sugerida pela matriz'}
+      if(t==='Implantação aprovada'&&!el.dataset.fenixSuggestionLabel){el.dataset.fenixSuggestionLabel='1';el.textContent='Implantação sugerida pela matriz'}
+      if(t==='Parecer CFO'&&!el.dataset.fenixSuggestionLabel){el.dataset.fenixSuggestionLabel='1';el.textContent='Parecer sobre a sugestão automática'}
     });
 
     const oldBtn=document.getElementById('gerarPropostaBtn');
-    if(oldBtn){
+    if(oldBtn&&!oldBtn.dataset.fenixSuggestionDisabled){
+      oldBtn.dataset.fenixSuggestionDisabled='1';
       oldBtn.disabled=true;
       oldBtn.textContent='Use a Aprovação CFO abaixo';
       oldBtn.title='A sugestão automática não pode gerar ou publicar proposta. A condição comercial oficial deve ser aprovada no Painel CFO.';
@@ -39,7 +43,8 @@
     }
 
     const cfo=document.getElementById('fenix-cfo-approval');
-    if(cfo){
+    if(cfo&&!cfo.dataset.fenixOfficialStyled){
+      cfo.dataset.fenixOfficialStyled='1';
       cfo.style.border='2px solid #c99319';
       cfo.style.boxShadow='0 8px 28px rgba(120,80,0,.10)';
       const sec=cfo.querySelector('.section');
@@ -50,7 +55,13 @@
     }
   }
 
-  const observer=new MutationObserver(()=>patchSuggestion());
+  function schedulePatch(){
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(()=>{scheduled=false;patchSuggestion()});
+  }
+
+  const observer=new MutationObserver(schedulePatch);
   observer.observe(document.documentElement,{childList:true,subtree:true});
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',patchSuggestion,{once:true});else patchSuggestion();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedulePatch,{once:true});else schedulePatch();
 })();
