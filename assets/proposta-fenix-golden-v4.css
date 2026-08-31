@@ -1,82 +1,35 @@
-@import url('/assets/proposta-fenix-golden-v3.css?v=20260831-3');
+@import url('/assets/proposta-fenix-golden-v3.css?v=20260831-4');
 
-/* FÊNIX GOLDEN REFERENCE V6 — capa e moldura alinhadas ao visual aprovado */
-.logo:before,.wing:before,.footer .miniLogo:before{content:none!important;display:none!important}
+/* FÊNIX GOLDEN REFERENCE V7 — identidade estável sem imagens quebradas */
+.logo:before,.logo:after,.wing:before,.footer .miniLogo:before{content:none!important;display:none!important}
 
-/* Marca principal */
-.logo{position:absolute!important;left:58px!important;top:32px!important;width:410px!important;height:118px!important;display:block!important;overflow:visible!important;z-index:22!important}
-.logoImg{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:left center!important;filter:drop-shadow(0 8px 24px rgba(0,0,0,.62))}
-.footer .miniLogo{display:block!important;width:145px!important;height:36px!important;overflow:visible!important;flex:0 0 auto!important}
-.miniLogoImg{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:left center!important}
+.logo{left:58px!important;top:34px!important;width:420px!important;height:122px!important;display:flex!important;align-items:center!important;padding-left:118px!important;z-index:22!important;overflow:visible!important;background-image:url('/assets/fenix-symbol.png');background-repeat:no-repeat;background-size:104px auto;background-position:left center;filter:drop-shadow(0 8px 22px rgba(0,0,0,.55))}
+.brandMark{display:flex;flex-direction:column;justify-content:center;min-width:290px;line-height:1}
+.brandWord{font-family:Arial Black,Arial,sans-serif;font-size:55px;font-weight:900;font-style:italic;letter-spacing:-.055em;background:linear-gradient(180deg,#fff 0%,#c9c9c9 34%,#696969 62%,#f6f6f6 84%,#aaa 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 2px 0 rgba(255,255,255,.12),0 6px 12px rgba(0,0,0,.42)}
+.brandSub{font-size:16px;letter-spacing:.12em;font-style:italic;color:#f2eee7;margin-top:0;padding-left:18px;white-space:nowrap}
+.brandSub b{color:#d8951b;font-weight:800}
 
-/* Marca-d'água: somente parte da Fênix entra pela direita */
-.wing{position:absolute!important;right:-11%!important;top:2%!important;width:42%!important;height:82%!important;opacity:.13!important;filter:grayscale(1) brightness(.46) contrast(1.30)!important;overflow:hidden!important;clip-path:polygon(27% 0,100% 0,100% 100%,5% 100%,31% 57%)!important;z-index:1!important;pointer-events:none!important}
-.wingImg{position:absolute!important;display:block!important;width:148%!important;max-width:none!important;height:auto!important;right:-33%!important;top:1%!important;transform:scale(2.20)!important;transform-origin:top right!important;opacity:1!important}
+.wing{right:-2%!important;top:3%!important;width:36%!important;height:80%!important;opacity:.14!important;filter:grayscale(1) brightness(.48) contrast(1.18)!important;clip-path:polygon(22% 0,100% 0,100% 100%,0 100%,30% 52%)!important;overflow:hidden!important;z-index:1!important;background-image:url('/assets/fenix-symbol.png');background-repeat:no-repeat;background-size:138% auto;background-position:82% 8%!important}
+.wing img,.wingImg{display:none!important}
 
-/* Moldura lateral premium — duas linhas separadas, sem X */
-.diagTop,.diagBottom{position:absolute!important;right:-66px!important;height:2px!important;pointer-events:none!important;z-index:5!important;transform-origin:right center!important;background:linear-gradient(90deg,transparent 0%,rgba(124,76,5,.12) 6%,#b4720c 23%,#f2c659 53%,#fff0b2 62%,#d79417 78%,rgba(122,73,5,.22) 100%)!important;box-shadow:0 0 3px rgba(255,231,169,.95),0 0 10px rgba(229,157,31,.54),0 0 20px rgba(189,116,10,.19)!important}
-.diagTop{top:242px!important;width:575px!important;transform:rotate(39deg)!important}
-.diagBottom{top:auto!important;bottom:182px!important;width:515px!important;transform:rotate(-43deg)!important}
-.diagTop:after,.diagBottom:after{content:""!important;position:absolute!important;width:5px!important;height:5px!important;border-radius:50%!important;background:#fff0b0!important;box-shadow:0 0 6px #ffd772,0 0 15px rgba(220,143,20,.68)!important;opacity:.9!important}
-.diagTop:after{left:59%!important;top:-2px!important}.diagBottom:after{left:57%!important;top:-2px!important}
+.diagTop,.diagBottom{height:2px!important;right:-68px!important;pointer-events:none!important;z-index:4!important;background:linear-gradient(90deg,transparent 0%,rgba(153,96,8,.10) 8%,#a9690b 26%,#ffdd85 58%,#d3931b 79%,rgba(111,69,5,.22) 100%)!important;box-shadow:0 0 3px rgba(255,228,158,.85),0 0 9px rgba(235,166,39,.40),0 0 22px rgba(193,120,13,.13)!important;transform-origin:right center!important}
+.diagTop{top:132px!important;width:500px!important;transform:rotate(41deg)!important}
+.diagBottom{top:auto!important;bottom:86px!important;width:430px!important;transform:rotate(-47deg)!important}
+.diagTop:after,.diagBottom:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#ffe59e;box-shadow:0 0 8px #ffd778,0 0 20px rgba(232,164,37,.56);opacity:.84}
+.diagTop:after{left:57%;top:-2px}.diagBottom:after{left:55%;top:-2px}
 
-/* Canto metálico inferior */
-.goldCorner{position:absolute!important;right:-1%!important;bottom:-3%!important;width:23%!important;height:17%!important;clip-path:polygon(25% 0,100% 0,100% 100%,0 100%)!important;background:radial-gradient(circle at 63% 25%,rgba(255,231,151,.18),transparent 22%),linear-gradient(145deg,#2b1c04 0%,#694505 34%,#a66e0e 64%,#c1881d 78%,#493005 100%)!important;border-top:1px solid rgba(231,181,75,.78)!important;box-shadow:inset 0 0 36px rgba(255,221,130,.10),0 0 18px rgba(179,112,11,.10)!important}
-.goldCorner:after{content:""!important;position:absolute!important;inset:0!important;background:repeating-linear-gradient(18deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px)!important;opacity:.48!important}
+.goldCorner{right:-1%!important;bottom:-3%!important;width:23%!important;height:15%!important;clip-path:polygon(27% 0,100% 0,100% 100%,0 100%)!important;background:radial-gradient(circle at 62% 22%,rgba(255,229,144,.20),transparent 18%),linear-gradient(145deg,#342104 0%,#6d4707 34%,#b57b17 70%,#6a4306 100%)!important;border-top:1px solid rgba(235,185,77,.82)!important;box-shadow:inset 0 0 38px rgba(255,222,133,.10),0 0 18px rgba(173,111,10,.08)!important}
+.goldCorner:after{content:""!important;display:block!important;position:absolute;inset:0;background:repeating-linear-gradient(18deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px);opacity:.50}
 
-/* Proporções da capa */
-.hero{padding-top:172px!important}
-.safe{max-width:1160px!important}
-.heroTitle{max-width:1120px!important;line-height:.90!important;letter-spacing:-.002em!important}
-.heroTitle[data-long-name="1"]{letter-spacing:-.010em!important}
-.eyebrow{font-size:17px!important;letter-spacing:.34em!important;margin-bottom:18px!important}
-.goldRule{margin-top:22px!important}
-.brandline{margin-top:22px!important}
-.infoBar{max-width:1110px!important;margin-top:30px!important}
+.hero{padding-top:178px!important}.safe{max-width:1120px!important}.heroTitle{max-width:1110px!important;line-height:.90!important;letter-spacing:-.003em!important}.heroTitle[data-long-name="1"]{letter-spacing:-.011em!important}.eyebrow{font-size:16px!important;letter-spacing:.34em!important;margin-bottom:18px!important}.brandline{font-size:31px!important;margin-top:24px!important}.tagline{font-size:20px!important;margin-top:6px!important}.infoBar{max-width:1080px!important;margin-top:30px!important}
+.page:first-of-type .heroTitle{background:linear-gradient(180deg,#f7cf63 0%,#d99b27 37%,#875007 72%,#efb844 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;text-shadow:0 2px 12px rgba(137,79,0,.10)!important}.page:first-of-type .goldRule{width:132px!important;height:3px!important}
 
-/* Conteúdo interno mantém margem de segurança da moldura */
-.wrap{width:min(1460px,calc(100% - 118px))!important}
-.page:not(:first-of-type) .wrap{padding-top:152px!important}
+.footer{left:58px!important;right:58px!important;bottom:16px!important;min-height:50px!important;padding-top:10px!important;justify-content:flex-start!important;gap:40px!important}.footer .miniLogo{display:flex!important;width:145px!important;height:34px!important;align-items:center!important;overflow:visible!important;background-image:url('/assets/fenix-symbol.png');background-repeat:no-repeat;background-size:32px auto;background-position:left center;padding-left:40px!important}.miniBrand{display:flex;flex-direction:column;line-height:.85}.miniBrand span{font-family:Arial Black,Arial,sans-serif;font-size:17px;font-style:italic;color:#e5e3df;letter-spacing:-.04em}.miniBrand small{font-size:5.5px;letter-spacing:.08em;color:#cf9018;margin-top:4px;white-space:nowrap}.miniLogoImg{display:none!important}.footer b{font-size:10px!important;color:#d6a136!important;letter-spacing:.21em!important;text-shadow:none!important}
 
-/* Rodapé oficial */
-.footer{left:58px!important;right:58px!important;bottom:18px!important;min-height:48px!important;padding-top:9px!important;justify-content:flex-start!important;gap:36px!important}
-.footer b{font-size:10px!important;color:#d8a337!important;letter-spacing:.22em!important;text-shadow:none!important}
+.printBtn{top:15px!important;right:18px!important;padding:8px 14px!important;font-size:11px!important;opacity:.72!important;background:rgba(3,12,19,.82)!important}.printBtn:hover{opacity:1!important}.pageNo{right:36px!important;top:71px!important;z-index:12!important;font-size:19px!important;color:#dca126!important}
 
-/* Numeração não compete com o botão */
-.pageNo{right:34px!important;top:76px!important;z-index:14!important;font-size:20px!important}
-.printBtn{top:14px!important;right:14px!important;padding:8px 13px!important;font-size:11px!important;opacity:.74!important}
-.printBtn:hover{opacity:1!important}
+.card,.panel,.legal,.tech,.step,.metric,.priceBox,.priceMain,.acceptBox{background:linear-gradient(145deg,rgba(4,14,23,.97),rgba(1,7,12,.995))!important;border-color:rgba(184,121,14,.66)!important}.panel,.legal{box-shadow:inset 0 0 0 1px rgba(255,255,255,.005),0 8px 24px rgba(0,0,0,.14)!important}.scopeEmpty .emptyScopeNote{list-style:none!important;color:#bfb8ad!important;font-style:italic!important;padding:18px 8px!important;line-height:1.55!important}.scopeEmpty .emptyScopeNote:before{display:none!important}
 
-/* Escopo vazio não aparenta erro */
-.scopeEmpty{min-height:190px!important;display:flex!important;align-items:center!important}
-.emptyScopeNote{list-style:none!important;padding:0!important;color:#c9c3b8!important;font-style:italic!important;line-height:1.55!important}
-.emptyScopeNote:before{display:none!important}
-
-/* Cartões com brilho mais sofisticado */
-.card,.panel,.legal,.tech,.step,.metric,.priceBox,.priceMain,.acceptBox{border-color:rgba(180,117,17,.72)!important;background:linear-gradient(145deg,rgba(5,15,24,.97),rgba(2,7,12,.995))!important}
-.priceMain{box-shadow:0 0 20px rgba(177,115,13,.12),inset 0 0 24px rgba(184,124,20,.035)!important}
-
-@media(max-width:1100px){
- .logo{left:22px!important;top:19px!important;width:300px!important;height:92px!important}
- .wing{right:-22%!important;width:54%!important;opacity:.09!important}
- .wingImg{transform:scale(1.85)!important}
- .diagTop{right:-178px!important;top:195px!important;width:520px!important}
- .diagBottom{right:-170px!important;bottom:130px!important;width:450px!important}
- .hero{padding-top:132px!important}
- .pageNo{right:20px!important;top:70px!important}
- .wrap{width:min(100% - 40px,1460px)!important}
-}
-@media(max-width:650px){
- .logo{width:245px!important;height:78px!important}
- .wing{right:-42%!important;width:76%!important;opacity:.06!important}
- .wingImg{transform:scale(1.65)!important}
- .diagTop{right:-255px!important;top:155px!important}
- .diagBottom{right:-245px!important;bottom:102px!important}
- .goldCorner{width:39%!important;height:13%!important}
- .pageNo{top:62px!important}
- .hero{padding-top:110px!important}
-}
-@media print{
- .printBtn{display:none!important}
- .logoImg,.wingImg,.miniLogoImg{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-}
+@media(max-width:1100px){.logo{left:22px!important;top:18px!important;width:330px!important;height:88px!important;padding-left:82px!important;background-size:72px auto!important}.brandWord{font-size:42px}.brandSub{font-size:12px;padding-left:12px}.wing{right:-13%!important;width:49%!important;opacity:.10!important}.diagTop{right:-168px!important;top:126px!important;width:470px!important}.diagBottom{right:-150px!important;bottom:82px!important;width:390px!important}.hero{padding-top:134px!important}.pageNo{right:20px!important;top:65px!important}}
+@media(max-width:650px){.logo{width:255px!important;height:70px!important;padding-left:62px!important;background-size:54px auto!important}.brandWord{font-size:32px}.brandSub{font-size:9px;padding-left:8px}.wing{right:-32%!important;width:70%!important;opacity:.07!important}.diagTop{right:-245px!important;top:112px!important}.diagBottom{right:-230px!important;bottom:70px!important}.goldCorner{width:38%!important;height:12%!important}.pageNo{top:58px!important}.footer{display:none!important}}
+@media print{.printBtn{display:none!important}.logo,.wing,.goldCorner,.diagTop,.diagBottom,.footer{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
