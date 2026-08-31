@@ -31,7 +31,7 @@ module.exports=async function handler(req,res){
     const clientRows=intake?.client_id?await sb(`bpo_clients?id=eq.${intake.client_id}&select=cnpj,razao_social,nome_fantasia&limit=1`):[];const client=clientRows?.[0]||{};
     const slug=current.public_slug||`${slugify(client.nome_fantasia||client.razao_social)}-${String(current.version||1)}`;
     const code=current.proposal_code||`FENIX-${String(client.cnpj||'').slice(-6)||'CLIENTE'}-V${current.version||1}`;
-    const publicUrl=`https://proposta.fenixbpo.com.br/p/proposta.html?ref=${encodeURIComponent(slug)}`;
+    const publicUrl=`https://proposta.fenixbpo.com.br/p/proposta-v2.html?ref=${encodeURIComponent(slug)}`;
     const now=new Date().toISOString();
     const rows=await sb(`bpo_proposals?id=eq.${current.id}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({status:'publicada',proposal_code:code,public_slug:slug,public_url:publicUrl,published_at:current.published_at||now,updated_at:now})});
     const proposal=rows?.[0]||current;
