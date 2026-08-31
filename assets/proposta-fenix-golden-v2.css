@@ -1,26 +1,175 @@
-@import url('/assets/proposta-fenix-v1.css?v=20260827-2');
+@import url('/assets/proposta-fenix-v1.css?v=20260831-1');
 
-/* GOLDEN REFERENCE FÊNIX — identidade visual travada */
-:root{--gold:#c98a18;--gold2:#f3bd43;--line:rgba(220,154,24,.78)}
+/* =========================================================
+   FÊNIX GOLDEN REFERENCE — PADRÃO OFICIAL DE PROPOSTAS
+   Visual fixo. Conteúdo e valores são variáveis por cliente.
+   ========================================================= */
+:root{
+  --gold:#c98a18;
+  --gold2:#f4bf4f;
+  --gold3:#ffd978;
+  --navy:#02080e;
+  --navy2:#06111b;
+  --line:rgba(220,154,24,.72);
+}
 
-/* Logo com dois assets locais e cache-busting para evitar falha de carregamento */
-.logo,.footer .miniLogo{background-image:url('/assets/fenix-logo-header-crop.webp?v=20260827-2'),url('/assets/fenix-logo-transparent.webp?v=20260827-2')!important;background-repeat:no-repeat!important;background-size:contain!important;background-position:left center!important}
-.logo{width:500px!important;height:158px!important;max-width:37vw!important;left:52px!important;top:24px!important}
+/* Fundo premium uniforme em todas as páginas */
+.page{
+  background:
+    radial-gradient(circle at 82% 50%,rgba(201,138,24,.055),transparent 28%),
+    radial-gradient(circle at 24% 18%,rgba(255,255,255,.018),transparent 22%),
+    linear-gradient(135deg,#06111b 0%,#02080e 68%,#01050a 100%)!important;
+}
+.page:before{
+  background:
+    radial-gradient(circle at 22% 20%,rgba(255,255,255,.018),transparent 18%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.010) 0 1px,transparent 1px 3px)!important;
+  opacity:.34!important;
+}
 
-/* Marca-d’água discreta: recorta a região da fênix/asa da própria marca */
-.brandWater{right:-1.5%!important;top:2%!important;width:36%!important;height:86%!important;background-image:url('/assets/fenix-logo-transparent.webp?v=20260827-2')!important;background-repeat:no-repeat!important;background-size:270% auto!important;background-position:left 47%!important;opacity:.11!important;filter:grayscale(1) brightness(.62) contrast(1.2)!important;mix-blend-mode:screen!important;clip-path:polygon(18% 0,100% 0,100% 100%,0 90%,35% 52%)!important}
+/* Logo oficial sempre visível */
+.logo,.footer .miniLogo{
+  display:block!important;
+  background-image:url('/assets/fenix-logo-header-crop.webp?v=20260831-1'),url('/assets/fenix-logo-transparent.webp?v=20260831-1')!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  background-position:left center!important;
+  filter:drop-shadow(0 9px 22px rgba(0,0,0,.54))!important;
+}
+.logo{
+  width:500px!important;
+  height:158px!important;
+  max-width:38vw!important;
+  left:54px!important;
+  top:24px!important;
+  z-index:12!important;
+}
+.footer .miniLogo{width:180px!important;height:44px!important}
 
-/* Duas diagonais douradas, uma subindo e outra descendo, com ponto de brilho */
-.page:after{right:-7%!important;top:-7%!important;width:44%!important;height:118%!important;background:
-linear-gradient(133deg,transparent 0 47.82%,rgba(255,220,122,.98) 48.02% 48.27%,transparent 48.48% 100%),
-linear-gradient(47deg,transparent 0 50.65%,rgba(239,171,39,.98) 50.87% 51.12%,transparent 51.33% 100%)!important;filter:drop-shadow(0 0 5px rgba(255,207,93,.95)) drop-shadow(0 0 18px rgba(243,189,67,.42))!important}
-.page .goldCorner{height:21%!important;width:28%!important;box-shadow:inset 0 0 42px rgba(255,220,120,.22),0 0 26px rgba(214,149,28,.22)!important}
+/* Marca d'água: somente presença discreta da Fênix no lado direito */
+.brandWater{
+  right:-8%!important;
+  top:4%!important;
+  width:42%!important;
+  height:82%!important;
+  background-image:url('/assets/fenix-symbol.png?v=20260831-1')!important;
+  background-repeat:no-repeat!important;
+  background-size:125% auto!important;
+  background-position:left 48%!important;
+  opacity:.10!important;
+  filter:grayscale(1) brightness(.46) contrast(1.18)!important;
+  mix-blend-mode:screen!important;
+  clip-path:polygon(28% 0,100% 0,100% 100%,0 100%,38% 56%)!important;
+  z-index:1!important;
+}
 
-/* Tipografia maior e mais próxima da referência visual */
-.eyebrow{font-size:17px!important}.title{font-size:clamp(60px,6.15vw,100px)!important}.lead{font-size:22px!important;line-height:1.55!important;max-width:1180px!important}.tagline{font-size:24px!important}.brandline{font-size:34px!important}.info small{font-size:13px!important}.info strong{font-size:17px!important}.card p{font-size:16px!important;line-height:1.5!important}.scopeItem{font-size:16px!important;line-height:1.38!important;padding-top:6px!important;padding-bottom:6px!important}.note{font-size:15px!important}.legal li{font-size:17px!important}.tech b{font-size:19px!important}.tech span{font-size:15px!important}.step strong{font-size:19px!important}.step span{font-size:15px!important}.metric small{font-size:13px!important}.metric strong{font-size:29px!important}.priceMain small,.priceBox small{font-size:14px!important}.priceMain p,.priceBox p{font-size:14px!important}.priceBox strong{font-size:27px!important}.rules li{font-size:14px!important}.cta{font-size:24px!important}.acceptBox p{font-size:15px!important}.governance{font-size:13px!important}
+/*
+   Diagonais oficiais: duas linhas independentes no lado direito.
+   Não formam X e não atravessam o título/conteúdo central.
+*/
+.page:after{
+  content:""!important;
+  position:absolute!important;
+  right:-1.5%!important;
+  top:-3%!important;
+  width:37%!important;
+  height:106%!important;
+  background:
+    linear-gradient(132deg,
+      transparent 0 47.55%,
+      rgba(255,222,132,.98) 47.78% 48.05%,
+      rgba(236,164,35,.95) 48.06% 48.28%,
+      transparent 48.52% 100%) top right/100% 54% no-repeat,
+    linear-gradient(48deg,
+      transparent 0 49.15%,
+      rgba(239,171,39,.96) 49.38% 49.62%,
+      rgba(255,222,132,.98) 49.63% 49.86%,
+      transparent 50.10% 100%) bottom right/100% 50% no-repeat!important;
+  filter:
+    drop-shadow(0 0 4px rgba(255,218,116,.98))
+    drop-shadow(0 0 15px rgba(243,189,67,.38))!important;
+  pointer-events:none!important;
+  z-index:2!important;
+}
 
-/* Mantém leitura forte no desktop sem esticar excessivamente os números */
-.flow{gap:22px!important}.step{padding:25px 20px!important}.cards3{gap:24px!important}.panel,.legal{padding:29px 31px!important}
+/* Canto dourado texturizado, igual em todas as páginas */
+.page .goldCorner{
+  right:-1.5%!important;
+  bottom:-4.5%!important;
+  width:26%!important;
+  height:20%!important;
+  background:
+    radial-gradient(circle at 60% 35%,rgba(255,224,125,.28),transparent 25%),
+    linear-gradient(145deg,#432804 0%,#96600a 38%,#d69b21 69%,#6e4809 100%)!important;
+  border-top:1px solid rgba(255,216,120,.95)!important;
+  box-shadow:inset 0 0 42px rgba(255,220,120,.22),0 0 26px rgba(214,149,28,.20)!important;
+  opacity:.94!important;
+  z-index:2!important;
+}
+.page .goldCorner:after{
+  background:repeating-linear-gradient(20deg,rgba(255,255,255,.05) 0 1px,transparent 1px 4px)!important;
+  opacity:.55!important;
+}
 
-@media(max-width:1000px){.logo{left:18px!important;top:18px!important;width:275px!important;height:100px!important;max-width:68vw!important}.brandWater{width:54%!important;right:-14%!important}.title{font-size:clamp(46px,8vw,70px)!important}.lead{font-size:18px!important}}
-@media(max-width:560px){.logo{width:230px!important;height:86px!important}.brandWater{width:70%!important;right:-26%!important;opacity:.075!important}.title{font-size:45px!important}.lead{font-size:17px!important}.scopeItem{font-size:15px!important}.card p,.tech span,.step span{font-size:14px!important}}
+/* Conteúdo nunca invade a área visual da direita */
+.wrap{width:min(1460px,calc(100% - 118px))!important;padding:132px 0 92px!important}
+.hero{padding-top:112px!important}
+.hero .infoBar{max-width:1120px!important}
+.hero h1{max-width:1120px!important;white-space:normal!important;line-height:.91!important}
+.title,.lead,.scope,.split,.techGrid,.flow,.metricGrid,.commercial,.acceptBox{position:relative;z-index:5}
+
+/* Tipografia e hierarquia travadas */
+.eyebrow{font-size:17px!important;letter-spacing:.32em!important;margin-bottom:17px!important}
+.hero h1{font-size:clamp(70px,7.4vw,120px)!important}
+.title{font-size:clamp(58px,5.7vw,94px)!important;line-height:.98!important}
+.lead{font-size:21px!important;line-height:1.55!important;max-width:1120px!important}
+.brandline{font-size:34px!important;letter-spacing:.12em!important}
+.tagline{font-size:23px!important}
+
+/* Cards e painéis */
+.card,.panel,.legal,.tech,.step,.metric,.priceBox,.priceMain,.acceptBox{
+  background:linear-gradient(145deg,rgba(6,18,29,.94),rgba(2,8,13,.98))!important;
+  border-color:rgba(220,154,24,.82)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.008),0 8px 24px rgba(0,0,0,.12)!important;
+}
+.cards3{gap:24px!important}.flow{gap:22px!important}.panel,.legal{padding:29px 31px!important}
+.card p{font-size:16px!important;line-height:1.5!important}
+.legal li{font-size:17px!important}.tech b{font-size:19px!important}.tech span{font-size:15px!important}
+.step strong{font-size:19px!important}.step span{font-size:15px!important}
+.scopeList li{font-size:16px!important;line-height:1.4!important;padding:6px 0 6px 20px!important}
+
+/* Comercial */
+.metric small{font-size:13px!important}.metric strong{font-size:28px!important}
+.priceMain strong{font-size:68px!important}.priceBox strong{font-size:27px!important}
+.priceMain small,.priceBox small{font-size:14px!important}.priceMain p,.priceBox p{font-size:14px!important}
+.rules li{font-size:14px!important}
+
+/* Rodapé sempre legível */
+.footer{z-index:12!important;border-top:1px solid rgba(220,154,24,.52)!important}
+.footer b{color:#f6c85e!important;text-shadow:0 0 7px rgba(245,196,93,.20)!important;letter-spacing:.22em!important}
+.pageNo{z-index:12!important;color:#f4bf4f!important}
+.printBtn{z-index:40!important;background:#06111b!important;border-color:rgba(243,189,67,.72)!important;color:#f4bf4f!important}
+
+@media(max-width:1100px){
+  .logo{left:20px!important;top:18px!important;width:295px!important;height:104px!important;max-width:68vw!important}
+  .brandWater{width:50%!important;right:-17%!important;opacity:.075!important}
+  .page:after{width:43%!important;right:-8%!important}
+  .wrap{width:min(100% - 38px,1460px)!important;padding:124px 0 82px!important}
+  .hero h1{font-size:clamp(56px,10vw,86px)!important;max-width:86%!important}
+  .title{font-size:clamp(45px,7.5vw,68px)!important}
+  .lead{font-size:18px!important;max-width:82%!important}
+}
+
+@media(max-width:700px){
+  .logo{width:240px!important;height:88px!important}
+  .brandWater{width:72%!important;right:-36%!important;opacity:.06!important}
+  .page:after{width:58%!important;right:-27%!important;opacity:.72!important}
+  .goldCorner{width:42%!important;height:15%!important}
+  .title{font-size:44px!important}.lead{font-size:17px!important;max-width:100%!important}
+  .hero h1{max-width:100%!important;font-size:clamp(48px,13vw,72px)!important}
+  .card p,.tech span,.step span{font-size:14px!important}
+}
+
+@media print{
+  .page:after,.brandWater,.goldCorner,.logo,.footer{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+}
