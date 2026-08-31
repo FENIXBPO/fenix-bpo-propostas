@@ -117,8 +117,17 @@
     const scopeCard=[...document.querySelectorAll('.card')].find(c=>c.querySelector('.section')?.textContent.includes('Escopo desejado'));
     if(!scopeCard)return;
     let box=document.getElementById('fenix-client-confirmation');
-    if(!box){box=document.createElement('div');box.id='fenix-client-confirmation';box.className='ok';box.style.cssText='margin-top:16px;padding:16px';scopeCard.appendChild(box)}
-    box.innerHTML='<strong>Informações recebidas com sucesso.</strong><br>Nossa equipe irá analisar sua operação e preparar a proposta comercial. Entraremos em contato pelos dados informados.';
+    if(!box){box=document.createElement('div');box.id='fenix-client-confirmation';scopeCard.appendChild(box)}
+    box.style.cssText='margin-top:20px;padding:20px 22px;border:1px solid #b9d8c5;border-radius:12px;background:#f3faf6;color:#244a33;box-shadow:0 1px 3px rgba(26,90,55,.05)';
+    box.innerHTML=`
+      <div style="display:flex;gap:13px;align-items:flex-start">
+        <div aria-hidden="true" style="width:30px;height:30px;min-width:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#dff2e6;color:#236b45;font-weight:900;font-size:17px">✓</div>
+        <div>
+          <div style="font-size:16px;font-weight:800;line-height:1.3;margin-bottom:7px;color:#173d29">Informações recebidas com sucesso.</div>
+          <div style="font-size:13px;line-height:1.55;color:#355845">A equipe da FÊNIX irá analisar os dados da sua operação e estruturar a condição comercial adequada ao seu cenário. Após a validação interna, entraremos em contato pelos dados informados para apresentar os próximos passos.</div>
+          <div style="margin-top:13px;padding-top:11px;border-top:1px solid #d8e9df;font-size:12px;line-height:1.45;color:#4f6f5c"><strong style="color:#2b5b3e">Próxima etapa:</strong> análise interna FÊNIX → validação CFO → preparação da proposta comercial.</div>
+        </div>
+      </div>`;
     box.scrollIntoView({behavior:'smooth',block:'center'});
   }
 
