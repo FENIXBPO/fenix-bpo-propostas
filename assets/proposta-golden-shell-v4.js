@@ -1,28 +1,14 @@
 (function(){
-  const RAW='https://raw.githubusercontent.com/FENIXBPO/fenix-bpo-propostas/main/assets/';
-  const SOURCES={
-    logo:[RAW+'fenix-logo-header-crop.webp',RAW+'fenix-logo-transparent.webp','/assets/fenix-logo-header-crop.webp','/assets/fenix-logo-transparent.webp'],
-    wing:[RAW+'fenix-symbol.png','/assets/fenix-symbol.png']
-  };
-  function img(sources, cls, alt){
-    const el=document.createElement('img');
-    let idx=0;
-    el.src=sources[idx];
-    el.className=cls;
-    el.alt=alt||'';
-    el.decoding='async';
-    el.loading='eager';
-    el.referrerPolicy='no-referrer';
-    el.onerror=()=>{idx+=1;if(idx<sources.length)el.src=sources[idx];else el.style.display='none'};
-    return el;
-  }
   function mountBrand(){
-    document.querySelectorAll('.page .logo').forEach(host=>host.replaceChildren(img(SOURCES.logo,'logoImg','FÊNIX Intelligent BPO')));
-    document.querySelectorAll('.page .wing').forEach(host=>{
-      host.replaceChildren(img(SOURCES.wing,'wingImg',''));
-      host.setAttribute('aria-hidden','true');
+    document.querySelectorAll('.page .logo').forEach(host=>{
+      host.innerHTML='<div class="brandMark"><span class="brandWord">FÊNIX</span><span class="brandSub">INTELLIGENT <b>BPO</b></span></div>';
+      host.setAttribute('aria-label','FÊNIX Intelligent BPO');
     });
-    document.querySelectorAll('.footer .miniLogo').forEach(host=>host.replaceChildren(img(SOURCES.logo,'miniLogoImg','FÊNIX Intelligent BPO')));
+    document.querySelectorAll('.footer .miniLogo').forEach(host=>{
+      host.innerHTML='<div class="miniBrand"><span>FÊNIX</span><small>INTELLIGENT BPO</small></div>';
+      host.setAttribute('aria-label','FÊNIX Intelligent BPO');
+    });
+    document.querySelectorAll('.page .wing').forEach(host=>host.setAttribute('aria-hidden','true'));
   }
   function normalizeEmptyManagerialScope(){
     const list=document.getElementById('managerialScope');
