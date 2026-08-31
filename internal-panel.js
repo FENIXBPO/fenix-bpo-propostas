@@ -9,7 +9,8 @@
     document.head.appendChild(s);
   }
   function loadInternal(){
-    loadScript('internal-dashboard.js?v=4','data-fenix-internal-dashboard');
+    loadScript('internal-shell.js?v=1','data-fenix-internal-shell');
+    loadScript('internal-dashboard.js?v=5','data-fenix-internal-dashboard');
     loadScript('dashboard-enhance.js?v=3','data-fenix-dashboard-enhance');
     loadScript('cfo-separation.js?v=1','data-fenix-cfo-separation');
     loadScript('cfo-publish.js?v=1','data-fenix-cfo-publish');
