@@ -23,7 +23,14 @@
   }
 
   function boot(){
+    window.__fenixAnalysisOpen=false;
     hideAnalysis();
+    document.addEventListener('click',e=>{
+      const trigger=e.target.closest?.('[data-kanban-open],[data-open-intake]');
+      if(!trigger)return;
+      window.__fenixAnalysisOpen=true;
+      showAnalysis();
+    },true);
     const observer=new MutationObserver(()=>{
       if(!window.__fenixAnalysisOpen) hideAnalysis();
     });
