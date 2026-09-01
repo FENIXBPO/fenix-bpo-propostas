@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>FÊNIX BPO — Atalhos</title>
+<style>
+:root{--bg:#050505;--panel:#0b0b0b;--gold:#d99a1d;--gold2:#f1c04d;--text:#f5f1e8;--muted:#aaa397;--line:#3f321c;--ok:#bce2c7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 8%,rgba(217,154,29,.12),transparent 28%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}.wrap{max-width:620px;margin:auto;padding:22px 16px 40px}.hero{border:1px solid rgba(217,154,29,.35);border-radius:22px;padding:24px;background:linear-gradient(135deg,#030303,#0c0c0c);margin-bottom:16px}.brand{font-size:13px;letter-spacing:.18em;color:var(--gold2);font-weight:900}.hero h1{font-size:34px;line-height:1;margin:12px 0 10px;background:linear-gradient(180deg,#f6d36b,#d69b20 52%,#8f5b0d);-webkit-background-clip:text;background-clip:text;color:transparent;text-transform:uppercase}.hero p{margin:0;color:#d7d2c8;font-size:16px;line-height:1.5}.card{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:18px;margin:14px 0}.card h2{font-size:17px;margin:0 0 6px;color:var(--gold2)}.card p{font-size:14px;line-height:1.5;color:var(--muted);margin:0 0 14px}.btns{display:grid;gap:10px}.btn{width:100%;border:0;border-radius:12px;padding:15px 16px;font-size:16px;font-weight:850;cursor:pointer;text-align:center;text-decoration:none;display:block}.primary{background:linear-gradient(180deg,#f1c04d,#b97810);color:#111}.secondary{background:#151515;border:1px solid #5d4622;color:var(--text)}.ghost{background:transparent;border:1px solid #4a3a20;color:var(--gold2)}.msg{width:100%;min-height:130px;border:1px solid #4a3a20;border-radius:12px;background:#080808;color:var(--text);padding:14px;font-size:15px;line-height:1.5;resize:vertical}.status{min-height:22px;margin-top:8px;color:var(--ok);font-size:13px}.small{font-size:12px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.5}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section class="hero"><div class="brand">FÊNIX INTELLIGENT BPO</div><h1>Central de atalhos</h1><p>Use esta página no celular para abrir ou enviar rapidamente os links da FÊNIX.</p></section>
+<section class="card"><h2>Coleta de dados do cliente</h2><p>Link oficial para o cliente preencher os dados antes da análise e da proposta.</p><div class="btns"><a class="btn primary" href="https://proposta.fenixbpo.com.br/dados/" target="_blank" rel="noopener">Abrir formulário de coleta</a><button class="btn secondary" id="copyLink">Copiar link de coleta</button><button class="btn ghost" id="shareLink">Compartilhar</button></div><div id="linkStatus" class="status"></div></section>
+<section class="card"><h2>Mensagem pronta para WhatsApp</h2><p>Você pode copiar ou compartilhar a mensagem abaixo sem precisar digitar toda vez.</p><textarea id="message" class="msg">Olá! Para entendermos melhor sua operação e prepararmos uma proposta adequada, preencha este formulário da FÊNIX:
+https://proposta.fenixbpo.com.br/dados/</textarea><div class="btns" style="margin-top:10px"><button class="btn primary" id="copyMessage">Copiar mensagem</button><button class="btn secondary" id="whatsapp">Enviar pelo WhatsApp</button></div><div id="msgStatus" class="status"></div></section>
+<section class="card"><h2>Painel interno</h2><p>Acesso rápido ao painel atual de diagnóstico e propostas.</p><a class="btn secondary" href="https://fenix-bpo-propostas.vercel.app/app-v15.html" target="_blank" rel="noopener">Abrir painel FÊNIX</a></section>
+<p class="small">Dica: no navegador do celular, use “Adicionar à Tela de Início”. Assim esta Central de Atalhos fica como um ícone no seu celular.</p>
+</main>
+<script>
+const link='https://proposta.fenixbpo.com.br/dados/';
+const $=id=>document.getElementById(id);
+async function copy(text,status){try{await navigator.clipboard.writeText(text);$(status).textContent='✓ Copiado';setTimeout(()=>$(status).textContent='',1800)}catch{ $(status).textContent='Não foi possível copiar automaticamente. Selecione e copie manualmente.' }}
+$('copyLink').onclick=()=>copy(link,'linkStatus');
+$('copyMessage').onclick=()=>copy($('message').value,'msgStatus');
+$('shareLink').onclick=async()=>{if(navigator.share){try{await navigator.share({title:'FÊNIX BPO — Coleta de dados',text:'Preencha o formulário da FÊNIX para levantamento da operação.',url:link})}catch{}}else{copy(link,'linkStatus')}};
+$('whatsapp').onclick=()=>{const text=encodeURIComponent($('message').value);window.open('https://wa.me/?text='+text,'_blank','noopener')};
+</script>
+</body>
+</html>
