@@ -5,37 +5,26 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="noindex,nofollow" />
   <title>FÊNIX — Proposta Comercial</title>
-  <link rel="stylesheet" href="/master-template/proposta-master-limpa-v1.css?v=1" />
-  <link rel="stylesheet" href="/assets/proposta-master-public-v1.css?v=1" />
+  <link rel="stylesheet" href="/master-template/proposta-master-limpa-v1.css?v=2" />
+  <link rel="stylesheet" href="/assets/proposta-master-public-v1.css?v=2" />
 </head>
 <body class="public-proposal">
   <div id="proposalLoader" class="proposal-loader">Carregando proposta FÊNIX...</div>
   <button class="public-print" type="button" onclick="window.print()">Imprimir / Salvar PDF</button>
-
   <div id="masterMount" aria-live="polite"></div>
-
   <section id="acceptPanel" class="accept-panel" hidden>
     <div class="accept-panel__inner">
       <div class="accept-panel__eyebrow">Aceite comercial</div>
       <h2>Confirmar proposta</h2>
       <p>Ao aceitar, você confirma o escopo e as condições comerciais apresentados. O aceite segue para validação final do CFO da FÊNIX antes da geração do contrato.</p>
       <form id="acceptForm" novalidate>
-        <div class="accept-fields">
-          <label>Nome do responsável
-            <input id="acceptName" name="nome" autocomplete="name" maxlength="120" required />
-          </label>
-          <label>E-mail
-            <input id="acceptEmail" name="email" type="email" autocomplete="email" maxlength="160" required />
-          </label>
-        </div>
+        <div class="accept-fields"><label>Nome do responsável<input id="acceptName" name="nome" autocomplete="name" maxlength="120" required /></label><label>E-mail<input id="acceptEmail" name="email" type="email" autocomplete="email" maxlength="160" required /></label></div>
         <label class="accept-check"><input id="acceptCheck" type="checkbox" required /> Confirmo o aceite desta proposta e das condições apresentadas.</label>
-        <button id="acceptButton" class="accept-button" type="submit">Aceitar proposta</button>
-        <div id="acceptStatus" class="accept-status" role="status"></div>
+        <button id="acceptButton" class="accept-button" type="submit">Aceitar proposta</button><div id="acceptStatus" class="accept-status" role="status"></div>
       </form>
       <div class="accept-governance">Aceite do cliente → validação CFO → contrato → assinatura → implantação.</div>
     </div>
   </section>
-
-  <script src="/assets/proposta-master-public-v1.js?v=1" defer></script>
+  <script src="/assets/proposta-master-public-v1.js?v=2" defer></script>
 </body>
 </html>
