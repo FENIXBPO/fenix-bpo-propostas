@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/painel", "destination": "/app-v15.html?interno=1" },
+    { "source": "/painel/", "destination": "/app-v15.html?interno=1" }
+  ]
+}
