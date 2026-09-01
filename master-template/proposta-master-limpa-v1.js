@@ -45,13 +45,14 @@ const FIXED={
 };
 
 function text(id,value){const el=document.getElementById(id);if(el&&value!==undefined&&value!==null)el.textContent=value;}
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-function list(id,items,emptyLabel='Não incluído neste pacote inicial.'){const el=document.getElementById(id);if(!el)return;const clean=(items||[]).filter(Boolean);el.innerHTML=clean.length?clean.map(x=>`<li>${escapeHtml(String(x))}</li>`).join(''):`<li class="empty-state">${escapeHtml(emptyLabel)}</li>`;}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function list(id,items,emptyLabel=''){const el=document.getElementById(id);if(!el)return 0;const clean=(items||[]).filter(Boolean);el.innerHTML=clean.length?clean.map(x=>`<li>${escapeHtml(x)}</li>`).join(''):(emptyLabel?`<li class="empty-state">${escapeHtml(emptyLabel)}</li>`:'');return clean.length;}
 function money(n){return 'R$ '+Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:2});}
 function sentence(s){s=String(s||'').trim();if(!s)return'';return s.charAt(0).toUpperCase()+s.slice(1).replace(/[.\s]+$/,'')+'.';}
 function fitClientName(){const el=document.getElementById('clientName');if(!el)return;el.style.fontSize='5.7vw';let size=parseFloat(getComputedStyle(el).fontSize);const maxH=parseFloat(getComputedStyle(el).lineHeight)*2.02;while((el.scrollHeight>maxH+2||el.scrollWidth>el.clientWidth+2)&&size>48){size-=2;el.style.fontSize=size+'px';}}
 function buildContext(p){const c=p.client||{},ctx=p.context||{};const name=c.name||c.razao_social||'O cliente';const parts=[];if(ctx.description)parts.push(sentence(ctx.description));if(ctx.pain)parts.push('O principal desafio identificado é '+sentence(String(ctx.pain).toLowerCase()));if(ctx.expectation)parts.push('A expectativa em relação à FÊNIX é '+sentence(String(ctx.expectation).toLowerCase()));return `${name}${c.segment?`, do segmento de ${String(c.segment).toLowerCase()}`:''}, apresentou o seguinte contexto: ${parts.join(' ')}`.trim();}
 function contextTitle(p){const pain=(p.context?.pain||'').trim();if(pain&&pain.length<=48)return pain.replace(/[.]+$/,'').toUpperCase();return 'Mais controle. Mais previsibilidade. Mais clareza para decidir.';}
+function fitScope(opCount,mgrCount){const split=document.getElementById('scopeSplit'),managerial=document.getElementById('managerialPanel');if(!split)return;split.classList.remove('scope-single','dense','very-dense');if(!mgrCount){split.classList.add('scope-single');if(managerial)managerial.setAttribute('aria-hidden','true');}else if(managerial){managerial.removeAttribute('aria-hidden');}const total=opCount+mgrCount;if(total>=16)split.classList.add('very-dense');else if(total>=11)split.classList.add('dense');}
 
 function fill(p){const c=p.client||{},t=p.commercial_terms||{},s=p.scope||{};
   text('clientName',(c.name||c.razao_social||'[NOME DO CLIENTE]').toUpperCase());
@@ -59,7 +60,7 @@ function fill(p){const c=p.client||{},t=p.commercial_terms||{},s=p.scope||{};
   text('proposalDate',new Date(p.published_at||Date.now()).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}));
   text('p2Title',contextTitle(p));text('contextSummary',buildContext(p));
   text('controlMsg','Rotinas padronizadas, conciliações recorrentes e acompanhamento consistente.');text('predictMsg','Visão organizada de compromissos, recebimentos e caixa.');text('decisionMsg','Informação consolidada para apoiar análises e decisões do cliente.');
-  list('operationalScope',s.operational||[],'Nenhuma atividade operacional aprovada.');list('managerialScope',s.managerial||[],'Não incluído neste pacote inicial.');
+  const opCount=list('operationalScope',s.operational||[],'Nenhuma atividade operacional aprovada.');const mgrCount=list('managerialScope',s.managerial||[]);fitScope(opCount,mgrCount);
   text('scopeNote','Escopo aprovado pelo CFO. Alterações relevantes de volume ou atividades exigem revisão prévia.');
   list('fenixResponsibilities',FIXED.fenixResponsibilities);list('clientResponsibilities',FIXED.clientResponsibilities);
   text('technologySummary',FIXED.technology.summary);text('techProcesses',FIXED.technology.processes);text('techAutomation',FIXED.technology.automation);text('techAi',FIXED.technology.ai);text('techData',FIXED.technology.data);text('techDecision',FIXED.technology.decision);
