@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "status": "homologacao",
+  "source_of_truth": "PADRAO_PROPOSTA_FENIX_MASTER_LIMPO_V1.md",
+  "pages": {
+    "1": {
+      "title": "Capa",
+      "fields": ["client_name", "client_legal_name", "segment", "proposal_date"],
+      "rules": {"client_name_max_lines": 2, "columns": ["Cliente", "Segmento", "Data"]}
+    },
+    "2": {
+      "title": "Nossa compreensão",
+      "fields": ["business_description", "pain", "expectation"]
+    },
+    "3": {
+      "title": "Escopo da proposta",
+      "fields": ["approved_scope.operational", "approved_scope.managerial", "scope_note"]
+    },
+    "4": {
+      "title": "Modelo de atuação / Responsabilidades",
+      "fixed_legal_content": true,
+      "fields": ["special_responsibility_note"]
+    },
+    "5": {
+      "title": "Tecnologia",
+      "fields": ["software_name", "technology_note", "integrations"]
+    },
+    "6": {
+      "title": "Implantação",
+      "fields": ["implementation_note", "implementation_steps"]
+    },
+    "7": {
+      "title": "Condição comercial",
+      "fields": [
+        "cnpjs", "launch_limit_per_cnpj", "launch_limit_group", "bank_accounts_included",
+        "base_monthly", "discount", "final_monthly", "per_cnpj", "implementation",
+        "software_name", "software_total", "software_per_cnpj", "additional_bank_account",
+        "commercial_note"
+      ],
+      "source": "CFO_APPROVED_ONLY"
+    },
+    "8": {
+      "title": "Próximos passos e aceite",
+      "workflow": ["client_acceptance", "cfo_validation", "contract", "signature", "kickoff"]
+    }
+  }
+}
