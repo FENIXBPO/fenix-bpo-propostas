@@ -15,6 +15,7 @@
     loadScript('dashboard-enhance.js?v=3','data-fenix-dashboard-enhance');
     loadScript('dashboard-pipeline-v2.js?v=1','data-fenix-pipeline-v2');
     loadScript('dashboard-pipeline-v4-polish.js?v=1','data-fenix-pipeline-v4-polish');
+    loadScript('dashboard-pipeline-v5-brand.js?v=1','data-fenix-pipeline-v5-brand');
     loadScript('dashboard-proposal-link-v2.js?v=1','data-fenix-dashboard-link-v2');
     loadScript('cfo-separation.js?v=1','data-fenix-cfo-separation');
     loadScript('cfo-publish.js?v=1','data-fenix-cfo-publish');
