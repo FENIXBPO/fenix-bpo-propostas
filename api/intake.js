@@ -12,6 +12,17 @@ const toInteger = value => {
   const match = String(value ?? '').match(/\d+/);
   return match ? Number(match[0]) : null;
 };
+const parseCityUf = value => {
+  const text = String(value || '').trim();
+  if (!text) return { cidade: null, uf: null };
+  const parts = text.split(/\s*[\/|-]\s*/).map(x => x.trim()).filter(Boolean);
+  if (parts.length < 2) return { cidade: text, uf: null };
+  const ufCandidate = parts[parts.length - 1].toUpperCase();
+  return {
+    cidade: parts.slice(0, -1).join(' / ') || null,
+    uf: /^[A-Z]{2}$/.test(ufCandidate) ? ufCandidate : null
+  };
+};
 
 async function supabase(path, options = {}) {
   const headers = {
@@ -49,16 +60,17 @@ module.exports = async function handler(req, res) {
   if (!String(form.razao || lookup.razao_social || '').trim()) return res.status(400).json({ error: 'Razão social é obrigatória.' });
 
   try {
+    const manualLocation = parseCityUf(form.cidade_uf);
     const clientPayload = {
       cnpj,
       razao_social: String(form.razao || lookup.razao_social || '').trim(),
-      nome_fantasia: String(lookup.nome_fantasia || '').trim() || null,
+      nome_fantasia: String(form.nome_fantasia || lookup.nome_fantasia || '').trim() || null,
       situacao_cadastral: String(lookup.situacao_cadastral || '').trim() || null,
       cnae_principal: String(lookup.cnae_principal || '').trim() || null,
       atividade_principal: String(lookup.atividade_principal || '').trim() || null,
       endereco: String(lookup.endereco || '').trim() || null,
-      cidade: String(lookup.cidade || '').trim() || null,
-      uf: String(lookup.uf || '').trim() || null,
+      cidade: String(lookup.cidade || manualLocation.cidade || '').trim() || null,
+      uf: String(lookup.uf || manualLocation.uf || '').trim() || null,
       cep: String(lookup.cep || '').trim() || null,
       responsavel: String(form.responsavel || '').trim() || null,
       email: String(form.email || '').trim() || null,
