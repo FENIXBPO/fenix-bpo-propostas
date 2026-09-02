@@ -4,10 +4,18 @@
   const statusEl=document.getElementById('acceptStatus'),form=document.getElementById('acceptForm'),btn=document.getElementById('acceptButton');
   let proposal=null;
   const fail=msg=>{loader.classList.add('error');loader.textContent=msg};
+  function bindMasterAcceptance(){
+    const masterBtn=document.getElementById('masterAcceptButton');if(!masterBtn)return;
+    if(proposal?.status==='proposta_aceita_aguardando_cfo'){
+      masterBtn.disabled=true;masterBtn.textContent='Aceite já registrado';return;
+    }
+    masterBtn.disabled=false;masterBtn.textContent='Aceitar proposta';
+    masterBtn.onclick=()=>{panel.hidden=false;panel.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>document.getElementById('acceptName')?.focus(),450)};
+  }
   async function loadMaster(){
     if(!ref)throw new Error('Referência da proposta ausente.');
     const [htmlRes,dataRes]=await Promise.all([
-      fetch('/master-template/proposta-master-limpa-v1.html',{cache:'no-store'}),
+      fetch('/master-template/proposta-master-limpa-v1.html?v=5',{cache:'no-store'}),
       fetch('/api/public-proposal?ref='+encodeURIComponent(ref),{cache:'no-store'})
     ]);
     if(!htmlRes.ok)throw new Error('Não foi possível carregar o layout da proposta.');
@@ -15,9 +23,9 @@
     const source=await htmlRes.text(),doc=new DOMParser().parseFromString(source,'text/html'),deck=doc.querySelector('.deck');
     if(!deck)throw new Error('Layout mestre inválido.');
     mount.innerHTML=deck.outerHTML;
-    await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='/master-template/proposta-master-limpa-v1.js?v=1';s.onload=resolve;s.onerror=()=>reject(new Error('Não foi possível carregar os dados da proposta.'));document.body.appendChild(s)});
+    await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='/master-template/proposta-master-limpa-v1.js?v=5';s.onload=resolve;s.onerror=()=>reject(new Error('Não foi possível carregar os dados da proposta.'));document.body.appendChild(s)});
     document.title=`FÊNIX — Proposta Comercial | ${proposal?.client?.name||proposal?.client?.razao_social||'Cliente'}`;
-    panel.hidden=false;
+    bindMasterAcceptance();
     if(proposal?.status==='proposta_aceita_aguardando_cfo'){
       btn.disabled=true;btn.textContent='Aceite já registrado';statusEl.className='accept-status ok';statusEl.textContent='Esta proposta já foi aceita e está aguardando validação do CFO.';
       [...form.elements].forEach(el=>{if(el!==btn)el.disabled=true});
@@ -33,10 +41,9 @@
     if(!/^\d{14}$/.test(cnpj)){statusEl.className='accept-status error';statusEl.textContent='Não foi possível validar o CNPJ vinculado à proposta.';return}
     btn.disabled=true;btn.textContent='Registrando aceite...';
     try{
-      const r=await fetch('/api/proposal-acceptance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cnpj,nome,email,accepted:true,proposal_ref:ref})});
-      const d=await r.json();if(!r.ok)throw new Error(d.error||'Não foi possível registrar o aceite.');
-      statusEl.className='accept-status ok';statusEl.textContent=d.message||'Aceite registrado com sucesso.';btn.textContent='Aceite registrado ✓';
-      [...form.elements].forEach(el=>el.disabled=true);
+      const r=await fetch('/api/proposal-acceptance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cnpj,nome,email,accepted:true,proposal_ref:ref})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Não foi possível registrar o aceite.');
+      statusEl.className='accept-status ok';statusEl.textContent=d.message||'Aceite registrado com sucesso.';btn.textContent='Aceite registrado ✓';[...form.elements].forEach(el=>el.disabled=true);
+      const masterBtn=document.getElementById('masterAcceptButton');if(masterBtn){masterBtn.disabled=true;masterBtn.textContent='Aceite registrado ✓'}
     }catch(err){btn.disabled=false;btn.textContent='Aceitar proposta';statusEl.className='accept-status error';statusEl.textContent=err.message}
   });
   loadMaster().catch(err=>fail(err.message));

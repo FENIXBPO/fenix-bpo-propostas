@@ -1,67 +1,91 @@
-# fenix-bpo-propostas
+# FÊNIX BPO — Propostas, Pipeline e Contratos
 
-Fluxo interno da Fenix BPO para levantamento de dados, diagnóstico CFO/Comercial e geração de propostas.
+Sistema comercial da FÊNIX BPO para coleta de dados, análise CFO, geração de proposta, aceite, contrato e acompanhamento do Pipeline.
 
-## Fluxo atual
+## Regra principal do projeto
 
-1. Cadastro do cliente e contexto
-2. Volumetria financeira e estrutura bancária
-3. Definição do escopo
-4. Diagnóstico automático pela Matriz CFO v1.0
-5. Análise de custo, margem, piso e implantação
-6. Aprovação CFO
-7. Aprovação Comercial
-8. Geração da proposta pela IA usando somente escopo e valores aprovados
-9. Impressão/PDF manual
-10. Minuta de contrato para revisão interna
+A proposta comercial possui um padrão visual congelado chamado **Master Limpo — Golden Reference Oficial**.
 
-## Precificação
+Antes de qualquer alteração na proposta, leia:
 
-A referência oficial está documentada em `PRECIFICACAO_CFO.md` e implementada em `pricing-engine.js`.
+1. `MANUAL_GOLDEN_REFERENCE_FENIX.md`
+2. `GOVERNANCA_PROJETO_FENIX.md`
+3. `MAPA_ARQUITETURA_FENIX.md`
+4. `CHECKLIST_HOMOLOGACAO_FENIX.md`
 
-A Matriz CFO v1.0 está integrada ao fluxo principal da branch por `app-v15.html`. O `index.html` direciona para essa versão.
+O PDF homologado `FENIX_Caso_Real_Master_Limpo_Homologacao.pdf` é a autoridade visual máxima. Se código e PDF divergirem, o PDF vence.
 
-A matriz prioriza volumetria e complexidade, calcula adicionais operacionais, implantação, horas estimadas, custo mensal, piso comercial e piso por margem quando o custo-hora real é informado.
+## Fluxo oficial
 
-### Guardrails internos
+`coleta → CFO → proposta → aceite do cliente → validação CFO → contrato → assinatura → implantação`
 
-- custo-hora é obrigatório para validar margem;
-- margem-alvo inicial: 50%, editável pelo CFO;
-- desconto comercial máximo inicial: 10%, editável;
-- preço abaixo do piso/margem exige exceção CFO explícita e justificativa;
-- CFO e Comercial precisam estar como `Aprovado` antes da geração da proposta;
-- piso, custo-hora, margem e limite de desconto nunca devem aparecer na proposta do cliente.
+Regras fundamentais:
 
-## Arquivos principais
+- nenhuma proposta é publicada antes da aprovação CFO;
+- valores ao cliente são somente os aprovados pelo CFO;
+- aceite do cliente não gera contrato automaticamente;
+- contrato só é autorizado após validação CFO do aceite;
+- proposta e Pipeline são produtos diferentes;
+- o Pipeline pode evoluir visualmente; o Golden Reference não.
 
-- `index.html` — entrada da branch e redirecionamento para o fluxo atual
-- `app-v15.html` — coleta, diagnóstico CFO/Comercial e geração de proposta
-- `pricing-engine.js` — Matriz CFO v1.0
-- `pricing-validation.html` — simulador isolado da matriz
-- `PRECIFICACAO_CFO.md` — regras de negócio da precificação
-- `api/propose.js` — geração via Anthropic
-- `api/send-email.js` — envio SMTP (ainda não integrado ao novo fluxo v1.5)
+## Rotas oficiais
 
-## Integrações atuais
+- Coleta do cliente: `/dados/`
+- Painel / Pipeline: `/painel/`
+- Central de atalhos: `/atalhos/`
+- Proposta pública: `/p/proposta-master-v1.html?ref=<public_slug>`
 
-- BrasilAPI: existe na versão anterior; precisa ser reintroduzida na tela v1.5
-- Anthropic: geração de proposta e minuta
-- SMTP/Nodemailer: backend existente; envio com PDF real ainda pendente
+## Documentação oficial
 
-## Variáveis necessárias
+### Governança
+- `MANUAL_GOLDEN_REFERENCE_FENIX.md` — regras imutáveis da proposta aprovada.
+- `GOVERNANCA_PROJETO_FENIX.md` — fontes de verdade, responsabilidades e fluxo ponta a ponta.
+- `MAPA_ARQUITETURA_FENIX.md` — componentes, arquivos, APIs e responsabilidades técnicas.
+- `CHECKLIST_HOMOLOGACAO_FENIX.md` — checklist obrigatório antes de produção.
 
-- `ANTHROPIC_API_KEY`
-- `SMTP_HOST`
-- `SMTP_USER`
-- `SMTP_PASS`
+### Proposta
+- `PADRAO_PROPOSTA_FENIX.md`
+- `PADRAO_PROPOSTA_FENIX_MASTER_LIMPO_V1.md`
+- `master-template/proposta-master-limpa-v1.html`
+- `master-template/proposta-master-limpa-v1.css`
+- `master-template/proposta-master-limpa-v1.js`
+- `p/proposta-master-v1.html`
 
-## Pendências estruturais
+### CFO e preços
+- `PRECIFICACAO_CFO.md`
+- `pricing-engine.js`
+- `SISTEMA_CAMPOS_SOFTWARE_E_CONDICOES.md`
 
-- reintroduzir busca automática de CNPJ na tela v1.5;
-- persistência em banco;
-- autenticação e perfis CFO/Comercial;
-- histórico e auditoria de aprovações/exceções;
-- geração automática de PDF e anexo real no e-mail;
-- CRM/automação pós-envio;
-- aprovação do cliente e assinatura eletrônica;
-- substituir geração livre de contrato por transposição controlada ao modelo contratual padrão.
+### Contrato
+- `CONTRATO_FENIX_BPO_MODELO_PADRAO_v22.md`
+- `CONTRATO_V22_MAPEAMENTO_AUTOMACAO.md`
+
+## Pipeline
+
+Etapas comerciais:
+
+`Entrada → Análise CFO → Proposta → Aceite → Contrato`
+
+Estado manual adicional:
+
+`Encerrado`
+
+As etapas críticas avançam por eventos reais do fluxo. O usuário pode encerrar ou reabrir oportunidades, mas não deve forçar manualmente aprovação CFO, aceite ou contrato.
+
+O Pipeline deve exibir **uma oportunidade ativa por CNPJ/negociação corrente**. Intakes anteriores permanecem no histórico e não devem inflar contagens ou MRR.
+
+## Posicionamento jurídico
+
+A FÊNIX atua como **BPO / apoio administrativo-financeiro**.
+
+O sistema e seus documentos não devem atribuir à FÊNIX execução autônoma de pagamentos, movimentação discricionária de recursos, negociação independente ou tomada de decisões gerenciais do cliente.
+
+## Desenvolvimento e produção
+
+Mudanças relevantes devem seguir:
+
+`branch de teste → implementação → preview → homologação → aprovação → merge → verificação de produção`
+
+Nunca usar `main` como ambiente de experimentação.
+
+Qualquer alteração visual no Golden Reference exige nova versão e nova homologação formal.

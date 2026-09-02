@@ -12,10 +12,11 @@ function authorized(req){const token=cookies(req)[COOKIE];if(!token)return false
 async function sb(pathname,options={}){const headers={apikey:SECRET_KEY,'Content-Type':'application/json',...(options.headers||{})};if(SECRET_KEY?.startsWith('eyJ'))headers.Authorization=`Bearer ${SECRET_KEY}`;const r=await fetch(`${SUPABASE_URL}/rest/v1/${pathname}`,{...options,headers});const text=await r.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}if(!r.ok)throw new Error(data?.message||`Supabase ${r.status}`);return data}
 function money(v){const n=Number(v);return Number.isFinite(n)?`R$ ${n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})}`:'—'}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function inline(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`(.+?)`/g,'<code>$1</code>')}
 function markdownToHtml(md){
  const lines=String(md||'').split(/\r?\n/);let html='',inList=false;
  const close=()=>{if(inList){html+='</ul>';inList=false}};
- for(const raw of lines){let line=raw.trimEnd();if(!line.trim()){close();continue}
+ for(const raw of lines){const line=raw.trimEnd();if(!line.trim()){close();continue}
   if(/^### /.test(line)){close();html+=`<h3>${inline(line.slice(4))}</h3>`;continue}
   if(/^## /.test(line)){close();html+=`<h2>${inline(line.slice(3))}</h2>`;continue}
   if(/^# /.test(line)){close();html+=`<h1>${inline(line.slice(2))}</h1>`;continue}
@@ -25,12 +26,11 @@ function markdownToHtml(md){
  }
  close();return html;
 }
-function inline(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`(.+?)`/g,'<code>$1</code>')}
 module.exports=async function handler(req,res){
  if(!password()||!SECRET_KEY)return res.status(503).json({error:'Área interna ainda não configurada.'});
  if(!authorized(req))return res.status(401).json({error:'Acesso não autorizado.'});
- if(req.method!=='GET')return res.status(405).json({error:'Método não permitido.'});
- const ref=String(req.query?.ref||'').trim();if(!ref)return res.status(400).json({error:'Contrato não informado.'});
+ if(!['GET','POST'].includes(req.method))return res.status(405).json({error:'Método não permitido.'});
+ const ref=String(req.query?.ref||req.body?.ref||'').trim();if(!ref)return res.status(400).json({error:'Contrato não informado.'});
  try{
   const rows=await sb(`bpo_contracts?contract_code=eq.${encodeURIComponent(ref)}&select=*&limit=1`);const contract=rows?.[0];
   if(!contract?.id)return res.status(404).json({error:'Contrato não localizado.'});
@@ -38,7 +38,6 @@ module.exports=async function handler(req,res){
   const d=contract.contract_data||{},client=d.client||{},legal=d.legal||{},t=d.commercial_terms||{},s=d.approved_scope||{},a=d.assumptions||{};
   let md=fs.readFileSync(path.join(process.cwd(),'CONTRATO_FENIX_BPO_MODELO_PADRAO_v22.md'),'utf8');
   const services=[...(s.operational||[]),...(s.managerial||[])];
-  const limits=[`Empresas/CNPJs atendidos: ${t.cnpjs??'—'}`,`Lançamentos por CNPJ/mês: ${t.launch_limit_per_cnpj??'—'}`,`Limite total do grupo/mês: ${t.launch_limit_group??'—'}`,`Contas bancárias incluídas: até ${t.bank_accounts_included??'—'}`];
   const specific=[];if(t.additional_bank_account!==undefined)specific.push(`Conta bancária adicional: ${money(t.additional_bank_account)}/mês por conta.`);if(a.commercial_review_on_scope_or_volume_change)specific.push('Mudanças relevantes de volume, CNPJs, bancos ou escopo podem exigir revisão comercial e aditivo.');if(a.extra_work_requires_prior_authorization)specific.push('Serviços extraordinários e retrabalho passíveis de cobrança exigem alinhamento e autorização prévia do cliente quando aplicável.');
   const replacements={
    cliente_razao_social:client.razao_social,cliente_nome_fantasia:client.nome_fantasia||client.razao_social,cliente_cnpj:client.cnpj,cliente_endereco:client.endereco,cliente_cidade_uf:[client.cidade,client.uf].filter(Boolean).join('/'),cliente_cep:client.cep,cliente_representante:legal.representative||client.responsavel,cliente_representante_cpf:legal.representative_cpf,cliente_email:client.email,cliente_whatsapp:client.telefone,
@@ -48,8 +47,15 @@ module.exports=async function handler(req,res){
   };
   md=md.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g,(m,k)=>replacements[k]!==undefined&&replacements[k]!==null&&String(replacements[k]).trim()!==''?String(replacements[k]):`[PENDENTE: ${k}]`);
   const missing=[...md.matchAll(/\[PENDENTE: ([^\]]+)\]/g)].map(m=>m[1]);
-  const now=new Date().toISOString();
-  if(contract.status!=='gerado'&&!missing.length){await sb(`bpo_contracts?id=eq.${contract.id}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:'gerado',generated_at:now,updated_at:now})})}
-  return res.status(200).json({ok:true,contract_code:contract.contract_code,template_version:contract.template_version,missing,html:markdownToHtml(md),generated_at:missing.length?contract.generated_at:contract.generated_at||now});
- }catch(err){console.error('Contract document error:',err);return res.status(500).json({error:'Não foi possível gerar o contrato v22.'})}
+  let generatedAt=contract.generated_at||null,status=contract.status;
+  if(req.method==='POST'){
+    if(missing.length)return res.status(422).json({error:'Contrato possui campos pendentes e não pode ser marcado como gerado.',missing});
+    if(contract.status!=='gerado'){
+      generatedAt=new Date().toISOString();status='gerado';
+      await sb(`bpo_contracts?id=eq.${contract.id}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:'gerado',generated_at:generatedAt,updated_at:generatedAt})});
+      await sb('bpo_proposal_events',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({proposal_id:contract.proposal_id,event_type:'contract_generated',event_data:{contract_id:contract.id,contract_code:contract.contract_code,template_version:contract.template_version,generated_at:generatedAt}})});
+    }
+  }
+  return res.status(200).json({ok:true,contract_code:contract.contract_code,template_version:contract.template_version,status,missing,can_generate:!missing.length&&status!=='gerado',html:markdownToHtml(md),generated_at:generatedAt});
+ }catch(err){console.error('Contract document error:',err);return res.status(500).json({error:'Não foi possível preparar o contrato v22.'})}
 };
