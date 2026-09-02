@@ -1,12 +1,14 @@
 # FÊNIX — MANUAL DO GOLDEN REFERENCE
 
-Status: **OFICIAL**
+Status: **NORMA OFICIAL E VINCULANTE DO PROJETO**
 
 Nome oficial do padrão: **Master Limpo — Golden Reference Oficial**
 
 ## 1. Autoridade visual
 
 O PDF homologado **FENIX_Caso_Real_Master_Limpo_Homologacao.pdf** é a autoridade visual máxima da proposta comercial FÊNIX.
+
+Ele não é inspiração ou referência aproximada. É a única fonte visual autorizada para a proposta.
 
 Se houver qualquer conflito entre PDF, HTML, CSS, JavaScript, Gamma, apresentação, imagem, template ou interpretação posterior, **o PDF homologado vence**.
 
@@ -31,6 +33,8 @@ São fixos:
 - narrativa comercial das 8 páginas.
 
 Nenhuma implementação pode "reinterpretar" esses elementos com outro layout.
+
+Gamma, HTML, CSS, componentes, apresentações e geradores de PDF somente podem reproduzir o Master. Nenhuma dessas tecnologias pode criar uma versão visual alternativa.
 
 ## 3. Campos que podem variar
 
@@ -150,3 +154,9 @@ Qualquer mudança visual futura exige:
 - atualização dos testes de regressão.
 
 Até isso acontecer, **Master Limpo — Golden Reference Oficial** permanece congelado.
+
+## 12. Branch, PR e produção
+
+Toda alteração do projeto deve ser feita em branch própria e submetida a PR de homologação. `main` não é ambiente de experimento.
+
+Nenhuma mudança pode chegar à produção sem testes, preview, conferência do caso real e aprovação expressa. Alterações que afetem a proposta exigem comparação página a página com o PDF Golden Reference.

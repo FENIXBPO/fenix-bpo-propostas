@@ -2,7 +2,7 @@
   "name": "fenix-bpo-propostas",
   "version": "1.0.0",
   "scripts": {
-    "test": "node tests/pricing-engine.test.js"
+    "test": "node tests/pricing-engine.test.js && node tests/governance.test.js && node tests/api-governance.test.js"
   },
   "dependencies": {
     "nodemailer": "^6.9.13",

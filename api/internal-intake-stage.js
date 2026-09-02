@@ -24,7 +24,9 @@ module.exports=async function handler(req,res){
       if(current.status==='encerrado')return res.status(200).json({ok:true,status:'encerrado'});
       status='encerrado';updatedRaw={...raw,_pipeline:{...pipeline,previous_status:current.status||'recebido',closed_at:new Date().toISOString()}};
     }else{
-      status=pipeline.previous_status||'recebido';updatedRaw={...raw,_pipeline:{...pipeline,reopened_at:new Date().toISOString()}};
+      if(current.status!=='encerrado')return res.status(409).json({error:'Somente oportunidades encerradas podem ser reabertas.'});
+      const restorableStatuses=new Set(['recebido','em_analise_cfo','rascunho_cfo','proposta_aprovada_cfo','proposta_publicada','proposta_aceita_aguardando_cfo','contrato_autorizado']);
+      status=restorableStatuses.has(pipeline.previous_status)?pipeline.previous_status:'recebido';updatedRaw={...raw,_pipeline:{...pipeline,reopened_at:new Date().toISOString()}};
     }
     const now=new Date().toISOString();
     const updated=await sb(`bpo_intakes?id=eq.${intakeId}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({status,raw_payload:updatedRaw,updated_at:now})});
