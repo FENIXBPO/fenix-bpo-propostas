@@ -20,7 +20,7 @@ module.exports=async function handler(req,res){
   if(!password()||!SECRET_KEY)return res.status(503).json({error:'Área interna ainda não configurada.'});
   if(!authorized(req))return res.status(401).json({error:'Acesso não autorizado.'});
   try{
-    const intakes=await sb('bpo_intakes?select=id,client_id,created_at,status,ramo,faturamento,recebimentos_mes,pagamentos_mes,notas_emitidas_mes,notas_recebidas_mes,outros_lancamentos_mes,contratos_novos_mes,comissoes_lancadas_mes,bancos_ativos,cartoes,contas_aplicacao,cnpjs_operacao,filiais,centros_custo,funcionarios_clt,situacao_atual,atrasados_retrabalho,escopo,descricao_negocio,dor,expectativa,raw_payload&order=created_at.desc&limit=100');
+    const intakes=await sb('bpo_intakes?select=id,client_id,created_at,updated_at,status,ramo,faturamento,recebimentos_mes,pagamentos_mes,notas_emitidas_mes,notas_recebidas_mes,outros_lancamentos_mes,contratos_novos_mes,comissoes_lancadas_mes,bancos_ativos,cartoes,contas_aplicacao,cnpjs_operacao,filiais,centros_custo,funcionarios_clt,situacao_atual,atrasados_retrabalho,escopo,descricao_negocio,dor,expectativa,raw_payload&order=created_at.desc&limit=100');
     const clientIds=[...new Set((intakes||[]).map(x=>x.client_id).filter(Boolean))];
     let clients=[];
     if(clientIds.length){
