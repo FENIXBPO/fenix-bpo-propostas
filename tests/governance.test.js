@@ -18,7 +18,7 @@ assert.match(manual, /branch própria/i);
 const goldenPath = path.join(root, 'homologacao/FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_APROVADO.pdf');
 assert.ok(fs.existsSync(goldenPath), 'O PDF Golden Reference oficial deve estar versionado no repositório.');
 const goldenHash = crypto.createHash('sha256').update(fs.readFileSync(goldenPath)).digest('hex');
-assert.equal(goldenHash, 'f62c3b2d1e0900161e2c17eb9c6b92c4a204d40a0b3d1e580e8cf51559d02361', 'O PDF Golden Reference foi alterado sem nova homologação.');
+assert.equal(goldenHash, '14b626a36031c0b04d0aabaaabaa52b5efd90672811f1dcff6060459042c1cf4', 'O PDF Golden Reference foi alterado sem nova homologação.');
 
 const master = read('master-template/proposta-master-limpa-v1.html');
 const pages = [...master.matchAll(/<section class="page" data-page="(\d+)"/g)].map(match => Number(match[1]));

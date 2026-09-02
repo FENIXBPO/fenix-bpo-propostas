@@ -7,7 +7,8 @@
 ## 1. Autoridade auditada
 
 - Arquivo: `FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_APROVADO.pdf`
-- SHA-256: `f62c3b2d1e0900161e2c17eb9c6b92c4a204d40a0b3d1e580e8cf51559d02361`
+- Versão: v2 — homologada em 2 de setembro de 2026
+- SHA-256: `14b626a36031c0b04d0aabaaabaa52b5efd90672811f1dcff6060459042c1cf4`
 - Páginas: 8
 - Formato: 16:9
 - Dimensão PDF: 1200 × 675 pontos
@@ -38,16 +39,16 @@ O Golden Reference foi gerado em páginas fixas de 1600 × 900 pixels. O PR util
 
 Antes do merge, a implementação deve usar uma moldura fixa fiel ao Golden e aplicar escala uniforme apenas no contêiner externo.
 
-## 3. Observações presentes no próprio PDF aprovado
+## 3. Correções homologadas na v2
 
-A inspeção página a página identificou características já presentes na autoridade visual:
+A nova autoridade visual resolveu, mediante homologação expressa:
 
-- página 3: a nota de aprovação do CFO se sobrepõe à parte final do escopo operacional;
-- página 8: o logo aparece parcialmente recortado e há proximidade/sobreposição no bloco de aceite.
+- página 3: a sobreposição da nota de aprovação do CFO com o escopo operacional;
+- página 8: o fragmento recortado, substituído pela logo FÊNIX integral;
+- página 8: o corte do bloco de aceite, agora inteiramente visível.
 
-Esses pontos não podem ser corrigidos silenciosamente no código. Como estão no PDF aprovado, qualquer melhoria exige um **Golden Reference v2**, nova homologação e atualização do hash oficial.
-
-Até essa decisão, a implementação deve reproduzir o PDF vigente.
+Essas correções integram o Golden Reference v2. Qualquer nova alteração visual
+continua exigindo nova versão, homologação e hash.
 
 ## 4. Elementos aprovados estruturalmente
 

@@ -1,13 +1,16 @@
 # Homologação — Golden Reference v2
 
 **Data:** 2 de setembro de 2026  
-**Status:** **CANDIDATA A HOMOLOGAÇÃO — NÃO OFICIAL**  
+**Status:** **APROVADA — GOLDEN REFERENCE OFICIAL v2**
 **PR:** #5 — `fix/master-proposta-e-pipeline-v2`
 
 ## Autoridade vigente
 
-O arquivo `FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_APROVADO.pdf` permanece como
-**Master Limpo — Golden Reference Oficial** até aprovação expressa desta v2.
+O arquivo `FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_APROVADO.pdf` contém a v2
+homologada e passa a ser o **Master Limpo — Golden Reference Oficial**.
+
+SHA-256 oficial:
+`14b626a36031c0b04d0aabaaabaa52b5efd90672811f1dcff6060459042c1cf4`.
 
 ## Escopo autorizado da v2
 
@@ -36,9 +39,10 @@ homologados.
 
 ## Artefatos
 
-- PDF candidato: `FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_V2_HOMOLOGACAO.pdf`;
-- folha corretiva: `GOLDEN_REFERENCE_V2_HOMOLOGACAO.css`;
-- integridade: `GOLDEN_REFERENCE_V2_HOMOLOGACAO.sha256`.
+- PDF oficial: `FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_APROVADO.pdf`;
+- PDF de histórico da homologação: `FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_V2_HOMOLOGACAO.pdf`;
+- folha corretiva auditável: `GOLDEN_REFERENCE_V2_HOMOLOGACAO.css`;
+- integridade oficial: `GOLDEN_REFERENCE_FENIX.sha256`.
 
 ## Validação executada
 
@@ -50,12 +54,11 @@ homologados.
 - fluxo comercial preservado;
 - nenhuma mudança promovida para produção.
 
-## Regra de promoção
+## Registro da promoção
 
-Esta candidata só substituirá o Golden vigente depois de:
+Homologação visual expressa registrada em 2 de setembro de 2026 após revisão da
+página 8 com a logo FÊNIX integral.
 
-1. conferência página a página pelo responsável de negócio;
-2. aprovação expressa do CFO no PR;
-3. atualização do manual e do hash oficial em commit posterior;
-4. novo teste com caso real;
-5. liberação explícita do bloqueio visual do PR #5.
+Esta aprovação promove o PDF v2 como autoridade visual, mas não libera o merge
+do PR #5. A implementação pública ainda deve reproduzir o PDF exatamente, passar
+por teste com caso real e receber liberação explícita do bloqueio visual.
