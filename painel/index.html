@@ -4,12 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>FÊNIX BPO — Painel Interno</title>
-<meta http-equiv="refresh" content="0;url=/app-v15.html?interno=1">
-<script>location.replace('/app-v15.html?interno=1');</script>
-<style>body{margin:0;background:#050505;color:#f5f1e8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}a{color:#f1c04d}</style>
+<title>FÊNIX BPO — Painel Comercial</title>
+<style>
+:root{color-scheme:dark;--bg:#050505;--gold:#f1c04d;--muted:#a89f90;--line:#4f3c1d}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:#f7f2e8;overflow:hidden}
+#boot{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 70% 10%,rgba(217,154,29,.11),transparent 30%),#050505;z-index:3;transition:opacity .22s ease}
+#boot.hidden{opacity:0;pointer-events:none}
+.boot-card{width:min(560px,86vw);padding:34px 30px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#0b0b0b,#090806);box-shadow:0 24px 80px rgba(0,0,0,.42);text-align:center}
+.logo{width:min(360px,70vw);height:88px;margin:0 auto 22px;background:url('/assets/fenix-logo-header-crop.webp') center/contain no-repeat}
+.title{font-size:22px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.sub{font-size:14px;color:var(--muted);margin-top:10px}.bar{height:3px;background:#1e1a12;border-radius:999px;overflow:hidden;margin:24px auto 0;max-width:280px}.bar:after{content:"";display:block;height:100%;width:36%;background:linear-gradient(90deg,#a86f12,#f1c04d);animation:load 1.15s ease-in-out infinite}
+#error{display:none;margin-top:18px;color:#e6c27a;font-size:13px;line-height:1.5}
+@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(320%)}}
+#app{position:fixed;inset:0;width:100%;height:100%;border:0;background:#050505;opacity:0;pointer-events:none;transition:opacity .18s ease}
+#app.ready{opacity:1;pointer-events:auto}
+</style>
 </head>
 <body>
-<p>Abrindo o Pipeline Comercial FÊNIX…<br><a href="/app-v15.html?interno=1">Clique aqui se não abrir automaticamente.</a></p>
+<div id="boot"><div class="boot-card"><div class="logo" aria-label="FÊNIX Intelligent BPO"></div><div class="title">Painel Comercial</div><div class="sub">Carregando Pipeline FÊNIX…</div><div class="bar"></div><div id="error">O painel demorou mais que o esperado para carregar. Atualize a página. A interface antiga não será exibida.</div></div></div>
+<iframe id="app" title="Painel Comercial FÊNIX" src="/app-v15.html?interno=1&painel_shell=1"></iframe>
+<script>
+(function(){
+  const frame=document.getElementById('app'),boot=document.getElementById('boot'),err=document.getElementById('error');
+  const started=Date.now();let done=false;
+  function ready(){if(done)return;done=true;frame.classList.add('ready');boot.classList.add('hidden');setTimeout(()=>boot.remove(),260)}
+  function check(){
+    if(done)return;
+    try{
+      const doc=frame.contentDocument;
+      const dashboard=doc&&doc.getElementById('fenix-internal-dashboard');
+      if(dashboard&&dashboard.dataset.pipelineV2==='1'){ready();return}
+    }catch(e){}
+    if(Date.now()-started>15000){err.style.display='block';return}
+    setTimeout(check,120);
+  }
+  frame.addEventListener('load',check);check();
+})();
+</script>
 </body>
 </html>
