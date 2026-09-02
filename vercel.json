@@ -1,4 +1,15 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "homologacao": true,
+      "*": false
+    }
+  },
+  "github": {
+    "autoAlias": false
+  },
   "rewrites": [
     { "source": "/painel", "destination": "/app-v15.html?interno=1" },
     { "source": "/painel/", "destination": "/app-v15.html?interno=1" }
