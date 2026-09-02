@@ -16,14 +16,17 @@ module.exports=async function handler(req,res){
  const intakeId=String(req.query?.intake_id||req.body?.intake_id||'').trim();
  if(!/^[0-9a-f-]{36}$/i.test(intakeId))return res.status(400).json({error:'Levantamento inválido.'});
  try{
-  const propRows=await sb(`bpo_proposals?intake_id=eq.${intakeId}&select=*&order=version.desc&limit=1`);const proposal=propRows?.[0]||null;
+  const acceptedRows=await sb(`bpo_proposals?intake_id=eq.${intakeId}&status=eq.proposta_aceita_aguardando_cfo&select=*&order=version.desc&limit=1`);
+  const acceptedProposal=acceptedRows?.[0]||null;
   if(req.method==='GET'){
+    const latestRows=acceptedProposal?[]:await sb(`bpo_proposals?intake_id=eq.${intakeId}&select=*&order=version.desc&limit=1`);
+    const proposal=acceptedProposal||latestRows?.[0]||null;
     const contractRows=proposal?.id?await sb(`bpo_contracts?proposal_id=eq.${proposal.id}&select=*&limit=1`):[];
     return res.status(200).json({proposal,contract:contractRows?.[0]||null});
   }
   if(req.method!=='POST')return res.status(405).json({error:'Método não permitido.'});
-  if(!proposal?.id)return res.status(404).json({error:'Proposta não localizada.'});
-  if(proposal.status!=='proposta_aceita_aguardando_cfo')return res.status(409).json({error:'O contrato só pode ser autorizado após o aceite do cliente.'});
+  const proposal=acceptedProposal;
+  if(!proposal?.id)return res.status(409).json({error:'O contrato só pode ser autorizado a partir da proposta efetivamente aceita pelo cliente e aguardando validação do CFO.'});
   const intakeRows=await sb(`bpo_intakes?id=eq.${intakeId}&select=id,client_id,ramo,raw_payload&limit=1`);const intake=intakeRows?.[0];
   const clientRows=intake?.client_id?await sb(`bpo_clients?id=eq.${intake.client_id}&select=*&limit=1`):[];const client=clientRows?.[0]||{};
   const fields=req.body?.contract_fields||{};
@@ -54,7 +57,7 @@ module.exports=async function handler(req,res){
     client:{...client,responsavel:legal.representative,representative_cpf:legal.representative_cpf},
     legal,
     proposal:{id:proposal.id,version:proposal.version,proposal_code:proposal.proposal_code,public_url:proposal.public_url,accepted_at:proposal.accepted_at},
-    commercial_terms:terms,approved_scope:proposal.approved_scope||{},assumptions:proposal.assumptions||{},source:'approved_proposal_snapshot'
+    commercial_terms:terms,approved_scope:proposal.approved_scope||{},assumptions:proposal.assumptions||{},source:'accepted_proposal_snapshot'
   };
   const existingRows=await sb(`bpo_contracts?proposal_id=eq.${proposal.id}&select=*&limit=1`);const existing=existingRows?.[0]||null;
   let contract;
@@ -63,8 +66,8 @@ module.exports=async function handler(req,res){
   else{const rows=await sb('bpo_contracts',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});contract=rows?.[0]||null}
   await sb(`bpo_proposals?id=eq.${proposal.id}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:'contrato_autorizado',updated_at:now})});
   await sb(`bpo_intakes?id=eq.${intakeId}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:'contrato_autorizado',updated_at:now})});
-  await sb('bpo_proposal_events',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({proposal_id:proposal.id,event_type:'contract_authorized',event_data:{contract_id:contract?.id,contract_code:contract?.contract_code,template_version:TEMPLATE,authorized_at:now}})});
+  await sb('bpo_proposal_events',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({proposal_id:proposal.id,event_type:'contract_authorized',event_data:{contract_id:contract?.id,contract_code:contract?.contract_code,template_version:TEMPLATE,accepted_proposal_version:proposal.version,accepted_at:proposal.accepted_at,authorized_at:now}})});
   const preview_url=`/contrato/contrato.html?ref=${encodeURIComponent(contract?.contract_code||code)}`;
-  return res.status(200).json({ok:true,contract,preview_url,message:'Contrato v22 autorizado pelo CFO. Dados e condições congelados para geração.'});
+  return res.status(200).json({ok:true,contract,preview_url,message:'Contrato v22 autorizado pelo CFO a partir da proposta aceita. Dados e condições congelados para geração.'});
  }catch(err){console.error('Internal contract error:',err);return res.status(500).json({error:'Não foi possível autorizar o contrato.'})}
 };
