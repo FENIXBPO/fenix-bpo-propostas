@@ -1,4 +1,5 @@
 const assert = require('assert');
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
@@ -13,6 +14,11 @@ assert.match(manual, /pode "reinterpretar/i);
 assert.match(manual, /Pipeline e proposta são produtos diferentes/i);
 assert.match(manual, /página a página/i);
 assert.match(manual, /branch própria/i);
+
+const goldenPath = path.join(root, 'homologacao/FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_APROVADO.pdf');
+assert.ok(fs.existsSync(goldenPath), 'O PDF Golden Reference oficial deve estar versionado no repositório.');
+const goldenHash = crypto.createHash('sha256').update(fs.readFileSync(goldenPath)).digest('hex');
+assert.equal(goldenHash, 'f62c3b2d1e0900161e2c17eb9c6b92c4a204d40a0b3d1e580e8cf51559d02361', 'O PDF Golden Reference foi alterado sem nova homologação.');
 
 const master = read('master-template/proposta-master-limpa-v1.html');
 const pages = [...master.matchAll(/<section class="page" data-page="(\d+)"/g)].map(match => Number(match[1]));

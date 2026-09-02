@@ -6,7 +6,9 @@ Nome oficial do padrão: **Master Limpo — Golden Reference Oficial**
 
 ## 1. Autoridade visual
 
-O PDF homologado **FENIX_Caso_Real_Master_Limpo_Homologacao.pdf** é a autoridade visual máxima da proposta comercial FÊNIX.
+O PDF homologado **`homologacao/FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_APROVADO.pdf`** é a autoridade visual máxima da proposta comercial FÊNIX.
+
+Integridade oficial (SHA-256): `f62c3b2d1e0900161e2c17eb9c6b92c4a204d40a0b3d1e580e8cf51559d02361`.
 
 Ele não é inspiração ou referência aproximada. É a única fonte visual autorizada para a proposta.
 
