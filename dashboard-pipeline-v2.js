@@ -76,15 +76,24 @@
 
     const row=document.createElement('div');
     row.className='fenix-stage-row';
-    row.innerHTML=model.STAGES.map(stage=>{
+    model.STAGES.forEach(stage=>{
       const list=buckets.get(stage.key)||[];
-      const cardsHtml=list.map(card=>card.outerHTML).join('');
-      const empty=stage.key==='aceita'
-        ? '<div class="fenix-milestone-note">O aceite é um marco automático. Após o aceite, a oportunidade corrente segue para CFO; o card recebe a indicação “aceite registrado”.</div>'
-        : '<div class="fenix-empty">Nenhum cliente nesta etapa.</div>';
       const future=['lead','assinatura','implantacao'].includes(stage.key)?'future':'';
-      return `<section class="fenix-stage" data-stage="${stage.key}" data-kind="${stage.kind==='milestone'?'milestone':future}"><div class="fenix-stage-head"><div><div class="fenix-stage-title">${stage.title}</div><div class="fenix-stage-hint">${hints[stage.key]||''}</div></div><span class="fenix-count">${list.length}</span></div><div class="fenix-cardlist">${cardsHtml||empty}</div></section>`;
-    }).join('');
+      const section=document.createElement('section');
+      section.className='fenix-stage';
+      section.dataset.stage=stage.key;
+      section.dataset.kind=stage.kind==='milestone'?'milestone':future;
+      section.innerHTML=`<div class="fenix-stage-head"><div><div class="fenix-stage-title">${stage.title}</div><div class="fenix-stage-hint">${hints[stage.key]||''}</div></div><span class="fenix-count">${list.length}</span></div><div class="fenix-cardlist"></div>`;
+      const listBox=section.querySelector('.fenix-cardlist');
+      if(list.length){
+        list.forEach(card=>listBox.appendChild(card));
+      }else if(stage.key==='aceita'){
+        listBox.innerHTML='<div class="fenix-milestone-note">O aceite é um marco automático. Após o aceite, a oportunidade corrente segue para CFO; o card recebe a indicação “aceite registrado”.</div>';
+      }else{
+        listBox.innerHTML='<div class="fenix-empty">Nenhum cliente nesta etapa.</div>';
+      }
+      row.appendChild(section);
+    });
 
     oldRow.replaceWith(row);
     box.dataset.pipelineV2='1';
@@ -92,10 +101,6 @@
     if(sub)sub.textContent='Pipeline canônico FÊNIX: Lead → Dados recebidos → Análise → Proposta → Enviada → Aceita → CFO → Contrato → Assinatura → Implantação. Etapas críticas permanecem automáticas.';
     const note=box.querySelector('.fenix-rule-note');
     if(note)note.innerHTML='<b>Governança:</b> a visualização usa 10 etapas canônicas. “Aceita” é um marco; após o aceite, o estado corrente segue para CFO. Avanços críticos continuam controlados pelas APIs e não por arraste manual.'+(closed.length?` ${closed.length} oportunidade(s) encerrada(s) permanecem fora do funil ativo.`:'');
-
-    // Reativa os handlers já delegados pelo dashboard legado. Se a implementação
-    // antiga usou listeners diretos, o reload do painel restaura o comportamento.
-    row.addEventListener('dragover',e=>e.preventDefault());
   }
 
   waitForDashboard();
