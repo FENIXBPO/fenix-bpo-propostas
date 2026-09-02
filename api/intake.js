@@ -28,7 +28,7 @@ const asArray = value => Array.isArray(value) ? value.map(clean).filter(Boolean)
 
 function buildNormalizedSnapshot(form, lookup, clientPayload) {
   return {
-    schema_version: '2.0.0',
+    schema_version: '2.1.0',
     captured_at: new Date().toISOString(),
     client: {
       cnpj: clientPayload.cnpj,
@@ -38,8 +38,10 @@ function buildNormalizedSnapshot(form, lookup, clientPayload) {
       responsavel_cargo: clean(form.cargo) || null,
       email: clientPayload.email,
       telefone: clientPayload.telefone,
+      endereco: clientPayload.endereco,
       cidade: clientPayload.cidade,
-      uf: clientPayload.uf
+      uf: clientPayload.uf,
+      cep: clientPayload.cep
     },
     business: {
       ramo: clean(form.ramos || form.ramo) || null,
@@ -54,17 +56,18 @@ function buildNormalizedSnapshot(form, lookup, clientPayload) {
       recebimentos_mes: toInteger(form.recebimentos),
       pagamentos_mes: toInteger(form.pagamentos),
       notas_emitidas_mes: toInteger(form.notas),
-      notas_recebidas_mes: toInteger(form.notas_recebidas),
-      outros_lancamentos_mes: toInteger(form.lancamentos),
-      contratos_novos_mes: toInteger(form.contratos_novos),
-      comissoes_lancadas_mes: toInteger(form.comissoes_lancadas)
+      notas_recebidas_mes: null,
+      outros_lancamentos_mes: null,
+      outros_movimentos: clean(form.outros_movimentos) || null,
+      contratos_novos_mes: null,
+      comissoes_lancadas_mes: null
     },
     operation: {
       bancos_ativos: clean(form.bancos) || null,
       cartoes: clean(form.cartoes) || null,
       contas_aplicacao: clean(form.contas_aplicacao) || null,
       cnpjs_operacao: clean(form.cnpjs) || null,
-      filiais: clean(form.filiais) || null,
+      filiais: null,
       centros_custo: clean(form.centros_custo) || null,
       funcionarios_clt: clean(form.funcionarios) || null,
       situacao_atual: clean(form.implantacao_situacao) || null,
@@ -74,6 +77,9 @@ function buildNormalizedSnapshot(form, lookup, clientPayload) {
       contabilidade_definida: clean(form.contabilidade_definida) || null,
       frequencia_desejada: clean(form.frequencia) || null,
       repasses_recorrentes: clean(form.repasses) || null,
+      aprovador_financeiro: clean(form.aprovador_financeiro) || null,
+      processo_aprovacao: clean(form.processo_aprovacao) || null,
+      previsao_inicio: clean(form.previsao_inicio) || null,
       outros_servicos: clean(form.outros_servicos) || null
     },
     scope_requested: asArray(form.escopo),
@@ -161,15 +167,15 @@ module.exports = async function handler(req, res) {
       recebimentos_mes: normalized.volume.recebimentos_mes,
       pagamentos_mes: normalized.volume.pagamentos_mes,
       notas_emitidas_mes: normalized.volume.notas_emitidas_mes,
-      notas_recebidas_mes: normalized.volume.notas_recebidas_mes,
-      outros_lancamentos_mes: normalized.volume.outros_lancamentos_mes,
-      contratos_novos_mes: normalized.volume.contratos_novos_mes,
-      comissoes_lancadas_mes: normalized.volume.comissoes_lancadas_mes,
+      notas_recebidas_mes: null,
+      outros_lancamentos_mes: null,
+      contratos_novos_mes: null,
+      comissoes_lancadas_mes: null,
       bancos_ativos: normalized.operation.bancos_ativos,
       cartoes: normalized.operation.cartoes,
       contas_aplicacao: normalized.operation.contas_aplicacao,
       cnpjs_operacao: normalized.operation.cnpjs_operacao,
-      filiais: normalized.operation.filiais,
+      filiais: null,
       centros_custo: normalized.operation.centros_custo,
       funcionarios_clt: normalized.operation.funcionarios_clt,
       situacao_atual: normalized.operation.situacao_atual,
