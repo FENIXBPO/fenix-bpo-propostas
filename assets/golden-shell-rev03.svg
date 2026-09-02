@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="band" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#030507" stop-opacity="0"/>
+      <stop offset="0.18" stop-color="#02070b" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#010305" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6e4307" stop-opacity="0"/>
+      <stop offset="0.22" stop-color="#a8680b"/>
+      <stop offset="0.53" stop-color="#ffd86a"/>
+      <stop offset="0.75" stop-color="#d98a0d"/>
+      <stop offset="1" stop-color="#704306" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="corner" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4e2f05"/>
+      <stop offset="0.35" stop-color="#9c620c"/>
+      <stop offset="0.62" stop-color="#d99c26"/>
+      <stop offset="1" stop-color="#5e3906"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect x="1160" y="0" width="440" height="900" fill="url(#band)"/>
+  <image href="/assets/fenix-symbol.png" x="1220" y="5" width="385" height="760" opacity="0.12" preserveAspectRatio="xMidYMid meet"/>
+  <g filter="url(#glow)">
+    <path d="M1168 -6 L1608 520" fill="none" stroke="url(#gold)" stroke-width="3"/>
+    <path d="M1190 730 L1608 250" fill="none" stroke="url(#gold)" stroke-width="3"/>
+  </g>
+  <path d="M1372 764 L1600 764 L1600 900 L1310 900 Z" fill="url(#corner)"/>
+  <path d="M1372 764 L1600 764" fill="none" stroke="#d6a02c" stroke-width="1" opacity="0.9"/>
+</svg>
