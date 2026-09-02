@@ -1,0 +1,16 @@
+const assert=require('assert');
+const fs=require('fs');
+const path=require('path');
+const route=fs.readFileSync(path.join(__dirname,'..','dashboard-pipeline-v8-analysis-route.js'),'utf8');
+const shell=fs.readFileSync(path.join(__dirname,'..','painel','analise','index.html'),'utf8');
+const panel=fs.readFileSync(path.join(__dirname,'..','internal-panel.js'),'utf8');
+const auto=fs.readFileSync(path.join(__dirname,'..','analysis-auto-open.js'),'utf8');
+assert.match(route,/\/painel\/analise\/\?id=/,'ação do card deve navegar para rota dedicada');
+assert.match(route,/stopImmediatePropagation/,'rota dedicada deve bloquear manipuladores legados');
+assert.match(shell,/Voltar ao Pipeline/,'análise deve ter retorno claro ao Pipeline');
+assert.match(shell,/analysis_only=1/,'shell da análise deve usar modo dedicado');
+assert.match(panel,/if\(analysisOnly\)/,'painel deve separar modo análise');
+assert.match(panel,/analysis-auto-open\.js/,'modo análise deve carregar auto-open');
+assert.doesNotMatch(panel,/dashboard-pipeline-v6-fullscreen\.js|dashboard-pipeline-v7-open\.js/,'cadeia modal antiga não deve mais carregar');
+assert.match(auto,/data-open-intake/,'auto-open deve selecionar o intake correto');
+console.log('PASS Pipeline análise dedicada sem modal legado');
