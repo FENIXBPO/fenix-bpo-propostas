@@ -1,0 +1,12 @@
+const assert=require('assert');
+const fs=require('fs');
+const path=require('path');
+const dashboard=fs.readFileSync(path.join(__dirname,'..','internal-dashboard.js'),'utf8');
+const opener=fs.readFileSync(path.join(__dirname,'..','dashboard-pipeline-v7-open.js'),'utf8');
+assert.match(dashboard,/PANEL_SHELL/,'painel deve distinguir execução dentro do shell');
+assert.match(dashboard,/fenix:intake-opened/,'abertura deve emitir evento próprio');
+assert.match(dashboard,/if\(!PANEL_SHELL\).*scrollIntoView/,'scroll legado só pode existir fora do shell');
+assert.match(opener,/fenix:intake-opened/,'fullscreen deve ouvir evento do intake');
+assert.match(opener,/fenix-analysis-fullscreen/,'análise deve abrir como fullscreen');
+assert.match(opener,/Voltar ao Pipeline/,'fullscreen deve expor retorno explícito');
+console.log('PASS Pipeline fullscreen: sem scroll legado no shell e abertura por evento');
