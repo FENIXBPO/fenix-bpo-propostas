@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>FÊNIX — Homologação visual v13</title>
+  <link rel="stylesheet" href="/master-template/proposta-master-limpa-v1.css?v=13" />
+  <link rel="stylesheet" href="/assets/proposta-refino-mkt-v13.css?v=13" />
+</head>
+<body>
+  <div id="masterMount"></div>
+  <div class="v13-badge">HOMOLOGAÇÃO V13</div>
+  <script>
+    (async()=>{
+      const r=await fetch('/master-template/proposta-master-limpa-v1.html?v=13',{cache:'no-store'});
+      if(!r.ok) throw new Error('Falha ao carregar Master');
+      const source=await r.text();
+      const doc=new DOMParser().parseFromString(source,'text/html');
+      const deck=doc.querySelector('.deck');
+      if(!deck) throw new Error('Master sem deck');
+      document.getElementById('masterMount').innerHTML=deck.outerHTML;
+
+      document.querySelectorAll('.page').forEach(page=>{
+        const logo=document.createElement('img');
+        logo.className='fenix-logo-v13';
+        logo.src='/assets/fenix-logo-v13.svg?v=13';
+        logo.alt='FÊNIX Intelligent BPO';
+        page.appendChild(logo);
+
+        const watermark=document.createElement('img');
+        watermark.className='fenix-watermark-v13';
+        watermark.src='/assets/fenix-mark-v13.svg?v=13';
+        watermark.alt='';
+        watermark.setAttribute('aria-hidden','true');
+        page.appendChild(watermark);
+      });
+
+      const s=document.createElement('script');
+      s.src='/master-template/proposta-master-limpa-v1.js?v=13';
+      s.onload=()=>{
+        const qs=new URLSearchParams(location.search);
+        if(!qs.has('demo')){
+          history.replaceState(null,'',location.pathname+'?demo=1');
+          location.reload();
+        }
+      };
+      document.body.appendChild(s);
+    })().catch(err=>{document.body.innerHTML='<pre style="color:white;background:black;padding:30px">'+err.message+'</pre>'});
+  </script>
+</body>
+</html>
