@@ -10,6 +10,25 @@ function authorized(req){const token=cookies(req)[COOKIE];if(!token)return false
 async function sb(path,options={}){const headers={apikey:SECRET_KEY,'Content-Type':'application/json',...(options.headers||{})};if(SECRET_KEY?.startsWith('eyJ'))headers.Authorization=`Bearer ${SECRET_KEY}`;const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{...options,headers});const text=await r.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}if(!r.ok)throw new Error(data?.message||`Supabase ${r.status}`);return data}
 function num(v){const n=Number(v);return Number.isFinite(n)?n:0}
 function slugify(v){return String(v||'proposta').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70)||'proposta'}
+function clean(v){return String(v??'').trim()}
+
+async function contextSnapshot(intakeId){
+ const intakeRows=await sb(`bpo_intakes?id=eq.${intakeId}&select=id,client_id,ramo,descricao_negocio,dor,expectativa,raw_payload&limit=1`);const intake=intakeRows?.[0]||{};
+ const clientRows=intake.client_id?await sb(`bpo_clients?id=eq.${intake.client_id}&select=cnpj,razao_social,nome_fantasia,responsavel,email,telefone,cidade,uf&limit=1`):[];const client=clientRows?.[0]||{};
+ const n=intake?.raw_payload?.normalized||{};const business=n.business||{};const operation=n.operation||{};
+ return {
+  captured_at:new Date().toISOString(),
+  source_schema:n.schema_version||'legacy',
+  client:{cnpj:client.cnpj||null,name:client.nome_fantasia||client.razao_social||null,razao_social:client.razao_social||null,responsavel:client.responsavel||null,responsavel_cargo:n.client?.responsavel_cargo||null,email:client.email||null,telefone:client.telefone||null,cidade:client.cidade||null,uf:client.uf||null},
+  segment:clean(intake.ramo||business.ramo)||null,
+  description:clean(intake.descricao_negocio||business.descricao)||null,
+  pain:clean(intake.dor||business.dor)||null,
+  expectation:clean(intake.expectativa||business.expectativa)||null,
+  objectives:Array.isArray(business.objetivos)?business.objetivos:[],
+  operation:{erp:operation.sistema_atual||null,internal_finance:operation.financeiro_interno||null,accounting_defined:operation.contabilidade_definida||null,desired_frequency:operation.frequencia_desejada||null,recurring_transfers:operation.repasses_recorrentes||null,time_consuming_activity:business.atividade_que_mais_consome_tempo||null,other_services:operation.outros_servicos||null}
+ };
+}
+
 module.exports=async function handler(req,res){
  if(!password()||!SECRET_KEY)return res.status(503).json({error:'Área interna ainda não configurada.'});
  if(!authorized(req))return res.status(401).json({error:'Acesso não autorizado.'});
@@ -42,14 +61,16 @@ module.exports=async function handler(req,res){
   const terms=req.body?.commercial_terms||{};
   const required=['base_monthly','discount','final_monthly','implementation','cnpjs','software_total'];
   if(action==='approve'&&required.some(k=>num(terms[k])<0||terms[k]===undefined||terms[k]===null))return res.status(400).json({error:'Preencha os campos comerciais obrigatórios antes de aprovar.'});
-  const editable=current&&['rascunho_cfo','em_analise_cfo','aprovada_cfo'].includes(current.status);
+  const editable=current&&['rascunho_cfo','em_analise_cfo'].includes(current.status);
   const version=editable?current.version:(current?.version||0)+1;
   const status=action==='approve'?'aprovada_cfo':'em_analise_cfo';
-  const payload={intake_id:intakeId,version,status,cfo_analysis:req.body?.cfo_analysis||{},commercial_terms:terms,approved_scope:req.body?.approved_scope||{operational:[],managerial:[]},assumptions:req.body?.assumptions||{},approved_by:action==='approve'?'CFO':current?.approved_by||null,approved_at:action==='approve'?new Date().toISOString():current?.approved_at||null,updated_at:new Date().toISOString()};
+  const snapshot=await contextSnapshot(intakeId);
+  const assumptions={...(req.body?.assumptions||{}),client_context_snapshot:snapshot,context_snapshot_version:'1.0.0'};
+  const payload={intake_id:intakeId,version,status,cfo_analysis:req.body?.cfo_analysis||{},commercial_terms:terms,approved_scope:req.body?.approved_scope||{operational:[],managerial:[]},assumptions,approved_by:action==='approve'?'CFO':null,approved_at:action==='approve'?new Date().toISOString():null,updated_at:new Date().toISOString()};
   let proposal;
   if(editable){const rows=await sb(`bpo_proposals?id=eq.${current.id}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});proposal=rows?.[0]||current}
   else{const rows=await sb('bpo_proposals',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});proposal=rows?.[0]||null}
-  if(proposal?.id)await sb('bpo_proposal_events',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({proposal_id:proposal.id,event_type:action==='approve'?'cfo_approved':'cfo_saved',event_data:{version,status}})});
+  if(proposal?.id)await sb('bpo_proposal_events',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({proposal_id:proposal.id,event_type:action==='approve'?'cfo_approved':'cfo_saved',event_data:{version,status,context_snapshot:true}})});
   await sb(`bpo_intakes?id=eq.${intakeId}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:status==='aprovada_cfo'?'proposta_aprovada_cfo':'em_analise_cfo',updated_at:new Date().toISOString()})});
   return res.status(200).json({ok:true,proposal});
  }catch(err){console.error('Internal proposal error:',err);return res.status(500).json({error:'Não foi possível processar a proposta.'})}
