@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>FÊNIX — Homologação visual v12</title>
+  <link rel="stylesheet" href="/master-template/proposta-master-limpa-v1.css?v=12" />
+  <link rel="stylesheet" href="/assets/proposta-refino-mkt-v12.css?v=12" />
+</head>
+<body>
+  <div id="masterMount"></div>
+  <div class="v12-badge">HOMOLOGAÇÃO V12</div>
+  <script>
+    (async()=>{
+      const r=await fetch('/master-template/proposta-master-limpa-v1.html?v=12',{cache:'no-store'});
+      if(!r.ok) throw new Error('Falha ao carregar Master');
+      const source=await r.text();
+      const doc=new DOMParser().parseFromString(source,'text/html');
+      const deck=doc.querySelector('.deck');
+      if(!deck) throw new Error('Master sem deck');
+      document.getElementById('masterMount').innerHTML=deck.outerHTML;
+
+      document.querySelectorAll('.page').forEach(page=>{
+        const logo=document.createElement('img');
+        logo.className='fenix-logo-v12';
+        logo.src='/assets/fenix-logo-header-crop.webp?v=12';
+        logo.alt='FÊNIX Intelligent BPO';
+        logo.decoding='sync';
+        page.appendChild(logo);
+
+        const watermark=document.createElement('img');
+        watermark.className='fenix-watermark-v12';
+        watermark.src='/assets/fenix-symbol.png?v=12';
+        watermark.alt='';
+        watermark.setAttribute('aria-hidden','true');
+        watermark.decoding='sync';
+        page.appendChild(watermark);
+      });
+
+      const s=document.createElement('script');
+      s.src='/master-template/proposta-master-limpa-v1.js?v=12';
+      s.onload=()=>{
+        const qs=new URLSearchParams(location.search);
+        if(!qs.has('demo')){
+          history.replaceState(null,'',location.pathname+'?demo=1');
+          location.reload();
+        }
+      };
+      document.body.appendChild(s);
+    })().catch(err=>{document.body.innerHTML='<pre style="color:white;background:black;padding:30px">'+err.message+'</pre>'});
+  </script>
+</body>
+</html>
