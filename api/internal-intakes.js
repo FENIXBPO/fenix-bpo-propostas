@@ -36,7 +36,11 @@ module.exports=async function handler(req,res){
     const latestProposal={};
     for(const p of proposals||[]){if(!latestProposal[p.intake_id])latestProposal[p.intake_id]=p}
     const byId=Object.fromEntries((clients||[]).map(c=>[c.id,c]));
-    return res.status(200).json({items:(intakes||[]).map(i=>({...i,client:byId[i.client_id]||null,proposal:latestProposal[i.id]||null}))});
+    const items=(intakes||[]).map(i=>{
+      const normalized=i?.raw_payload?.normalized&&typeof i.raw_payload.normalized==='object'?i.raw_payload.normalized:null;
+      return {...i,normalized,client:byId[i.client_id]||null,proposal:latestProposal[i.id]||null};
+    });
+    return res.status(200).json({items});
   }catch(err){
     console.error('Internal intakes error:',err);
     return res.status(500).json({error:'Não foi possível carregar os levantamentos.'});

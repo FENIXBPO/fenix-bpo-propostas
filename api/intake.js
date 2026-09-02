@@ -3,6 +3,7 @@ const SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVI
 
 const cleanCnpj = value => String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const validCnpj = value => /^[A-Z0-9]{12}\d{2}$/.test(cleanCnpj(value));
+const clean = value => String(value ?? '').trim();
 const toNumber = value => {
   const normalized = String(value ?? '').trim().replace(/\./g, '').replace(',', '.');
   const number = Number(normalized);
@@ -13,7 +14,7 @@ const toInteger = value => {
   return match ? Number(match[0]) : null;
 };
 const parseCityUf = value => {
-  const text = String(value || '').trim();
+  const text = clean(value);
   if (!text) return { cidade: null, uf: null };
   const parts = text.split(/\s*[\/|-]\s*/).map(x => x.trim()).filter(Boolean);
   if (parts.length < 2) return { cidade: text, uf: null };
@@ -23,6 +24,67 @@ const parseCityUf = value => {
     uf: /^[A-Z]{2}$/.test(ufCandidate) ? ufCandidate : null
   };
 };
+const asArray = value => Array.isArray(value) ? value.map(clean).filter(Boolean) : [];
+
+function buildNormalizedSnapshot(form, lookup, clientPayload) {
+  return {
+    schema_version: '2.0.0',
+    captured_at: new Date().toISOString(),
+    client: {
+      cnpj: clientPayload.cnpj,
+      razao_social: clientPayload.razao_social,
+      nome_fantasia: clientPayload.nome_fantasia,
+      responsavel: clientPayload.responsavel,
+      responsavel_cargo: clean(form.cargo) || null,
+      email: clientPayload.email,
+      telefone: clientPayload.telefone,
+      cidade: clientPayload.cidade,
+      uf: clientPayload.uf
+    },
+    business: {
+      ramo: clean(form.ramos || form.ramo) || null,
+      descricao: clean(form.descricao) || null,
+      dor: clean(form.dor) || null,
+      expectativa: clean(form.expectativa) || null,
+      objetivos: asArray(form.objetivos),
+      atividade_que_mais_consome_tempo: clean(form.consome_tempo) || null
+    },
+    volume: {
+      faturamento: toNumber(form.faturamento),
+      recebimentos_mes: toInteger(form.recebimentos),
+      pagamentos_mes: toInteger(form.pagamentos),
+      notas_emitidas_mes: toInteger(form.notas),
+      notas_recebidas_mes: toInteger(form.notas_recebidas),
+      outros_lancamentos_mes: toInteger(form.lancamentos),
+      contratos_novos_mes: toInteger(form.contratos_novos),
+      comissoes_lancadas_mes: toInteger(form.comissoes_lancadas)
+    },
+    operation: {
+      bancos_ativos: clean(form.bancos) || null,
+      cartoes: clean(form.cartoes) || null,
+      contas_aplicacao: clean(form.contas_aplicacao) || null,
+      cnpjs_operacao: clean(form.cnpjs) || null,
+      filiais: clean(form.filiais) || null,
+      centros_custo: clean(form.centros_custo) || null,
+      funcionarios_clt: clean(form.funcionarios) || null,
+      situacao_atual: clean(form.implantacao_situacao) || null,
+      atrasados_retrabalho: clean(form.dor_atrasados).toLowerCase() === 'sim',
+      sistema_atual: clean(form.sistema_atual) || null,
+      financeiro_interno: clean(form.financeiro_interno) || null,
+      contabilidade_definida: clean(form.contabilidade_definida) || null,
+      frequencia_desejada: clean(form.frequencia) || null,
+      repasses_recorrentes: clean(form.repasses) || null,
+      outros_servicos: clean(form.outros_servicos) || null
+    },
+    scope_requested: asArray(form.escopo),
+    lookup: {
+      source: lookup && Object.keys(lookup).length ? 'cnpj_lookup' : 'manual',
+      situacao_cadastral: clean(lookup.situacao_cadastral) || null,
+      cnae_principal: clean(lookup.cnae_principal) || null,
+      atividade_principal: clean(lookup.atividade_principal) || null
+    }
+  };
+}
 
 async function supabase(path, options = {}) {
   const headers = {
@@ -57,24 +119,24 @@ module.exports = async function handler(req, res) {
   const cnpj = cleanCnpj(form.cnpj || lookup.cnpj);
 
   if (!validCnpj(cnpj)) return res.status(400).json({ error: 'CNPJ válido é obrigatório para salvar.' });
-  if (!String(form.razao || lookup.razao_social || '').trim()) return res.status(400).json({ error: 'Razão social é obrigatória.' });
+  if (!clean(form.razao || lookup.razao_social)) return res.status(400).json({ error: 'Razão social é obrigatória.' });
 
   try {
     const manualLocation = parseCityUf(form.cidade_uf);
     const clientPayload = {
       cnpj,
-      razao_social: String(form.razao || lookup.razao_social || '').trim(),
-      nome_fantasia: String(form.nome_fantasia || lookup.nome_fantasia || '').trim() || null,
-      situacao_cadastral: String(lookup.situacao_cadastral || '').trim() || null,
-      cnae_principal: String(lookup.cnae_principal || '').trim() || null,
-      atividade_principal: String(lookup.atividade_principal || '').trim() || null,
-      endereco: String(lookup.endereco || '').trim() || null,
-      cidade: String(lookup.cidade || manualLocation.cidade || '').trim() || null,
-      uf: String(lookup.uf || manualLocation.uf || '').trim() || null,
-      cep: String(lookup.cep || '').trim() || null,
-      responsavel: String(form.responsavel || '').trim() || null,
-      email: String(form.email || '').trim() || null,
-      telefone: String(form.telefone || '').trim() || null,
+      razao_social: clean(form.razao || lookup.razao_social),
+      nome_fantasia: clean(form.nome_fantasia || lookup.nome_fantasia) || null,
+      situacao_cadastral: clean(lookup.situacao_cadastral) || null,
+      cnae_principal: clean(lookup.cnae_principal) || null,
+      atividade_principal: clean(lookup.atividade_principal) || null,
+      endereco: clean(lookup.endereco) || null,
+      cidade: clean(lookup.cidade || manualLocation.cidade) || null,
+      uf: clean(lookup.uf || manualLocation.uf) || null,
+      cep: clean(lookup.cep) || null,
+      responsavel: clean(form.responsavel) || null,
+      email: clean(form.email) || null,
+      telefone: clean(form.telefone) || null,
       updated_at: new Date().toISOString()
     };
 
@@ -86,33 +148,34 @@ module.exports = async function handler(req, res) {
     const client = Array.isArray(clients) ? clients[0] : clients;
     if (!client?.id) throw new Error('Cliente salvo sem identificador.');
 
+    const normalized = buildNormalizedSnapshot(form, lookup, clientPayload);
     const intakePayload = {
       client_id: client.id,
       source: 'proposta_comercial',
       status: 'recebido',
-      descricao_negocio: String(form.descricao || '').trim() || null,
-      dor: String(form.dor || '').trim() || null,
-      expectativa: String(form.expectativa || '').trim() || null,
-      ramo: String(form.ramos || form.ramo || '').trim() || null,
-      faturamento: toNumber(form.faturamento),
-      recebimentos_mes: toInteger(form.recebimentos),
-      pagamentos_mes: toInteger(form.pagamentos),
-      notas_emitidas_mes: toInteger(form.notas),
-      notas_recebidas_mes: toInteger(form.notas_recebidas),
-      outros_lancamentos_mes: toInteger(form.lancamentos),
-      contratos_novos_mes: toInteger(form.contratos_novos),
-      comissoes_lancadas_mes: toInteger(form.comissoes_lancadas),
-      bancos_ativos: String(form.bancos || '').trim() || null,
-      cartoes: String(form.cartoes || '').trim() || null,
-      contas_aplicacao: String(form.contas_aplicacao || '').trim() || null,
-      cnpjs_operacao: String(form.cnpjs || '').trim() || null,
-      filiais: String(form.filiais || '').trim() || null,
-      centros_custo: String(form.centros_custo || '').trim() || null,
-      funcionarios_clt: String(form.funcionarios || '').trim() || null,
-      situacao_atual: String(form.implantacao_situacao || '').trim() || null,
-      atrasados_retrabalho: String(form.dor_atrasados || '').toLowerCase() === 'sim',
-      escopo: Array.isArray(form.escopo) ? form.escopo : [],
-      raw_payload: { form, cnpjData: lookup },
+      descricao_negocio: normalized.business.descricao,
+      dor: normalized.business.dor,
+      expectativa: normalized.business.expectativa,
+      ramo: normalized.business.ramo,
+      faturamento: normalized.volume.faturamento,
+      recebimentos_mes: normalized.volume.recebimentos_mes,
+      pagamentos_mes: normalized.volume.pagamentos_mes,
+      notas_emitidas_mes: normalized.volume.notas_emitidas_mes,
+      notas_recebidas_mes: normalized.volume.notas_recebidas_mes,
+      outros_lancamentos_mes: normalized.volume.outros_lancamentos_mes,
+      contratos_novos_mes: normalized.volume.contratos_novos_mes,
+      comissoes_lancadas_mes: normalized.volume.comissoes_lancadas_mes,
+      bancos_ativos: normalized.operation.bancos_ativos,
+      cartoes: normalized.operation.cartoes,
+      contas_aplicacao: normalized.operation.contas_aplicacao,
+      cnpjs_operacao: normalized.operation.cnpjs_operacao,
+      filiais: normalized.operation.filiais,
+      centros_custo: normalized.operation.centros_custo,
+      funcionarios_clt: normalized.operation.funcionarios_clt,
+      situacao_atual: normalized.operation.situacao_atual,
+      atrasados_retrabalho: normalized.operation.atrasados_retrabalho,
+      escopo: normalized.scope_requested,
+      raw_payload: { form, cnpjData: lookup, normalized },
       updated_at: new Date().toISOString()
     };
 
@@ -123,7 +186,7 @@ module.exports = async function handler(req, res) {
     });
     const intake = Array.isArray(intakes) ? intakes[0] : intakes;
 
-    return res.status(201).json({ ok: true, client_id: client.id, intake_id: intake?.id || null });
+    return res.status(201).json({ ok: true, client_id: client.id, intake_id: intake?.id || null, schema_version: normalized.schema_version });
   } catch (err) {
     console.error('Intake save error:', err);
     return res.status(500).json({ error: 'Não foi possível salvar os dados agora. Nenhuma proposta foi liberada.' });
