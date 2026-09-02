@@ -66,6 +66,34 @@ async function testReopenRejectsActiveOpportunity() {
   assert.match(res.body.error, /Somente oportunidades encerradas/i);
 }
 
+async function testContractAuthorizationRequiresAcceptedProposal() {
+  const calls = [];
+  global.fetch = async (url, options = {}) => {
+    calls.push({ url, method: options.method || 'GET' });
+    if (url.includes('bpo_proposals?intake_id=eq.22222222-2222-2222-2222-222222222222')) {
+      assert(url.includes('status=eq.proposta_aceita_aguardando_cfo'), 'Autorização contratual deve buscar explicitamente a proposta aceita.');
+      return jsonResponse([]);
+    }
+    throw new Error(`Chamada inesperada: ${options.method || 'GET'} ${url}`);
+  };
+
+  delete require.cache[require.resolve('../api/internal-contract')];
+  const handler = require('../api/internal-contract');
+  const req = {
+    method: 'POST',
+    headers: { cookie: validInternalCookie() },
+    query: {},
+    body: { intake_id: '22222222-2222-2222-2222-222222222222', contract_fields: {} }
+  };
+  const res = responseCapture();
+  await handler(req, res);
+
+  assert.equal(res.statusCode, 409);
+  assert.match(res.body.error, /proposta efetivamente aceita/i);
+  assert.equal(calls.length, 1, 'Sem proposta aceita, nenhuma leitura adicional ou gravação deve ocorrer.');
+  assert(calls.every(call => call.method === 'GET'), 'Sem proposta aceita, autorização não pode gravar dados.');
+}
+
 async function testContractPreviewGetHasNoWriteSideEffect() {
   const calls = [];
   global.fetch = async (url, options = {}) => {
@@ -100,8 +128,9 @@ async function testContractPreviewGetHasNoWriteSideEffect() {
 (async () => {
   await testAcceptanceRejectsProposalFromAnotherClient();
   await testReopenRejectsActiveOpportunity();
+  await testContractAuthorizationRequiresAcceptedProposal();
   await testContractPreviewGetHasNoWriteSideEffect();
-  console.log('PASS bloqueios de aceite, Pipeline e prévia contratual sem efeito colateral');
+  console.log('PASS bloqueios de aceite, Pipeline e contrato vinculados à proposta aceita');
 })().catch(error => {
   console.error(error);
   process.exitCode = 1;
