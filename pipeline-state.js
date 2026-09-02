@@ -20,8 +20,11 @@
     rascunho_cfo:'analise',
     proposta_aprovada_cfo:'proposta',
     aprovada_cfo:'proposta',
-    proposta_publicada:'enviada',
-    publicada:'enviada',
+    proposta_publicada:'proposta',
+    publicada:'proposta',
+    proposta_enviada:'enviada',
+    enviada_cliente:'enviada',
+    enviada:'enviada',
     proposta_aceita:'aceita',
     proposta_aceita_aguardando_cfo:'cfo',
     aceite_validado_cfo:'cfo',
@@ -40,7 +43,7 @@
   function stageOf(status){return STATUS_TO_STAGE[String(status||'').trim()]||'dados_recebidos'}
   function stage(key){return STAGES.find(s=>s.key===key)||null}
   function acceptedMilestone(proposal){return !!proposal?.accepted_at||['proposta_aceita','proposta_aceita_aguardando_cfo','aceite_validado_cfo','contrato_autorizado'].includes(proposal?.status)}
-  const api={version:'2.0.0',STAGES,STATUS_TO_STAGE,stageOf,stage,acceptedMilestone};
+  const api={version:'2.1.0',STAGES,STATUS_TO_STAGE,stageOf,stage,acceptedMilestone};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   root.FenixPipelineState=api;
 })(typeof window!=='undefined'?window:globalThis);
