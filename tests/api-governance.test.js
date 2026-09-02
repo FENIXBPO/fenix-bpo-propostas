@@ -16,6 +16,13 @@ function jsonResponse(data, ok = true, status = 200) {
   return { ok, status, text: async () => JSON.stringify(data) };
 }
 
+function validInternalCookie() {
+  const crypto = require('crypto');
+  const exp = String(Math.floor(Date.now() / 1000) + 300);
+  const sig = crypto.createHmac('sha256', process.env.FENIX_INTERNAL_PASSWORD).update(exp).digest('base64url');
+  return `fenix_internal_session=${exp}.${sig}`;
+}
+
 async function testAcceptanceRejectsProposalFromAnotherClient() {
   const calls = [];
   global.fetch = async url => {
@@ -49,15 +56,9 @@ async function testReopenRejectsActiveOpportunity() {
   const handler = require('../api/internal-intake-stage');
   const req = {
     method: 'POST',
-    headers: { cookie: '' },
+    headers: { cookie: validInternalCookie() },
     body: { intake_id: '11111111-1111-1111-1111-111111111111', action: 'reopen' }
   };
-
-  // Assina um cookie válido usando a mesma regra do endpoint.
-  const crypto = require('crypto');
-  const exp = String(Math.floor(Date.now() / 1000) + 300);
-  const sig = crypto.createHmac('sha256', process.env.FENIX_INTERNAL_PASSWORD).update(exp).digest('base64url');
-  req.headers.cookie = `fenix_internal_session=${exp}.${sig}`;
 
   const res = responseCapture();
   await handler(req, res);
@@ -65,10 +66,42 @@ async function testReopenRejectsActiveOpportunity() {
   assert.match(res.body.error, /Somente oportunidades encerradas/i);
 }
 
+async function testContractPreviewGetHasNoWriteSideEffect() {
+  const calls = [];
+  global.fetch = async (url, options = {}) => {
+    calls.push({ url, method: options.method || 'GET' });
+    if (url.includes('bpo_contracts?contract_code=')) {
+      return jsonResponse([{
+        id: 'contract-1',
+        proposal_id: 'proposal-1',
+        contract_code: 'CTR-TESTE',
+        template_version: 'Contrato_Fenix_BPO_MODELO_PADRAO_v22',
+        status: 'autorizado_cfo_aguardando_geracao',
+        generated_at: null,
+        contract_data: { client: {}, legal: {}, commercial_terms: {}, approved_scope: {}, assumptions: {} }
+      }]);
+    }
+    throw new Error(`GET de prévia não deve gravar. Chamada inesperada: ${options.method || 'GET'} ${url}`);
+  };
+
+  delete require.cache[require.resolve('../api/internal-contract-document')];
+  const handler = require('../api/internal-contract-document');
+  const req = { method: 'GET', headers: { cookie: validInternalCookie() }, query: { ref: 'CTR-TESTE' }, body: {} };
+  const res = responseCapture();
+  await handler(req, res);
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.status, 'autorizado_cfo_aguardando_geracao');
+  assert.equal(res.body.generated_at, null);
+  assert.equal(calls.length, 1);
+  assert(calls.every(call => call.method === 'GET'), 'Prévia GET não pode executar PATCH/POST.');
+}
+
 (async () => {
   await testAcceptanceRejectsProposalFromAnotherClient();
   await testReopenRejectsActiveOpportunity();
-  console.log('PASS bloqueios de aceite e Pipeline');
+  await testContractPreviewGetHasNoWriteSideEffect();
+  console.log('PASS bloqueios de aceite, Pipeline e prévia contratual sem efeito colateral');
 })().catch(error => {
   console.error(error);
   process.exitCode = 1;
