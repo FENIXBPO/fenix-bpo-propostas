@@ -1,5 +1,8 @@
 const assert = require('assert');
-const { diagnose } = require('../pricing-engine');
+const { diagnose, VERSION, POLICY } = require('../pricing-engine');
+
+assert.equal(VERSION, '1.1.0');
+assert.equal(POLICY.version, '1.1.0');
 
 const base = {
   faturamento: '80000',
@@ -20,8 +23,11 @@ const base = {
 };
 
 let d = diagnose(base, { costHour: 50, targetMargin: 0.5, commercialDiscountLimit: 0.1 });
+assert.equal(d.policyVersion, '1.1.0');
 assert.equal(d.movements, 70);
 assert.equal(d.tier.base, 900);
+assert.equal(d.structuralPrice, 900);
+assert.equal(d.implantation, 1500);
 assert.equal(d.complexity, 'Baixa');
 assert.equal(d.manualReview, false);
 assert(d.commercialFloor >= d.marginFloor);
@@ -55,4 +61,4 @@ assert(d.marginFloor > 0);
 assert(d.suggested >= d.marginFloor);
 assert(d.commercialFloor >= d.marginFloor);
 
-console.log('PASS 4 cenários CFO');
+console.log('PASS política CFO v1.1 + 4 cenários de regressão');
