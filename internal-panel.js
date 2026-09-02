@@ -10,13 +10,14 @@
   }
   function loadInternal(){
     loadScript('internal-shell.js?v=1','data-fenix-internal-shell');
-    loadScript('internal-dashboard.js?v=5','data-fenix-internal-dashboard');
+    loadScript('internal-dashboard.js?v=6','data-fenix-internal-dashboard');
     loadScript('pipeline-state.js?v=2','data-fenix-pipeline-state');
     loadScript('dashboard-enhance.js?v=3','data-fenix-dashboard-enhance');
     loadScript('dashboard-pipeline-v2.js?v=1','data-fenix-pipeline-v2');
     loadScript('dashboard-pipeline-v4-polish.js?v=1','data-fenix-pipeline-v4-polish');
     loadScript('dashboard-pipeline-v5-brand.js?v=1','data-fenix-pipeline-v5-brand');
     loadScript('dashboard-pipeline-v6-fullscreen.js?v=1','data-fenix-pipeline-v6-fullscreen');
+    loadScript('dashboard-pipeline-v7-open.js?v=1','data-fenix-pipeline-v7-open');
     loadScript('dashboard-proposal-link-v2.js?v=1','data-fenix-dashboard-link-v2');
     loadScript('cfo-separation.js?v=1','data-fenix-cfo-separation');
     loadScript('cfo-publish.js?v=1','data-fenix-cfo-publish');
