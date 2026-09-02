@@ -22,6 +22,7 @@
       #fenix-internal-dashboard[data-pipeline-v2="1"] .fenix-stage[data-kind="future"]{opacity:.88}
       #fenix-internal-dashboard[data-pipeline-v2="1"] .fenix-stage-hint{min-height:44px}
       #fenix-internal-dashboard[data-pipeline-v2="1"] .fenix-milestone-note{font-size:10px;line-height:1.45;color:#a79d8d;padding:10px 3px}
+      #fenix-internal-dashboard[data-pipeline-v2="1"] .fenix-card{cursor:default}
       #fenix-internal-dashboard[data-pipeline-v2="1"] .fenix-card.accepted:before{content:'✓ aceite registrado';display:inline-block;margin-bottom:8px;padding:4px 7px;border:1px solid #6c5729;border-radius:999px;color:#f0c95f;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
       @media(max-width:900px){#fenix-internal-dashboard[data-pipeline-v2="1"] .fenix-stage-row{grid-template-columns:repeat(10,minmax(230px,260px))!important}}
     `;
@@ -54,6 +55,8 @@
     const closed=[];
 
     cards.forEach(card=>{
+      card.draggable=false;
+      card.removeAttribute('draggable');
       const status=cardStatus(card);
       if(status==='encerrado'){closed.push(card);return}
       const stage=model.stageOf(status);
@@ -100,7 +103,7 @@
     const sub=box.querySelector('.fenix-pipeline-sub');
     if(sub)sub.textContent='Pipeline canônico FÊNIX: Lead → Dados recebidos → Análise → Proposta → Enviada → Aceita → CFO → Contrato → Assinatura → Implantação. Etapas críticas permanecem automáticas.';
     const note=box.querySelector('.fenix-rule-note');
-    if(note)note.innerHTML='<b>Governança:</b> a visualização usa 10 etapas canônicas. “Aceita” é um marco; após o aceite, o estado corrente segue para CFO. Avanços críticos continuam controlados pelas APIs e não por arraste manual.'+(closed.length?` ${closed.length} oportunidade(s) encerrada(s) permanecem fora do funil ativo.`:'');
+    if(note)note.innerHTML='<b>Governança:</b> a visualização usa 10 etapas canônicas. “Aceita” é um marco; após o aceite, o estado corrente segue para CFO. Avanços críticos continuam controlados pelas APIs; Encerrar/Reabrir permanece por botão com confirmação.'+(closed.length?` ${closed.length} oportunidade(s) encerrada(s) permanecem fora do funil ativo.`:'');
   }
 
   waitForDashboard();
