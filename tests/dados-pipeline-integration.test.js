@@ -11,8 +11,11 @@ const intakeApi=fs.readFileSync(path.join(root,'api','intake.js'),'utf8');
 
 assert.match(dadosEntry,/url=\/dados-v4\//i,'/dados deve apontar para /dados-v4/');
 assert.match(dadosV4,/\/dados-v3\//,'V4 deve preservar a V3 funcional como base');
-assert.match(dadosV4,/\/assets\/fenix-logo-header-crop\.webp/,'V4 deve usar a logo oficial do repositório');
+assert.match(dadosV4,/13tZmkBjfMthdrdqEhwD2Efw8x_4UmHvh/,'V4 deve usar a logo oficial validada no Drive');
+assert.match(dadosV4,/brand-logo[^}]*width:min\(470px/i,'marca FÊNIX deve ter presença maior no topo');
 assert.match(dadosV3,/fetch\('\/api\/intake'/,'formulário base deve enviar para /api/intake');
+assert.match(dadosV3,/id=\"endereco\"[^>]*readonly/,'endereço cadastral deve existir e ser preenchido pela consulta do CNPJ');
+assert.match(dadosV3,/\$\('endereco'\)\.value=/,'consulta CNPJ deve preencher o endereço cadastral');
 for(const field of [
   'cnpj','razao','nome_fantasia','responsavel','cargo','email','telefone','ramos','cidade_uf','endereco',
   'descricao','dor','expectativa','consome_tempo','faturamento','recebimentos','pagamentos','notas','outros_movimentos',
@@ -23,4 +26,4 @@ for(const removed of ['notas_recebidas','contratos_novos','comissoes_lancadas','
 assert.match(intakeApi,/status:\s*'recebido'/,'novo intake deve nascer como recebido');
 assert.equal(pipeline.stageOf('recebido'),'dados_recebidos','recebido deve cair em Dados recebidos no Pipeline');
 assert.match(intakeApi,/schema_version:\s*'2\.1\.0'/,'snapshot deve registrar schema 2.1.0');
-console.log('PASS /dados V4 com logo oficial → Intake 2.1 → Pipeline Dados recebidos');
+console.log('PASS /dados oficial → logo Drive + endereço CNPJ + Intake 2.1 → Pipeline Dados recebidos');
