@@ -1,0 +1,116 @@
+/* FÊNIX — Refinamento visual de marketing v10
+   Objetivo: preservar o Golden Reference, elevar percepção premium e garantir
+   fundo escuro neutro, logo legível e Fênix como marca d'água consistente. */
+:root{
+  --bg:#050505;
+  --gold:#d79b20;
+  --gold2:#e4aa2b;
+  --white:#f4f0e9;
+  --muted:#d7d1c8;
+  --line:rgba(183,117,16,.74);
+}
+
+html,body{background:#020202!important}
+body{color:var(--white)}
+
+/* Fundo: preto sofisticado, sem azul. O dourado aparece apenas como profundidade mínima. */
+.page{
+  background:
+    radial-gradient(circle at 82% 48%,rgba(215,155,32,.035) 0%,rgba(215,155,32,.015) 20%,transparent 42%),
+    linear-gradient(115deg,#050505 0%,#050505 68%,#020202 100%)!important;
+  box-shadow:0 18px 54px rgba(0,0,0,.52)!important;
+}
+.page:before{
+  background:
+    radial-gradient(circle at 16% 10%,rgba(255,255,255,.018),transparent 24%),
+    linear-gradient(180deg,rgba(255,255,255,.006),rgba(0,0,0,.028))!important;
+}
+.frame{background:none!important;border-color:rgba(166,106,19,.08)!important}
+
+/* Logo: asset transparente, sem glow, com presença institucional adequada. */
+.brand-logo{
+  left:3.15%!important;
+  top:3.1%!important;
+  width:30.5%!important;
+  height:14.8%!important;
+  background-image:url('/assets/fenix-logo-transparent.webp')!important;
+  background-position:left center!important;
+  background-size:contain!important;
+  background-repeat:no-repeat!important;
+  opacity:1!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  z-index:12!important;
+}
+
+/* Marca d'água: símbolo FÊNIX monocromático, grande, neutro e sempre atrás do conteúdo. */
+.wing{
+  display:block!important;
+  position:absolute!important;
+  right:-2.5%!important;
+  top:5%!important;
+  width:41%!important;
+  height:90%!important;
+  z-index:2!important;
+  background-image:url('/assets/fenix-symbol.png')!important;
+  background-position:center right!important;
+  background-size:92% auto!important;
+  background-repeat:no-repeat!important;
+  opacity:.105!important;
+  filter:grayscale(1) brightness(2.15) contrast(.92)!important;
+  mix-blend-mode:screen!important;
+  pointer-events:none!important;
+}
+.page[data-page="1"] .wing,.page[data-page="2"] .wing,.page[data-page="8"] .wing{opacity:.12!important;width:43%!important;right:-3.5%!important}
+.page[data-page="3"] .wing,.page[data-page="7"] .wing{opacity:.075!important}
+.page[data-page="4"] .wing,.page[data-page="5"] .wing,.page[data-page="6"] .wing{opacity:.095!important}
+.diag,.gold-corner{display:none!important}
+
+/* Tipografia: menos efeito, mais editorial/executiva. */
+h1,h2{
+  color:var(--gold)!important;
+  text-shadow:0 1px 0 rgba(111,69,8,.75)!important;
+  letter-spacing:-.015em;
+  font-family:'Arial Narrow','Franklin Gothic Medium',Arial,sans-serif!important;
+}
+.eyebrow{letter-spacing:.30em!important;color:#e7ab2a!important}
+.tagline,.lead{color:var(--muted)!important}
+.brandline{letter-spacing:.045em!important}
+
+/* Cards: premium, sem excesso de brilho, mantendo leitura rápida. */
+.card,.panel,.step,.metrics>div,.price-main,.price-box,.accept-box{
+  background:linear-gradient(145deg,rgba(10,10,10,.90),rgba(3,3,3,.96))!important;
+  border-color:var(--line)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.012)!important;
+}
+.card h3,.panel h3,.step h3{color:#e2a425!important}
+.card p,.panel li,.step p,.note{color:#e7e1d8!important}
+
+/* Página 7: hierarquia comercial — mensalidade final domina a leitura. */
+.price-main{
+  border-color:rgba(220,158,36,.92)!important;
+  background:linear-gradient(145deg,rgba(18,13,5,.90),rgba(4,4,4,.98))!important;
+}
+.price-main strong{font-size:3.45cqw!important;color:#efb12f!important;line-height:.96!important}
+.price-box strong,.metrics strong{color:#e9aa29!important}
+
+/* Página 8: CTA deve ser o ponto final inequívoco. */
+.accept-box{border-color:rgba(205,143,26,.86)!important}
+.accept-btn{
+  background:linear-gradient(180deg,#f2bd43,#bc7b0c)!important;
+  box-shadow:0 8px 24px rgba(193,126,15,.18)!important;
+}
+
+/* Pequenos ajustes de acabamento. */
+.meta-grid,.footer-text{border-color:rgba(166,106,19,.72)!important}
+.page-no{box-shadow:0 3px 10px rgba(0,0,0,.24)!important}
+
+@media(max-width:900px){
+  .brand-logo{width:32%!important}
+  .wing{opacity:.09!important;right:-5%!important;width:44%!important}
+}
+
+@media print{
+  .page{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .wing{mix-blend-mode:screen!important}
+}
