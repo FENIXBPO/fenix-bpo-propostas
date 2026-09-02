@@ -21,18 +21,29 @@ const goldenHash = crypto.createHash('sha256').update(fs.readFileSync(goldenPath
 assert.equal(goldenHash, '14b626a36031c0b04d0aabaaabaa52b5efd90672811f1dcff6060459042c1cf4', 'O PDF Golden Reference foi alterado sem nova homologação.');
 
 const master = read('master-template/proposta-master-limpa-v1.html');
+const masterCss = read('master-template/proposta-master-limpa-v1.css');
 const pages = [...master.matchAll(/<section class="page" data-page="(\d+)"/g)].map(match => Number(match[1]));
 assert.deepEqual(pages, [1, 2, 3, 4, 5, 6, 7, 8], 'O Master deve manter exatamente as oito páginas, na ordem oficial.');
+assert.match(master, /cover-brandline[^>]*><b>FÊNIX<\/b> INTELLIGENT BPO/);
+assert.doesNotMatch(master, /Condição comercial da parceria/i);
+assert.match(masterCss, /scroll-snap-align:start/);
+assert.match(masterCss, /100vh - var\(--viewer-toolbar\)/);
+assert.match(masterCss, /asa\/faixa, diagonais e canto só podem voltar com o asset oficial/i);
 
 const publicWrapper = read('p/proposta-master-v1.html');
 const publicRuntime = read('assets/proposta-master-public-v1.js');
 assert.match(publicRuntime, /\/master-template\/proposta-master-limpa-v1\.html/);
 assert.match(publicRuntime, /\/api\/public-proposal\?ref=/);
 assert.match(publicWrapper, /Aceite do cliente → validação CFO → contrato → assinatura → implantação/);
+assert.match(publicWrapper, /CPF do sócio\/responsável/);
+assert.match(publicRuntime, /validCpf/);
+assert.match(publicRuntime, /cpf:digits\(cpf\)/);
 
 const acceptance = read('api/proposal-acceptance.js');
 assert.match(acceptance, /status:'proposta_aceita_aguardando_cfo'/);
 assert.match(acceptance, /intake\.client_id/);
+assert.match(acceptance, /accepted_by_cpf:cpf/);
+assert.match(acceptance, /validCpf/);
 assert.doesNotMatch(acceptance, /contrato_autorizado/);
 
 const contractApi = read('api/internal-contract.js');
