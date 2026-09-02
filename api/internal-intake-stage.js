@@ -8,6 +8,7 @@ function safeEqual(a,b){const A=Buffer.from(String(a||'')),B=Buffer.from(String(
 function cookies(req){const out={};String(req.headers.cookie||'').split(';').forEach(p=>{const i=p.indexOf('=');if(i>0)out[p.slice(0,i).trim()]=decodeURIComponent(p.slice(i+1).trim())});return out}
 function authorized(req){const token=cookies(req)[COOKIE];if(!token)return false;const [exp,sig]=String(token).split('.');return !!(exp&&sig&&Number(exp)>=Math.floor(Date.now()/1000)&&safeEqual(sig,sign(exp)))}
 async function sb(path,options={}){const headers={apikey:SECRET_KEY,'Content-Type':'application/json',...(options.headers||{})};if(SECRET_KEY?.startsWith('eyJ'))headers.Authorization=`Bearer ${SECRET_KEY}`;const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{...options,headers});const text=await r.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}if(!r.ok)throw new Error(data?.message||`Supabase ${r.status}`);return data}
+const CLOSE_REASONS=new Set(['sem_resposta','recusada','perdida','adiada','duplicada','arquivada','outro']);
 module.exports=async function handler(req,res){
   if(req.method!=='POST')return res.status(405).json({error:'Método não permitido.'});
   if(!password()||!SECRET_KEY)return res.status(503).json({error:'Área interna ainda não configurada.'});
@@ -22,10 +23,12 @@ module.exports=async function handler(req,res){
     let status,updatedRaw;
     if(action==='close'){
       if(current.status==='encerrado')return res.status(200).json({ok:true,status:'encerrado'});
-      status='encerrado';updatedRaw={...raw,_pipeline:{...pipeline,previous_status:current.status||'recebido',closed_at:new Date().toISOString()}};
+      const reason=String(req.body?.reason||'').trim();const note=String(req.body?.note||'').trim().slice(0,500);
+      if(!CLOSE_REASONS.has(reason))return res.status(400).json({error:'Informe o motivo do encerramento.'});
+      status='encerrado';updatedRaw={...raw,_pipeline:{...pipeline,previous_status:current.status||'recebido',closed_at:new Date().toISOString(),close_reason:reason,close_note:note}};
     }else{
       if(current.status!=='encerrado')return res.status(409).json({error:'Somente oportunidades encerradas podem ser reabertas.'});
-      const restorableStatuses=new Set(['recebido','em_analise_cfo','rascunho_cfo','proposta_aprovada_cfo','proposta_publicada','proposta_aceita_aguardando_cfo','contrato_autorizado']);
+      const restorableStatuses=new Set(['recebido','em_analise_cfo','rascunho_cfo','proposta_aprovada_cfo','proposta_publicada','publicada','enviada_cliente','proposta_aceita_aguardando_cfo','contrato_autorizado']);
       status=restorableStatuses.has(pipeline.previous_status)?pipeline.previous_status:'recebido';updatedRaw={...raw,_pipeline:{...pipeline,reopened_at:new Date().toISOString()}};
     }
     const now=new Date().toISOString();
