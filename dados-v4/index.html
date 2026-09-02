@@ -4,23 +4,50 @@
 <body><div class="loading">Carregando formulário FÊNIX...</div><script>
 fetch('/dados-v3/').then(r=>r.text()).then(html=>{
   const extraCss=`
+    html{scroll-behavior:smooth;scroll-padding-top:84px}
     html[data-intake-theme="light"]{--bg:#f4f1ea;--panel:#ffffff;--panel2:#faf8f3;--ink:#101326;--muted:#6d665c;--line:#dfd5c3;--gold:#c58b18;--gold2:#a86f08;--field:#ffffff;--fieldline:#d9cfbd;--shadow:0 12px 32px rgba(39,30,18,.08)}
     html[data-intake-theme="light"] body{background:radial-gradient(circle at 80% 8%,rgba(217,154,29,.10),transparent 28%),var(--bg);color:var(--ink)}
     html[data-intake-theme="light"] .hero{background:linear-gradient(135deg,#fff,#f7f2e8)!important}
     html[data-intake-theme="light"] .hero h1{color:#101326!important}
     html[data-intake-theme="light"] .hero p{color:#5f5a52!important}
     .hero{position:relative!important;text-align:center!important;padding:34px 34px 30px!important}
-    .brand{display:flex!important;align-items:center!important;justify-content:center!important;min-height:112px!important;margin:0 auto 12px!important}
+    .brand{display:flex!important;align-items:center!important;justify-content:center!important;min-height:112px!important;margin:0 auto 4px!important}
     .brand-logo{display:block!important;width:min(620px,78vw)!important;height:auto!important;max-height:150px!important;object-fit:contain!important;object-position:center!important}
-    .hero h1{font-size:clamp(22px,2.4vw,30px)!important;line-height:1.15!important;letter-spacing:.09em!important;margin:8px 0 10px!important;text-align:center!important;color:#fff!important}
+    .brand-name{font-size:clamp(16px,1.7vw,22px);font-weight:950;letter-spacing:.20em;color:var(--gold2);text-transform:uppercase;text-align:center;margin:2px auto 24px}
+    .hero h1{font-size:clamp(22px,2.4vw,30px)!important;line-height:1.15!important;letter-spacing:.09em!important;margin:0 0 10px!important;text-align:center!important;color:#fff!important}
     .hero p{max-width:840px!important;margin:0 auto!important;text-align:center!important;font-size:17px!important}
     .theme-toggle{position:absolute;right:22px;top:22px;z-index:4;border:1px solid rgba(241,192,77,.48);background:#080808;color:#f5d36b;border-radius:999px;padding:10px 15px;font-size:14px;font-weight:900;cursor:pointer}
     html[data-intake-theme="light"] .theme-toggle{background:#fff;color:#8a5b05;border-color:#c99a32}
-    @media(max-width:800px){.hero{padding:24px 16px 22px!important}.brand{min-height:88px!important;padding-top:34px}.brand-logo{width:min(460px,88vw)!important;max-height:112px!important}.hero h1{font-size:22px!important}.hero p{font-size:16px!important}.theme-toggle{right:14px;top:14px;padding:8px 11px;font-size:13px}}
+    .intake-sticky{position:fixed;left:0;right:0;top:0;z-index:1000;display:flex;align-items:center;gap:14px;padding:10px max(16px,calc((100vw - 1180px)/2));background:rgba(5,5,5,.96);border-bottom:1px solid rgba(217,154,29,.42);box-shadow:0 10px 30px rgba(0,0,0,.28);transform:translateY(-110%);opacity:0;pointer-events:none;transition:.22s ease;backdrop-filter:blur(10px)}
+    .intake-sticky.visible{transform:translateY(0);opacity:1;pointer-events:auto}
+    html[data-intake-theme="light"] .intake-sticky{background:rgba(255,255,255,.96);border-bottom-color:#d7bd7e;box-shadow:0 8px 24px rgba(24,20,12,.12)}
+    .sticky-brand{flex:0 0 auto;font-size:13px;font-weight:950;letter-spacing:.15em;color:var(--gold2);white-space:nowrap}
+    .sticky-nav{display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}.sticky-nav::-webkit-scrollbar{display:none}
+    .sticky-link{border:1px solid rgba(217,154,29,.32);background:#101010;color:#f4efe5;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer}
+    html[data-intake-theme="light"] .sticky-link{background:#fff;color:#252119;border-color:#d9c99f}
+    .sticky-theme{flex:0 0 auto;border:1px solid rgba(241,192,77,.48);background:#151515;color:#f5d36b;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:900;cursor:pointer}
+    html[data-intake-theme="light"] .sticky-theme{background:#fff;color:#8a5b05;border-color:#c99a32}
+    @media(max-width:800px){
+      html{scroll-padding-top:72px}.hero{padding:24px 16px 22px!important}.brand{min-height:88px!important;padding-top:34px}.brand-logo{width:min(460px,88vw)!important;max-height:112px!important}.brand-name{font-size:14px;letter-spacing:.16em;margin-bottom:18px}.hero h1{font-size:22px!important}.hero p{font-size:16px!important}.theme-toggle{right:14px;top:14px;padding:8px 11px;font-size:13px}
+      .intake-sticky{padding:8px 10px;gap:8px}.sticky-brand{font-size:11px;letter-spacing:.09em}.sticky-link{padding:7px 9px;font-size:11px}.sticky-theme{padding:7px 9px;font-size:11px}
+    }
   `;
   html=html.replace('</style>',extraCss+'</style>');
-  html=html.replace('<section class="hero"><div class="brand">FÊNIX INTELLIGENT BPO</div><h1>Levantamento de dados</h1>', '<section class="hero"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">☀ Claro</button><div class="brand"><img class="brand-logo" src="https://drive.google.com/thumbnail?id=13tZmkBjfMthdrdqEhwD2Efw8x_4UmHvh&sz=w1200" onerror="this.onerror=null;this.src=\'/assets/fenix-logo-transparent.webp\'" alt="FÊNIX Intelligent BPO"></div><h1>Levantamento de dados</h1>');
-  const themeScript=`<script>(function(){const root=document.documentElement,btn=document.getElementById('themeToggle');const saved=localStorage.getItem('fenix-intake-theme')||'dark';function set(t){root.setAttribute('data-intake-theme',t);if(btn)btn.textContent=t==='dark'?'☀ Claro':'☾ Escuro';localStorage.setItem('fenix-intake-theme',t)}set(saved);if(btn)btn.addEventListener('click',()=>set(root.getAttribute('data-intake-theme')==='dark'?'light':'dark'));})();<\/script>`;
+  html=html.replace('<section class="hero"><div class="brand">FÊNIX INTELLIGENT BPO</div><h1>Levantamento de dados</h1>', '<section class="hero" id="intakeHero"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">☀ Claro</button><div class="brand"><img class="brand-logo" src="https://drive.google.com/thumbnail?id=13tZmkBjfMthdrdqEhwD2Efw8x_4UmHvh&sz=w1200" onerror="this.onerror=null;this.src=\'/assets/fenix-logo-transparent.webp\'" alt="FÊNIX Intelligent BPO"></div><div class="brand-name">FÊNIX INTELLIGENT BPO</div><h1>Levantamento de dados</h1>');
+  const themeScript=`<script>(function(){
+    const root=document.documentElement,btn=document.getElementById('themeToggle');
+    const saved=localStorage.getItem('fenix-intake-theme')||'dark';
+    function set(t){root.setAttribute('data-intake-theme',t);const txt=t==='dark'?'☀ Claro':'☾ Escuro';if(btn)btn.textContent=txt;const sb=document.getElementById('stickyTheme');if(sb)sb.textContent=txt;localStorage.setItem('fenix-intake-theme',t)}
+    set(saved);if(btn)btn.addEventListener('click',()=>set(root.getAttribute('data-intake-theme')==='dark'?'light':'dark'));
+    const sections=[...document.querySelectorAll('form .card')].filter(x=>x.querySelector('.section'));
+    sections.forEach((section,i)=>section.id='etapa-'+(i+1));
+    const bar=document.createElement('nav');bar.className='intake-sticky';bar.setAttribute('aria-label','Navegação do formulário');
+    const names=sections.map((s,i)=>{const raw=(s.querySelector('.section')?.textContent||('Etapa '+(i+1))).replace(/^\\s*\\d+\\.\\s*/,'').trim();return raw});
+    bar.innerHTML='<div class="sticky-brand">FÊNIX</div><div class="sticky-nav">'+names.map((n,i)=>'<button type="button" class="sticky-link" data-go="etapa-'+(i+1)+'">'+(i+1)+'. '+n+'</button>').join('')+'</div><button type="button" class="sticky-theme" id="stickyTheme">'+(root.getAttribute('data-intake-theme')==='dark'?'☀ Claro':'☾ Escuro')+'</button>';
+    document.body.prepend(bar);
+    bar.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){document.getElementById(b.dataset.go)?.scrollIntoView({behavior:'smooth',block:'start'});return}if(e.target.id==='stickyTheme')set(root.getAttribute('data-intake-theme')==='dark'?'light':'dark')});
+    const hero=document.getElementById('intakeHero');if(hero){new IntersectionObserver(([entry])=>bar.classList.toggle('visible',!entry.isIntersecting),{threshold:.12}).observe(hero)}
+  })();<\/script>`;
   html=html.replace('</body>',themeScript+'</body>');
   document.open();document.write(html);document.close();
 }).catch(()=>{document.querySelector('.loading').textContent='Não foi possível carregar o formulário agora.'});
