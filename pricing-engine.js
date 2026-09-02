@@ -15,21 +15,21 @@
     implementation:{organized:1500,partial:2500,disorganized:3500,additionalCnpj:500,rework:750,branch:250},
     estimation:{minimumHours:7,movementsPerHourDivisor:55,bankHours:1.1,cardHours:0.45,additionalCnpjHours:1.5,branchHours:0.8,costCenterHours:0.15,cltHours:0.20,reworkHours:3,suggestedMarginBuffer:1.10}
   };
-  let POLICY=root.FenixPricingPolicy||FALLBACK_POLICY;
-  if(typeof module!=='undefined'&&module.exports){try{POLICY=require('./pricing-policy.js')}catch{POLICY=FALLBACK_POLICY}}
+  let BASE_POLICY=root.FenixPricingPolicy||FALLBACK_POLICY;
+  if(typeof module!=='undefined'&&module.exports){try{BASE_POLICY=require('./pricing-policy.js')}catch{BASE_POLICY=FALLBACK_POLICY}}
   const VERSION='1.1.0';
-  const DEFAULTS={targetMargin:POLICY.targetMargin,commercialDiscountLimit:POLICY.commercialDiscountLimit};
-  const VOLUME_TIERS=POLICY.volumeTiers;
   const moneyRound=n=>Math.ceil(Number(n||0)/50)*50;
   const num=v=>{const n=Number(String(v??'').replace(/\./g,'').replace(',','.'));return Number.isFinite(n)?n:0};
   const sizeBucket=v=>{v=String(v??'0');if(v.includes('+'))return parseInt(v)||0;if(v.includes('-'))return parseInt(v.split('-')[1])||0;return num(v)};
   const countBanks=v=>String(v||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean).length;
-  function volumeTier(movements){return VOLUME_TIERS.find(t=>movements<=t.max)||VOLUME_TIERS[VOLUME_TIERS.length-1]}
+  const activePolicy=()=>root.FenixPricingPolicy||BASE_POLICY;
+  function volumeTier(movements,tiers){return tiers.find(t=>movements<=t.max)||tiers[tiers.length-1]}
   function diagnose(f,settings={}){
+    const POLICY=activePolicy(),DEFAULTS={targetMargin:POLICY.targetMargin,commercialDiscountLimit:POLICY.commercialDiscountLimit};
     const cfg={...DEFAULTS,...settings},e=POLICY.extras,c=POLICY.complexity,imp=POLICY.implementation,est=POLICY.estimation;
     const faturamento=num(f.faturamento),banks=countBanks(f.bancos),cards=sizeBucket(f.cartoes),apps=sizeBucket(f.contas_aplicacao),clt=sizeBucket(f.funcionarios),cnpjs=Math.max(1,sizeBucket(f.cnpjs)),filiais=sizeBucket(f.filiais),cc=sizeBucket(f.centros_custo);
     const movements=num(f.recebimentos)+num(f.pagamentos)+num(f.notas)+num(f.notas_recebidas)+num(f.lancamentos);
-    const tier=volumeTier(movements);
+    const tier=volumeTier(movements,POLICY.volumeTiers);
     let points=0;if(movements>500)points+=3;else if(movements>300)points+=2;else if(movements>150)points++;if(banks>e.includedBanks)points+=Math.min(3,banks-e.includedBanks);if(cards>e.includedCards)points++;if(apps>2)points++;if(clt>e.cltThreshold)points++;if(cnpjs>1)points+=2;if(filiais>0)points++;if(cc>e.includedCostCenters)points++;if(f.dor_atrasados==='Sim')points+=2;if(String(f.implantacao_situacao||'').includes('Desorganizado'))points+=2;
     const complexity=points>c.mediumMaxPoints?'Alta':points>c.lowMaxPoints?'Média':'Baixa';
     const extras={bancos:Math.max(0,banks-e.includedBanks)*e.additionalBank,cartoes:Math.max(0,cards-e.includedCards)*e.additionalCard,cnpjs:Math.max(0,cnpjs-1)*e.additionalCnpj,filiais:filiais*e.branch,centrosCusto:Math.max(0,cc-e.includedCostCenters)*e.additionalCostCenter,equipe:clt>e.cltThreshold?e.cltExtra:0,faturamento:faturamento>e.revenueThreshold2?e.revenueExtra2:faturamento>e.revenueThreshold1?e.revenueExtra1:0};
@@ -40,10 +40,10 @@
     const margin=suggested&&costMonthly?(suggested-costMonthly)/suggested:null;const risks=[];if(movements>500)risks.push('Volumetria acima de 500 movimentos/mês');if(banks>e.includedBanks)risks.push(`Mais de ${e.includedBanks} bancos ativos`);if(cards>e.includedCards)risks.push(`Mais de ${e.includedCards} cartões`);if(cnpjs>1)risks.push('Múltiplos CNPJs');if(filiais>0)risks.push('Operação com filiais');if(cc>e.includedCostCenters)risks.push(`Mais de ${e.includedCostCenters} centros de custo`);if(clt>e.cltThreshold)risks.push(`Equipe CLT acima de ${e.cltThreshold} pessoas`);if(f.dor_atrasados==='Sim')risks.push('Existem atrasados/retrabalho para saneamento');if(String(f.implantacao_situacao||'').includes('Desorganizado'))risks.push('Implantação com saneamento relevante');if(!costHour)risks.push('Custo-hora interno não informado: piso de margem ainda não validado');if(movements>POLICY.manualReview.movementsAbove)risks.push('Revisão manual obrigatória por volumetria acima da matriz padrão');
     return {version:VERSION,policyVersion:POLICY.version,faturamento,movements,banks,cards,apps,clt,cnpjs,filiais,cc,points,complexity,tier,extras,extrasTotal,complexityFactor,structuralPrice,hours,costHour,costMonthly,targetMargin:cfg.targetMargin,marginFloor,commercialDiscountLimit:cfg.commercialDiscountLimit,commercialFloor,suggested,implantation,margin,risks,manualReview:movements>POLICY.manualReview.movementsAbove||complexity===POLICY.manualReview.complexity};
   }
-  const api={VERSION,POLICY,DEFAULTS,VOLUME_TIERS,diagnose};if(typeof module!=='undefined'&&module.exports)module.exports=api;root.FenixPricing=api;
+  const api={VERSION,get POLICY(){return activePolicy()},get DEFAULTS(){const p=activePolicy();return{targetMargin:p.targetMargin,commercialDiscountLimit:p.commercialDiscountLimit}},get VOLUME_TIERS(){return activePolicy().volumeTiers},diagnose};if(typeof module!=='undefined'&&module.exports)module.exports=api;root.FenixPricing=api;
 })(typeof window!=='undefined'?window:globalThis);
 
 if(typeof window!=='undefined'&&typeof document!=='undefined'){
   function loadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.async=false;s.onload=resolve;s.onerror=()=>reject(new Error('Falha ao carregar '+src));document.head.appendChild(s)})}
-  (async()=>{try{await loadScript('ui-enhancements.js?v=5');await loadScript('ramo-multiselect-fix.js?v=2');await loadScript('header-polish.js?v=5');await loadScript('header-singular-safe.js?v=1');await loadScript('contracts-commissions.js?v=1');await loadScript('client-form-ux.js?v=1');await loadScript('client-mode.js?v=3');await loadScript('intake-persistence.js?v=5');await loadScript('proposal-standard.js?v=1');await loadScript('internal-panel.js?v=1')}catch(err){console.error('Fenix bootstrap error:',err)}})();
+  (async()=>{try{if(!window.FenixPricingPolicy)await loadScript('pricing-policy.js?v=1');await loadScript('ui-enhancements.js?v=5');await loadScript('ramo-multiselect-fix.js?v=2');await loadScript('header-polish.js?v=5');await loadScript('header-singular-safe.js?v=1');await loadScript('contracts-commissions.js?v=1');await loadScript('client-form-ux.js?v=1');await loadScript('client-mode.js?v=3');await loadScript('intake-persistence.js?v=5');await loadScript('proposal-standard.js?v=1');await loadScript('internal-panel.js?v=1')}catch(err){console.error('Fenix bootstrap error:',err)}})();
 }
