@@ -14,10 +14,25 @@ O arquivo `FENIX_MASTER_LIMPO_GOLDEN_REFERENCE_APROVADO.pdf` permanece como
 Somente duas correções visuais foram aplicadas:
 
 1. página 3: remoção da sobreposição entre a nota do CFO e o escopo operacional;
-2. página 8: remoção do fragmento de logo e acomodação completa do bloco de aceite.
+2. página 8: substituição do fragmento recortado pela logo FÊNIX integral e
+   acomodação completa do bloco de aceite.
 
 Logo, asa, diagonais, canto metálico, cores, tipografia, composição, proporção,
 narrativa e quantidade de páginas não foram reinterpretados.
+
+## Conteúdo demonstrativo e dados dinâmicos
+
+Os dados exibidos neste PDF são um caso demonstrativo e não constituem um plano
+comercial padrão para todos os clientes.
+
+Serão substituídos em cada proposta, sempre a partir da coleta e da aprovação do
+CFO: cliente, segmento, data, contexto, diagnóstico, escopo operacional, escopo
+gerencial, volumes, limites, CNPJs, contas bancárias, mensalidade, desconto,
+implantação, software/ERP e observações comerciais aprovadas.
+
+Permanecem fixos o layout, a identidade visual, a ordem das oito páginas, a
+governança do fluxo, as responsabilidades jurídicas e os textos institucionais
+homologados.
 
 ## Artefatos
 
@@ -31,7 +46,7 @@ narrativa e quantidade de páginas não foram reinterpretados.
 - formato 16:9, 1200 × 675 pontos;
 - conferência visual das oito páginas;
 - página 3 sem sobreposição de conteúdo;
-- página 8 sem logo recortado e com aceite integral;
+- página 8 com logo FÊNIX integral e aceite completo;
 - fluxo comercial preservado;
 - nenhuma mudança promovida para produção.
 

@@ -38,11 +38,7 @@
   font-size: 16px;
 }
 
-/* Página 8: padrão par sem logo e acomodação integral do bloco de aceite. */
-.page:nth-of-type(8) .logo {
-  display: none !important;
-}
-
+/* Página 8: logo integral e acomodação completa do bloco de aceite. */
 .page:nth-of-type(8) .content {
   top: 170px;
   height: 680px;
