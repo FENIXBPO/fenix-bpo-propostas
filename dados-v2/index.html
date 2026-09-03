@@ -28,6 +28,31 @@ frame.addEventListener('load',()=>{
       atividade.placeholder='Preenchida pelo CNPJ; corrija se necessário';
     }
 
+    const filiais=d.getElementById('filiais');
+    if(filiais){
+      filiais.closest('.field')?.remove();
+    }
+
+    const originalCollect=w.collect;
+    if(typeof originalCollect==='function'){
+      w.collect=function(){
+        const data=originalCollect();
+        delete data.filiais;
+        return data;
+      };
+    }
+
+    w.completion=function(){
+      const val=id=>d.getElementById(id)?.value?.trim?.()||'';
+      const ids=['cnpj','razao','faturamento','endereco','bairro','cep','cidade_uf','funcionarios','cnpjs','implantacao_situacao','dor_atrasados','financeiro_interno','descricao','sistema_atual','conta_azul_usa','contabilidade_definida','frequencia','recebimentos','pagamentos','notas','notas_recebidas','lancamentos','comissoes_lancadas','bancos','cartoes','contas_aplicacao','centros_custo','dor','expectativa','consome_tempo','responsavel','cargo','email','telefone'];
+      let done=ids.filter(id=>val(id)!=='').length,total=ids.length+4;
+      if(d.querySelectorAll('input[name=segmento]:checked').length)done++;
+      if(d.querySelectorAll('input[name=escopo]:checked').length)done++;
+      if(d.querySelectorAll('input[name=objetivo]:checked').length)done++;
+      if(val('repasses')||val('conta_azul_valor'))done++;
+      return Math.round(done/total*100);
+    };
+
     const contaAzulUso=d.getElementById('conta_azul_usa');
     const contaAzulValor=d.getElementById('conta_azul_valor');
     const contaAzulPagador=d.getElementById('conta_azul_pagador');
@@ -116,6 +141,7 @@ frame.addEventListener('load',()=>{
       }
     `;
     d.head.appendChild(style);
+    if(typeof w.updateProgress==='function')w.updateProgress();
   }catch(e){console.error('Falha ao aplicar correção funcional FÊNIX',e)}
 });
 </script>
