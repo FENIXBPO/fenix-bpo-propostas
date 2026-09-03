@@ -29,6 +29,7 @@ Status: HOMOLOGAÇÃO FUNCIONAL EM FECHAMENTO
 5. Revisão final ampliada para exibir os principais blocos coletados.
 6. Validação básica de formato de e-mail.
 7. Legibilidade ampliada nas 9 etapas e no seletor de segmentos, sem alterar a arquitetura visual congelada.
+8. Campo `atrasados_retrabalho` corrigido para preservar semanticamente Sim / Não / não informado.
 
 ## Resultado por prioridade
 
@@ -39,33 +40,30 @@ Status: HOMOLOGAÇÃO FUNCIONAL EM FECHAMENTO
 5. Progresso: baseado em campos efetivamente preenchidos; navegação isolada não aumenta percentual.
 6. Conta Azul/repasses: condicionais corrigidas; etapa permanece opcional.
 7. Revisão final: ampliada e funcional.
-8. `/api/intake`: auditado; preserva fluxo existente.
-9. Supabase: tabelas e persistência existentes conferidas. Há um bloqueio semântico descrito abaixo.
+8. `/api/intake`: auditado e ajustado para preservar valores nulos quando a resposta não foi informada.
+9. Supabase: migration aplicada e schema conferido.
 10. Publicação em `proposta.fenixbpo.com.br/dados-v2/`: NÃO executada; aguarda aprovação final.
 
-## Bloqueio de dados — atrasados/retrabalho
+## Correção de dados — atrasados/retrabalho
 
-A coleta permite que `Existem atrasados ou retrabalho?` permaneça sem resposta.
+Problema identificado: a coleta permite que `Existem atrasados ou retrabalho?` permaneça sem resposta, mas a coluna `public.bpo_intakes.atrasados_retrabalho` era `boolean NOT NULL DEFAULT false`, convertendo ausência de resposta em `Não`.
 
-Porém, no schema atual de `public.bpo_intakes`, a coluna `atrasados_retrabalho` é `boolean NOT NULL DEFAULT false`.
+Com autorização expressa do responsável pelo projeto, foi aplicada no Supabase principal a migration:
 
-Isso cria uma divergência semântica: ausência de resposta pode ser persistida estruturalmente como `false`, que equivale a `Não`, embora o `raw_payload` preserve o valor original em branco.
+`allow_null_atrasados_retrabalho`
 
-Correção recomendada antes da publicação oficial:
+Resultado final do schema:
 
-```sql
-alter table public.bpo_intakes
-  alter column atrasados_retrabalho drop not null,
-  alter column atrasados_retrabalho drop default;
-```
+- `atrasados_retrabalho` aceita `NULL`;
+- não possui mais default `false`.
 
-E ajustar `/api/intake` para enviar:
+O `/api/intake` da branch de homologação também foi ajustado para gravar:
 
 - `true` quando resposta = `Sim`;
 - `false` quando resposta = `Não`;
 - `null` quando não informado.
 
-Essa alteração não foi aplicada automaticamente porque modifica o schema do Supabase principal e deve passar por gate próprio de mudança de banco.
+O schema foi consultado após a migration e confirmou `is_nullable = YES` e `column_default = null`.
 
 ## Segurança observada
 
@@ -78,13 +76,16 @@ Nenhuma alteração de RLS foi realizada nesta auditoria.
 
 ## Gate para publicação
 
+O bloqueio semântico de banco foi resolvido.
+
 Para declarar a coleta APTO PARA PUBLICAÇÃO, ainda faltam:
 
-1. decisão/aprovação sobre o ajuste semântico de `atrasados_retrabalho`;
-2. teste transacional final de um envio pela homologação;
-3. conferência do registro gerado em `bpo_clients` e `bpo_intakes`;
-4. aprovação visual final desktop/mobile pelo responsável do projeto;
-5. somente então substituir o conteúdo da rota oficial `/dados-v2/`.
+1. teste final de um envio completo pela interface da homologação;
+2. conferência do registro gerado em `bpo_clients` e `bpo_intakes`;
+3. aprovação visual final desktop/mobile pelo responsável do projeto;
+4. somente então substituir o conteúdo da rota oficial `/dados-v2/`.
+
+Observação: a Preview Protection da Vercel continua podendo interceptar chamadas automatizadas externas aos endpoints da preview. Isso não altera o código aprovado, mas pode exigir que o teste final de envio seja disparado pela própria interface de homologação autenticada/compartilhada.
 
 ## Governança
 
