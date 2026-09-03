@@ -1,0 +1,1 @@
+Hotfix técnico para cache-busting da logo oficial da coleta FÊNIX.
