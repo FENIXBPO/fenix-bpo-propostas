@@ -21,7 +21,25 @@ frame.addEventListener('load',()=>{
     if(logo){logo.src=LOGO;logo.removeAttribute('srcset');}
     d.querySelectorAll('.freeNavNote').forEach(el=>el.remove());
     const style=d.createElement('style');
-    style.textContent=`.card:after{background-image:url('${SYMBOL}')!important}.progressWrap,.main>div:nth-of-type(2){margin-bottom:0!important}`;
+    style.textContent=`
+      .card:after{background-image:url('${SYMBOL}')!important}
+      .progressWrap,.main>div:nth-of-type(2){margin-bottom:0!important}
+      .topbar{position:relative!important;justify-content:center!important;padding-left:320px!important;padding-right:320px!important}
+      .topCopy{text-align:center!important;justify-items:center!important}
+      .topTitle,.topFlow{text-align:center!important}
+      .logo{position:absolute!important;right:34px!important;top:50%!important;transform:translateY(-50%)!important}
+      @media(max-width:820px){
+        .topbar{padding-left:120px!important;padding-right:120px!important}
+        .logo{right:14px!important}
+        .topCopy{max-width:100%!important}
+      }
+      @media(max-width:560px){
+        .topbar{padding-left:10px!important;padding-right:90px!important;justify-content:center!important}
+        .topTitle{font-size:12px!important}
+        .topFlow{font-size:9px!important;white-space:normal!important}
+        .logo{right:8px!important;max-width:78px!important;height:40px!important}
+      }
+    `;
     d.head.appendChild(style);
   }catch(e){console.error('Falha ao aplicar correção visual FÊNIX',e)}
 });
