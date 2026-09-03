@@ -25,6 +25,13 @@ const toInteger = value => {
   const match = String(value ?? '').match(/\d+/);
   return match ? Number(match[0]) : null;
 };
+const toNullableBoolean = value => {
+  const normalized = String(value ?? '').trim().toLowerCase();
+  if (!normalized) return null;
+  if (normalized === 'sim') return true;
+  if (normalized === 'não' || normalized === 'nao') return false;
+  return null;
+};
 const parseCityUf = value => {
   const text = String(value || '').trim();
   if (!text) return { cidade: null, uf: null };
@@ -123,7 +130,7 @@ module.exports = async function handler(req, res) {
       centros_custo: String(form.centros_custo || '').trim() || null,
       funcionarios_clt: String(form.funcionarios || '').trim() || null,
       situacao_atual: String(form.implantacao_situacao || '').trim() || null,
-      atrasados_retrabalho: String(form.dor_atrasados || '').toLowerCase() === 'sim',
+      atrasados_retrabalho: toNullableBoolean(form.dor_atrasados),
       escopo: Array.isArray(form.escopo) ? form.escopo : [],
       raw_payload: { form, cnpjData: lookup },
       updated_at: new Date().toISOString()
