@@ -11,15 +11,20 @@ html,body{margin:0;width:100%;height:100%;background:#050505;overflow:hidden}ifr
 <body>
 <iframe id="app" src="/homologacao/coleta-fenix-wizard.html" title="Levantamento de Dados FÊNIX"></iframe>
 <script>
-const LOGO='/assets/fenix-logo-header-crop.webp';
-const SYMBOL='/assets/fenix-symbol.png';
+const LOGO='/assets/fenix-logo-header-crop.webp?v=20260903-2';
+const LOGO_FALLBACK='/assets/fenix-logo-white-transparent.webp?v=20260903-2';
+const SYMBOL='/assets/fenix-symbol.png?v=20260903-2';
 const frame=document.getElementById('app');
 frame.addEventListener('load',()=>{
   try{
     const d=frame.contentDocument;
     const w=frame.contentWindow;
     const logo=d.querySelector('.logo');
-    if(logo){logo.src=LOGO;logo.removeAttribute('srcset');}
+    if(logo){
+      logo.removeAttribute('srcset');
+      logo.onerror=()=>{if(logo.src.indexOf('fenix-logo-white-transparent.webp')===-1)logo.src=LOGO_FALLBACK;};
+      logo.src=LOGO;
+    }
     d.querySelectorAll('.freeNavNote').forEach(el=>el.remove());
 
     const atividade=d.getElementById('atividade_cnpj');
