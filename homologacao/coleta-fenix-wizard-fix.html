@@ -17,9 +17,73 @@ const frame=document.getElementById('app');
 frame.addEventListener('load',()=>{
   try{
     const d=frame.contentDocument;
+    const w=frame.contentWindow;
     const logo=d.querySelector('.logo');
     if(logo){logo.src=LOGO;logo.removeAttribute('srcset');}
     d.querySelectorAll('.freeNavNote').forEach(el=>el.remove());
+
+    const atividade=d.getElementById('atividade_cnpj');
+    if(atividade){
+      atividade.removeAttribute('readonly');
+      atividade.placeholder='Preenchida pelo CNPJ; corrija se necessário';
+    }
+
+    const contaAzulUso=d.getElementById('conta_azul_usa');
+    const contaAzulValor=d.getElementById('conta_azul_valor');
+    const contaAzulPagador=d.getElementById('conta_azul_pagador');
+    const contaAzulFields=[contaAzulValor?.closest('.field'),contaAzulPagador?.closest('.field')].filter(Boolean);
+    const syncContaAzul=()=>{
+      const uso=contaAzulUso?.value||'';
+      const show=uso==='sim'||uso==='pretende';
+      contaAzulFields.forEach(el=>el.style.display=show?'':'none');
+      if(uso==='nao'){
+        if(contaAzulValor)contaAzulValor.value='';
+        if(contaAzulPagador)contaAzulPagador.value='';
+      }
+      if(typeof w.updateProgress==='function')w.updateProgress();
+    };
+    contaAzulUso?.addEventListener('change',syncContaAzul);
+    syncContaAzul();
+
+    const originalValidate=w.validateFinal;
+    if(typeof originalValidate==='function'){
+      w.validateFinal=function(data){
+        const existing=originalValidate(data);
+        if(existing)return existing;
+        const email=String(data.email||'').trim();
+        if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return{s:7,msg:'Informe um e-mail válido.'};
+        return null;
+      };
+    }
+
+    w.buildReview=function(){
+      const data=typeof w.collect==='function'?w.collect():{};
+      const contaAzulMap={sim:'Usa atualmente',pretende:'Pretende utilizar',nao:'Não utiliza'};
+      const contaAzul=[contaAzulMap[data.conta_azul_usa]||'Não informado',data.conta_azul_valor||'',data.conta_azul_pagador?`pagamento: ${data.conta_azul_pagador.replaceAll('_',' ')}`:''].filter(Boolean).join(' · ');
+      const volumetria=[
+        data.recebimentos&&`Receb. ${data.recebimentos}`,
+        data.pagamentos&&`Pag. ${data.pagamentos}`,
+        data.notas&&`NFS-e ${data.notas}`,
+        data.notas_recebidas&&`Notas rec. ${data.notas_recebidas}`
+      ].filter(Boolean).join(' · ');
+      const rows=[
+        ['Empresa',data.razao||'Não informado'],
+        ['Segmentos',data.ramos||'Não informado'],
+        ['CNPJ',data.cnpj||'Não informado'],
+        ['Faturamento',data.faturamento||'Não informado'],
+        ['Operação',data.descricao||'Não informado'],
+        ['ERP / sistema',data.sistema_atual||'Não informado'],
+        ['Volumetria',volumetria||'Não informada'],
+        ['Escopo',data.escopo?.length?data.escopo.join(', '):'Nenhum item'],
+        ['Conta Azul',contaAzul],
+        ['Outros repasses',data.repasses==='Sim'?(data.repasses_detalhes||'Sim, sem detalhes'):(data.repasses||'Não informado')],
+        ['Objetivos',data.objetivos?.length?data.objetivos.join(', '):'Não informado'],
+        ['Contato',[data.responsavel,data.email].filter(Boolean).join(' · ')||'Não informado']
+      ];
+      const review=d.getElementById('review');
+      if(review)review.innerHTML=rows.map(([a,b])=>`<div class="reviewRow"><strong>${a}</strong><span>${b}</span></div>`).join('');
+    };
+
     const style=d.createElement('style');
     style.textContent=`
       .card:after{background-image:url('${SYMBOL}')!important}
@@ -28,6 +92,7 @@ frame.addEventListener('load',()=>{
       .topCopy{text-align:center!important;justify-items:center!important}
       .topTitle,.topFlow{text-align:center!important}
       .logo{position:absolute!important;right:34px!important;top:50%!important;transform:translateY(-50%)!important}
+      .reviewRow span{text-align:right;overflow-wrap:anywhere}
       @media(max-width:820px){
         .topbar{padding-left:120px!important;padding-right:120px!important}
         .logo{right:14px!important}
@@ -41,7 +106,7 @@ frame.addEventListener('load',()=>{
       }
     `;
     d.head.appendChild(style);
-  }catch(e){console.error('Falha ao aplicar correção visual FÊNIX',e)}
+  }catch(e){console.error('Falha ao aplicar correção funcional FÊNIX',e)}
 });
 </script>
 </body>
