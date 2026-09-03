@@ -4,7 +4,20 @@ const SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVI
 const cleanCnpj = value => String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const validCnpj = value => /^[A-Z0-9]{12}\d{2}$/.test(cleanCnpj(value));
 const toNumber = value => {
-  const normalized = String(value ?? '').trim().replace(/\./g, '').replace(',', '.');
+  const text = String(value ?? '').trim();
+  if (!text) return null;
+
+  let normalized = text.replace(/[^\d,.-]/g, '');
+  const lastComma = normalized.lastIndexOf(',');
+  const lastDot = normalized.lastIndexOf('.');
+
+  if (lastComma > -1 && lastDot > -1) {
+    if (lastComma > lastDot) normalized = normalized.replace(/\./g, '').replace(',', '.');
+    else normalized = normalized.replace(/,/g, '');
+  } else if (lastComma > -1) {
+    normalized = normalized.replace(',', '.');
+  }
+
   const number = Number(normalized);
   return Number.isFinite(number) ? number : null;
 };
@@ -67,11 +80,11 @@ module.exports = async function handler(req, res) {
       nome_fantasia: String(form.nome_fantasia || lookup.nome_fantasia || '').trim() || null,
       situacao_cadastral: String(lookup.situacao_cadastral || '').trim() || null,
       cnae_principal: String(lookup.cnae_principal || '').trim() || null,
-      atividade_principal: String(lookup.atividade_principal || '').trim() || null,
-      endereco: String(lookup.endereco || '').trim() || null,
-      cidade: String(lookup.cidade || manualLocation.cidade || '').trim() || null,
-      uf: String(lookup.uf || manualLocation.uf || '').trim() || null,
-      cep: String(lookup.cep || '').trim() || null,
+      atividade_principal: String(form.atividade_cnpj || lookup.atividade_principal || '').trim() || null,
+      endereco: String(form.endereco || lookup.endereco || '').trim() || null,
+      cidade: String(manualLocation.cidade || lookup.cidade || '').trim() || null,
+      uf: String(manualLocation.uf || lookup.uf || '').trim() || null,
+      cep: String(form.cep || lookup.cep || '').trim() || null,
       responsavel: String(form.responsavel || '').trim() || null,
       email: String(form.email || '').trim() || null,
       telefone: String(form.telefone || '').trim() || null,
