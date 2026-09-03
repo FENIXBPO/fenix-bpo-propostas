@@ -1,7 +1,9 @@
 {
+  "redirects": [
+    { "source": "/assets/fenix-logo-white-transparent.webp", "destination": "/assets/fenix-logo-header-crop.webp", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/painel", "destination": "/app-v15.html?interno=1" },
-    { "source": "/painel/", "destination": "/app-v15.html?interno=1" },
-    { "source": "/assets/fenix-logo-white-transparent.webp", "destination": "/assets/fenix-logo-header-crop.webp" }
+    { "source": "/painel/", "destination": "/app-v15.html?interno=1" }
   ]
 }
