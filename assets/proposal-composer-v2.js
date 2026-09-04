@@ -4,7 +4,7 @@ const arr=(v)=>Array.isArray(v)?v.filter(Boolean).map(x=>String(x).trim()).filte
 const uniq=(a)=>[...new Set(a)];
 const sentence=v=>{v=String(v||'').trim();if(!v)return'';return v.charAt(0).toUpperCase()+v.slice(1).replace(/[.\s]+$/,'')+'.'};
 function splitScope(items){const docs=[],oper=[];for(const item of arr(items)){if(/nota|contabil|document|contrato|nfs|interface/i.test(item))docs.push(item);else oper.push(item)}return{oper,docs}}
-function density(count,chars){if(count<=3&&chars<220)return'compact';if(count<=6&&chars<520)return'normal';return'dense'}
+function density(count,chars){if(count<=3&&chars<220)return'compact';if(count<=12&&chars<900)return'normal';return'dense'}
 function compose(p){const c=p.client||{},t=p.commercial_terms||{},s=p.scope||{},op=p.operation||{},ctx=p.context||{};const objectives=arr(op.objectives);const scoped=splitScope(s.operational||[]);
 const operational=uniq(scoped.oper.length?scoped.oper:['Conciliação bancária diária','Contas a pagar','Contas a receber','Agendamentos bancários','Lançamentos e organização financeira']);
 const documents=uniq(scoped.docs.length?scoped.docs:['Entrada de notas de compra','Emissão de notas fiscais de serviço (NFS-e)','Fechamento e interface com a contabilidade']);
