@@ -1,0 +1,180 @@
+/* FÊNIX Proposta V2 — QA visual final das páginas internas.
+   Regra: preservar identidade e páginas aprovadas; corrigir apenas tipografia,
+   respiro e colisões das páginas 03, 04, 05, 06 e 08. */
+
+@media (min-width:761px){
+  #masterMount .page{container-type:inline-size}
+
+  /* RÉGUA TIPOGRÁFICA DOS CARDS INTERNOS */
+  #masterMount .page[data-page="3"] .scope-cards h3,
+  #masterMount .page[data-page="4"] .two-cards h3,
+  #masterMount .page[data-page="5"] .five-cards h3,
+  #masterMount .page[data-page="6"] .four-steps h3{
+    font-size:1.10cqw!important;
+    line-height:1.12!important;
+    margin:.28em 0 .70em!important;
+  }
+  #masterMount .page[data-page="3"] .scope-cards li,
+  #masterMount .page[data-page="4"] .two-cards li,
+  #masterMount .page[data-page="5"] .five-cards p,
+  #masterMount .page[data-page="6"] .four-steps p{
+    font-size:.88cqw!important;
+    line-height:1.34!important;
+  }
+
+  /* PÁGINA 03 — escopo */
+  #masterMount .page[data-page="3"] .scope-cards{
+    height:43.5%!important;
+    margin-top:1.15%!important;
+  }
+  #masterMount .page[data-page="3"] .scope-cards article{
+    padding:1.65% 1.85%!important;
+  }
+  #masterMount .page[data-page="3"] .scope-cards li{
+    margin:.28em 0!important;
+  }
+  #masterMount .page[data-page="3"] .bottom-note{
+    bottom:2.6%!important;
+    font-size:.88cqw!important;
+    line-height:1.25!important;
+  }
+
+  /* PÁGINA 04 — responsabilidades */
+  #masterMount .page[data-page="4"] .two-cards{
+    height:40.5%!important;
+    margin-top:1.15%!important;
+  }
+  #masterMount .page[data-page="4"] .two-cards article{
+    padding:1.65% 2.15%!important;
+  }
+  #masterMount .page[data-page="4"] .two-cards h3{
+    font-size:1.55cqw!important;
+    padding-top:.28em!important;
+    margin:.10em 0 .72em!important;
+  }
+  #masterMount .page[data-page="4"] .two-cards li{
+    margin:.30em 0!important;
+  }
+  #masterMount .page[data-page="4"] .principle{
+    height:9.2%!important;
+    margin-top:1.15%!important;
+    padding:.75% 1.6%!important;
+    gap:1.6%!important;
+  }
+  #masterMount .page[data-page="4"] .principle .icon{
+    width:42px!important;height:42px!important;font-size:1.15cqw!important;
+  }
+  #masterMount .page[data-page="4"] .principle h3{
+    font-size:.96cqw!important;
+    margin:0 0 .18em!important;
+  }
+  #masterMount .page[data-page="4"] .principle p{
+    font-size:.78cqw!important;
+    line-height:1.20!important;
+  }
+
+  /* PÁGINA 05 — tecnologia */
+  #masterMount .page[data-page="5"] .five-cards{
+    height:39.5%!important;
+    margin-top:1.75%!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards article{
+    padding:1.55% 1.15%!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards .icon{
+    margin-bottom:.72em!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards h3{
+    font-size:.96cqw!important;
+    min-height:2.2em!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards p{
+    font-size:.78cqw!important;
+    line-height:1.30!important;
+    margin:.25em 0!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards small{
+    font-size:.58cqw!important;
+    line-height:1.22!important;
+    margin-top:.62em!important;
+  }
+  #masterMount .page[data-page="5"] .tech-note{
+    bottom:2.35%!important;
+    padding-top:.70%!important;
+    font-size:.78cqw!important;
+    line-height:1.25!important;
+  }
+
+  /* PÁGINA 06 — implantação */
+  #masterMount .page[data-page="6"] .four-steps{
+    height:40.5%!important;
+    margin-top:2.0%!important;
+  }
+  #masterMount .page[data-page="6"] .four-steps article{
+    padding:1.75% 1.35%!important;
+  }
+  #masterMount .page[data-page="6"] .four-steps b{
+    font-size:1.72cqw!important;
+    margin-bottom:.42em!important;
+  }
+  #masterMount .page[data-page="6"] .four-steps h3{
+    font-size:1.02cqw!important;
+  }
+  #masterMount .page[data-page="6"] .four-steps p{
+    font-size:.78cqw!important;
+    line-height:1.30!important;
+  }
+  #masterMount .page[data-page="6"] .bottom-note{
+    bottom:2.3%!important;
+    font-size:.80cqw!important;
+    line-height:1.22!important;
+  }
+
+  /* PÁGINA 08 — aceite */
+  #masterMount .page[data-page="8"] .five-flow{
+    height:18.5%!important;
+    margin-top:1.25%!important;
+  }
+  #masterMount .page[data-page="8"] .five-flow h3{
+    font-size:.78cqw!important;
+    line-height:1.06!important;
+    margin:.42em 0 0!important;
+  }
+  #masterMount .page[data-page="8"] .accept-declaration{
+    height:23.5%!important;
+    margin-top:1.15%!important;
+    padding:1.55% 2.4%!important;
+  }
+  #masterMount .page[data-page="8"] .accept-declaration h3{
+    font-size:1.25cqw!important;
+    margin:.18em 0 .25em!important;
+  }
+  #masterMount .page[data-page="8"] .accept-declaration>p{
+    font-size:.88cqw!important;
+    line-height:1.25!important;
+    margin:.20em auto .85em!important;
+  }
+  #masterMount .page[data-page="8"] .accept-fields span{
+    font-size:.70cqw!important;
+  }
+  #masterMount .page[data-page="8"] .accept-fields strong{
+    font-size:.70cqw!important;
+    height:18px!important;
+    margin-top:.22em!important;
+  }
+  #masterMount .page[data-page="8"] .contract-note{
+    margin-top:.85%!important;
+    font-size:.82cqw!important;
+  }
+}
+
+/* Mobile continua com o layout específico já aprovado como direção. */
+@media (max-width:760px){
+  #masterMount .page[data-page="3"] .bottom-note,
+  #masterMount .page[data-page="5"] .tech-note,
+  #masterMount .page[data-page="6"] .bottom-note{margin-top:18px!important}
+  #masterMount .page[data-page="4"] .principle{margin-top:14px!important}
+}

@@ -1,0 +1,72 @@
+/* FÊNIX Proposta V2 — enquadramento oficial da marca nas 8 páginas.
+   Fonte única: PNG oficial Master Black do Drive (1536x1024).
+   Arte horizontal útil: x=180..1399 / y=310..603.
+   Símbolo oficial: x=180..520 / y=310..603.
+   Sem redesenho: apenas enquadramento geométrico do ativo oficial. */
+
+/* LOGO COMPLETA — todas as páginas */
+.brand-logo{
+  background-image:url('https://drive.google.com/thumbnail?id=1NhMq9gBU8ZpQwjdSgXs7p1uzJSnnuzvl&sz=w1600')!important;
+  background-repeat:no-repeat!important;
+  background-size:auto 348%!important;
+  background-position:50% 42.5%!important;
+  right:4.7%!important;
+  left:auto!important;
+  top:3.7%!important;
+  width:31.5%!important;
+  height:7.6%!important;
+  z-index:9!important;
+}
+
+/* MARCA D'ÁGUA — somente o símbolo/Fênix oficial */
+.phoenix-mark{
+  background-image:url('https://drive.google.com/thumbnail?id=1NhMq9gBU8ZpQwjdSgXs7p1uzJSnnuzvl&sz=w1600')!important;
+  background-repeat:no-repeat!important;
+  background-size:auto 348%!important;
+  background-position:15% 42.5%!important;
+  right:1.5%!important;
+  left:auto!important;
+  top:16%!important;
+  width:32%!important;
+  height:62%!important;
+  opacity:.065!important;
+  filter:grayscale(1) brightness(.50) contrast(1.08)!important;
+  z-index:1!important;
+}
+
+/* CAPA — geometria fiel ao Golden Visual A4 paisagem */
+.page-cover .brand-logo{
+  right:4.7%!important;
+  top:4.0%!important;
+  width:34.5%!important;
+  height:8.35%!important;
+}
+.page-cover .phoenix-mark{
+  right:2.4%!important;
+  top:18.5%!important;
+  width:31.5%!important;
+  height:58%!important;
+  opacity:.075!important;
+}
+.page-cover .cover-body{top:8.5%!important;height:83%!important}
+.page-cover .cover-title{margin-top:5.1%!important}
+.page-cover .cover-title span{font-size:5.35vw!important;line-height:.88!important}
+.page-cover .cover-title strong{font-size:5.18vw!important;line-height:.88!important}
+.page-cover .client-name{font-size:2.75vw!important;margin-top:3.15%!important;margin-bottom:.65%!important;max-width:62%!important}
+.page-cover .cover-tag{font-size:1.28vw!important;max-width:62%!important;white-space:nowrap!important}
+.page-cover .cover-sub{font-size:.90vw!important;max-width:62%!important;white-space:nowrap!important}
+.page-cover .gold-rule{margin-top:1.55%!important;margin-bottom:2.0%!important}
+.page-cover .cover-meta{left:0!important;bottom:7.8%!important;width:69%!important}
+.page-cover .footer-brand{bottom:4.5%!important}
+.page-cover .page-badge{bottom:3.4%!important}
+
+/* Internas: preserva a leitura do conteúdo, mantendo a assinatura visual à direita */
+.page:not(.page-cover) .brand-logo{width:30%!important;height:7.2%!important;top:3.3%!important}
+.page:not(.page-cover) .phoenix-mark{right:-.5%!important;top:15%!important;width:31%!important;height:64%!important;opacity:.052!important}
+
+@media(max-width:900px){
+  .brand-logo{right:4%!important;width:32%!important;height:7.8%!important}
+  .phoenix-mark{right:0!important;width:33%!important;opacity:.05!important}
+  .page-cover .brand-logo{width:35%!important;height:8.5%!important}
+  .page-cover .phoenix-mark{right:1.5%!important;width:32%!important;opacity:.06!important}
+}
