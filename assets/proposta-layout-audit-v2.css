@@ -1,0 +1,79 @@
+/* FÊNIX Proposta V2 — patch de QA visual
+   Objetivo: preservar páginas aprovadas e corrigir apenas regressões de layout.
+   Não altera identidade, conteúdo comercial ou geometria da marca. */
+
+@media (min-width:761px){
+  /* Unidades cqw passam a responder à página, não à viewport. */
+  #masterMount .page{container-type:inline-size}
+
+  /* PÁGINA 03 — escopo: mais altura para listas + nota abaixo dos cards. */
+  #masterMount .page[data-page="3"] .scope-cards{
+    height:48%!important;
+    margin-top:1.2%!important;
+  }
+  #masterMount .page[data-page="3"] .scope-cards article{
+    padding:1.75% 2.0%!important;
+  }
+  #masterMount .page[data-page="3"] .scope-cards li{
+    line-height:1.28!important;
+    margin:.34em 0!important;
+  }
+  #masterMount .page[data-page="3"] .bottom-note{
+    bottom:1.3%!important;
+    font-size:1.0cqw!important;
+  }
+
+  /* PÁGINA 04 — responsabilidades: cards ganham altura; princípio fica separado. */
+  #masterMount .page[data-page="4"] .two-cards{
+    height:44%!important;
+    margin-top:1.2%!important;
+  }
+  #masterMount .page[data-page="4"] .two-cards article{
+    padding:2.0% 2.5%!important;
+  }
+  #masterMount .page[data-page="4"] .two-cards li{
+    line-height:1.32!important;
+    margin:.36em 0!important;
+  }
+  #masterMount .page[data-page="4"] .principle{
+    height:11.5%!important;
+    margin-top:1.1%!important;
+    padding:1.0% 2.0%!important;
+  }
+  #masterMount .page[data-page="4"] .principle h3{font-size:1.18cqw!important;margin-bottom:.28em!important}
+  #masterMount .page[data-page="4"] .principle p{font-size:.95cqw!important;line-height:1.25!important}
+
+  /* PÁGINA 05 — tecnologia: cards mais altos e nota fora do conteúdo. */
+  #masterMount .page[data-page="5"] .five-cards{
+    height:45%!important;
+    margin-top:2.0%!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards article{
+    padding:1.8% 1.25%!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards h3{
+    font-size:1.02cqw!important;
+    margin:.25em 0 .6em!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards p{
+    font-size:.83cqw!important;
+    line-height:1.35!important;
+  }
+  #masterMount .page[data-page="5"] .five-cards small{
+    font-size:.62cqw!important;
+    line-height:1.25!important;
+  }
+  #masterMount .page[data-page="5"] .tech-note{
+    bottom:1.4%!important;
+    padding-top:1.0%!important;
+    font-size:.92cqw!important;
+    line-height:1.3!important;
+  }
+}
+
+/* Mobile: apenas pequenos limites de segurança; o layout próprio continua soberano. */
+@media (max-width:760px){
+  #masterMount .page[data-page="3"] .bottom-note,
+  #masterMount .page[data-page="5"] .tech-note{margin-top:18px!important}
+  #masterMount .page[data-page="4"] .principle{margin-top:14px!important}
+}
