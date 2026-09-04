@@ -1,0 +1,36 @@
+/* FÊNIX Proposta V2 — ajuste controlado apenas da capa para aderência ao Golden Visual aprovado */
+.page-cover .brand-logo{
+  right:4.1%!important;
+  top:2.5%!important;
+  width:38%!important;
+  height:15.8%!important;
+  background-size:162% auto!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+}
+
+/* O mesmo master oficial é enquadrado apenas na área do símbolo para a marca d'água. */
+.page-cover .phoenix-mark{
+  right:-1.5%!important;
+  top:17%!important;
+  width:41%!important;
+  height:67%!important;
+  background-size:315% auto!important;
+  background-position:left center!important;
+  background-repeat:no-repeat!important;
+  opacity:.075!important;
+  filter:grayscale(1) brightness(.48) contrast(1.08)!important;
+}
+
+.page-cover .cover-title{margin-top:4.8%!important}
+.page-cover .cover-title span{font-size:5.75vw!important}
+.page-cover .cover-title strong{font-size:5.52vw!important}
+.page-cover .client-name{font-size:3.05vw!important;margin-top:2.9%!important}
+.page-cover .cover-tag{font-size:1.42vw!important}
+.page-cover .cover-sub{font-size:.96vw!important}
+.page-cover .cover-meta{bottom:5.7%!important;width:70%!important}
+
+@media(max-width:900px){
+  .page-cover .brand-logo{right:3.5%!important;width:39%!important;background-size:160% auto!important}
+  .page-cover .phoenix-mark{right:-2%!important;width:42%!important;opacity:.065!important}
+}
