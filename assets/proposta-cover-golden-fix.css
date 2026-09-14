@@ -32,6 +32,7 @@
   opacity:.065!important;
   filter:grayscale(1) brightness(.50) contrast(1.08)!important;
   z-index:1!important;
+  pointer-events:none!important;
 }
 
 /* CAPA — geometria fiel ao Golden Visual A4 paisagem */
@@ -60,13 +61,22 @@
 .page-cover .footer-brand{bottom:4.5%!important}
 .page-cover .page-badge{bottom:3.4%!important}
 
-/* Internas: preserva a leitura do conteúdo, mantendo a assinatura visual à direita */
+/* Internas: preserva a assinatura visual e torna a Fênix novamente perceptível como marca d'água. */
 .page:not(.page-cover) .brand-logo{width:30%!important;height:7.2%!important;top:3.3%!important}
-.page:not(.page-cover) .phoenix-mark{right:-.5%!important;top:15%!important;width:31%!important;height:64%!important;opacity:.052!important}
+.page:not(.page-cover) .phoenix-mark{
+  right:-1.0%!important;
+  top:15%!important;
+  width:34%!important;
+  height:66%!important;
+  opacity:.038!important;
+  filter:grayscale(1) brightness(1.15) contrast(1.05)!important;
+  z-index:6!important;
+  pointer-events:none!important;
+}
 
 @media(max-width:900px){
   .brand-logo{right:4%!important;width:32%!important;height:7.8%!important}
-  .phoenix-mark{right:0!important;width:33%!important;opacity:.05!important}
+  .phoenix-mark{right:0!important;width:33%!important;opacity:.04!important}
   .page-cover .brand-logo{width:35%!important;height:8.5%!important}
   .page-cover .phoenix-mark{right:1.5%!important;width:32%!important;opacity:.06!important}
 }
