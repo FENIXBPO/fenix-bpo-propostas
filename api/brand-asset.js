@@ -1,15 +1,22 @@
-function decodeAssetText(text) {
-  let raw = Buffer.from(String(text || '').replace(/\s+/g, ''), 'utf8');
-  for (let i = 0; i < 3; i++) {
-    if (raw.length >= 8 && raw[0] === 0x89 && raw[1] === 0x50 && raw[2] === 0x4e && raw[3] === 0x47) {
-      return { buffer: raw, type: 'image/png' };
-    }
-    if (raw.length >= 12 && raw.toString('ascii', 0, 4) === 'RIFF' && raw.toString('ascii', 8, 12) === 'WEBP') {
-      return { buffer: raw, type: 'image/webp' };
-    }
-    const s = raw.toString('utf8').replace(/\s+/g, '');
-    if (!/^[A-Za-z0-9+/=]+$/.test(s)) break;
-    raw = Buffer.from(s, 'base64');
+function detectAsset(raw) {
+  if (raw.length >= 8 && raw[0] === 0x89 && raw[1] === 0x50 && raw[2] === 0x4e && raw[3] === 0x47) {
+    return { buffer: raw, type: 'image/png' };
+  }
+  if (raw.length >= 12 && raw.toString('ascii', 0, 4) === 'RIFF' && raw.toString('ascii', 8, 12) === 'WEBP') {
+    return { buffer: raw, type: 'image/webp' };
+  }
+  return null;
+}
+
+function decodeAsset(raw) {
+  let current = raw;
+  for (let i = 0; i < 4; i++) {
+    const found = detectAsset(current);
+    if (found) return found;
+
+    const text = current.toString('utf8').replace(/\s+/g, '');
+    if (!text || !/^[A-Za-z0-9+/=]+$/.test(text)) break;
+    current = Buffer.from(text, 'base64');
   }
   throw new Error('Invalid brand asset');
 }
@@ -27,8 +34,9 @@ module.exports = async function handler(req, res) {
     const r = await fetch(rawUrl, { cache: 'no-store' });
     if (!r.ok) throw new Error(`GitHub asset fetch failed: ${r.status}`);
 
-    const text = await r.text();
-    const asset = decodeAssetText(text);
+    const raw = Buffer.from(await r.arrayBuffer());
+    const asset = decodeAsset(raw);
+
     res.setHeader('Content-Type', asset.type);
     res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
     res.setHeader('Content-Disposition', 'inline');
