@@ -1,1 +1,15 @@
-__FROM_FILE__
+/* FÊNIX Proposal Viewer V1 — viewer de lâmina inteira */
+html{scroll-behavior:smooth;background:#050505;scroll-snap-type:y proximity}
+body.public-proposal{margin:0!important;padding:0!important;background:#050505!important;overflow-x:hidden!important}
+#masterMount{padding:56px 0 0!important}
+#masterMount .deck{width:100%!important;max-width:none!important;margin:0!important;display:block!important}
+#masterMount .slide-viewport{min-height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center;padding:14px 18px 18px;scroll-snap-align:start;scroll-snap-stop:always}
+#masterMount .slide-viewport>.page{width:min(calc(100vw - 36px),calc((100vh - 88px)*16/9))!important;max-width:1600px!important;aspect-ratio:16/9!important;height:auto!important;margin:0!important;flex:0 0 auto!important}
+.public-print{top:9px!important;right:14px!important;z-index:9500!important;padding:9px 13px!important;border-radius:9px!important;opacity:.78;transition:opacity .2s ease,transform .2s ease}.public-print:hover{opacity:1;transform:translateY(-1px)}
+#masterMount .page>.brand-stage{position:absolute!important;right:3.2%!important;top:2.8%!important;width:43%!important;height:91%!important;z-index:1!important;pointer-events:none!important;overflow:visible!important}
+#masterMount .page>.brand-stage .brand-logo-img{position:absolute!important;right:0!important;top:0!important;width:74%!important;height:16%!important;object-fit:contain!important;object-position:right top!important;opacity:1!important;visibility:visible!important}
+#masterMount .page>.brand-stage .phoenix-watermark-img{position:absolute!important;right:-8%!important;top:15%!important;width:118%!important;height:76%!important;object-fit:contain!important;object-position:center!important;opacity:.16!important;filter:brightness(.58) saturate(.72) contrast(1.12)!important;visibility:visible!important}
+#masterMount .page[data-page="1"]>.brand-stage .phoenix-watermark-img{opacity:.24!important;right:-5%!important;top:12%!important;width:120%!important;height:79%!important}
+#masterMount .page>.side-lines{left:2.2%!important}#masterMount .page-body{left:6.6%!important;width:88.2%!important}#masterMount .footer-brand{left:6.7%!important}#masterMount .page-badge{right:3.2%!important;bottom:3.1%!important}
+@media(max-width:760px){#masterMount{padding-top:48px!important}#masterMount .slide-viewport{min-height:calc(100svh - 48px);padding:8px 4px 10px}#masterMount .slide-viewport>.page{width:calc(100vw - 8px)!important;max-width:none!important}.public-print{top:6px!important;right:6px!important;padding:7px 9px!important;font-size:12px!important}}
+@media print{html{scroll-snap-type:none!important}#masterMount{padding:0!important}#masterMount .slide-viewport{min-height:0!important;padding:0!important;display:block!important;break-after:page!important}#masterMount .slide-viewport>.page{width:100%!important;max-width:none!important;box-shadow:none!important}.public-print{display:none!important}}
