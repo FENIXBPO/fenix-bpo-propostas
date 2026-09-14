@@ -1,0 +1,74 @@
+/* FÊNIX — Master Premium V4 estrutural */
+:root{--fx-bg:#030303;--fx-panel:#0b0b0b;--fx-champ:#e2b86f;--fx-champ2:#f2d493;--fx-silver:#d8d8d8;--fx-white:#f5f3ee;--fx-muted:#b8b2a8;--fx-line:rgba(226,184,111,.68)}
+#masterMount .page{container-type:inline-size;background:radial-gradient(circle at 79% 40%,rgba(226,184,111,.06),transparent 24%),linear-gradient(145deg,#050505,#020202 62%,#080604)!important;border:1px solid rgba(226,184,111,.16)!important;box-shadow:0 22px 60px rgba(0,0,0,.58)!important}
+#masterMount .side-lines{left:3.4%!important;width:40px!important;border-left:4px solid #b67f31!important;border-right:2px solid #cfcfcf!important;box-shadow:-8px 0 0 #5a3a0b,10px 0 0 rgba(255,255,255,.12)!important}
+#masterMount .side-lines:after{left:14px!important;background:linear-gradient(#f4d792,#a87735,#f2d18b)!important;box-shadow:0 0 12px rgba(226,184,111,.55)!important}
+#masterMount .brand-logo{display:block!important;position:absolute!important;right:4.4%!important;top:3.2%!important;width:27%!important;height:9.5%!important;background:url('/assets/fenix-logo-white-transparent.webp') right top/contain no-repeat!important;z-index:20!important;opacity:.96!important;filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))!important;pointer-events:none!important}
+#masterMount .phoenix-mark{display:block!important;position:absolute!important;right:-3%!important;top:12%!important;width:46%!important;height:76%!important;background:url('/assets/fenix-symbol.png') right center/contain no-repeat!important;opacity:.16!important;filter:grayscale(1) brightness(1.75) contrast(.82)!important;z-index:2!important;pointer-events:none!important}
+#masterMount .page-body{left:9.8%!important;top:5.6%!important;width:84.8%!important;height:87%!important;z-index:6!important}
+#masterMount .eyebrow{font-size:.92cqw!important;letter-spacing:.38em!important;color:var(--fx-silver)!important;font-weight:700!important}
+#masterMount .short-rule{width:8.5cqw!important;height:2px!important;margin-top:1%!important;background:linear-gradient(90deg,var(--fx-champ2),var(--fx-champ),transparent)!important}
+#masterMount .page-title{margin-top:4.2%!important;max-width:61%!important;line-height:.91!important;letter-spacing:-.03em!important}
+#masterMount .page-title span,#masterMount .page-title strong{font-size:4.3cqw!important;line-height:.92!important}
+#masterMount .page-title span{color:var(--fx-champ)!important;text-shadow:0 0 18px rgba(226,184,111,.08)!important}
+#masterMount .page-title strong{background:linear-gradient(#fff,#c3c3c3 46%,#f2f2f2 73%,#999);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+#masterMount .subtitle{max-width:60%!important;font-size:1.32cqw!important;line-height:1.35!important;color:var(--fx-silver)!important;margin-top:1%!important}
+#masterMount .gold-rule{width:13cqw!important;height:1px!important;margin:1.4% 0 1.6%!important;background:linear-gradient(90deg,var(--fx-champ),transparent)!important}
+#masterMount .three-cards,#masterMount .two-cards,#masterMount .five-cards,#masterMount .four-steps,#masterMount .five-flow{position:relative!important;z-index:7!important}
+#masterMount .three-cards article,#masterMount .two-cards article,#masterMount .five-cards article,#masterMount .four-steps article,#masterMount .five-flow article,#masterMount .commercial-section,#masterMount .accept-declaration{background:linear-gradient(145deg,rgba(15,15,15,.92),rgba(4,4,4,.86))!important;border:1px solid var(--fx-line)!important;border-radius:18px!important;box-shadow:0 12px 30px rgba(0,0,0,.22),inset 0 0 22px rgba(255,255,255,.012)!important}
+#masterMount .icon,#masterMount .head-icon{width:44px!important;height:44px!important;border:1.4px solid var(--fx-champ2)!important;color:var(--fx-champ2)!important;background:rgba(226,184,111,.035)!important;font-size:1.05cqw!important}
+#masterMount .three-cards{grid-template-columns:repeat(3,1fr)!important;height:46%!important;margin-top:1.6%!important;gap:1.25%!important}
+#masterMount .three-cards article{padding:2.3% 2.4%!important}
+#masterMount .three-cards h3,#masterMount .two-cards h3,#masterMount .five-cards h3,#masterMount .four-steps h3{color:var(--fx-champ)!important}
+#masterMount .three-cards p,#masterMount .three-cards li{font-size:1.16cqw!important;line-height:1.46!important;color:var(--fx-white)!important}
+#masterMount .three-cards h3{font-size:1.38cqw!important;line-height:1.12!important}
+#masterMount .scope-cards li{font-size:1.08cqw!important;line-height:1.45!important}
+#masterMount .two-cards{grid-template-columns:1fr 1fr!important;height:49%!important;margin-top:1.7%!important;gap:1.4%!important}
+#masterMount .two-cards article{padding:2.5% 3%!important}
+#masterMount .two-cards h3{font-size:1.58cqw!important}
+#masterMount .two-cards li{font-size:1.12cqw!important;line-height:1.5!important}
+#masterMount .principle{display:none!important}
+#masterMount .five-cards{height:43%!important;margin-top:1.8%!important;gap:1%!important}
+#masterMount .five-cards article{padding:2% 1.25%!important}
+#masterMount .five-cards h3{font-size:1.02cqw!important}
+#masterMount .five-cards p{font-size:.92cqw!important;line-height:1.4!important}
+#masterMount .four-steps{height:45%!important;margin-top:2%!important;gap:1.1%!important}
+#masterMount .four-steps h3{font-size:1.03cqw!important}
+#masterMount .four-steps p{font-size:.92cqw!important;line-height:1.4!important}
+#masterMount .bottom-note,#masterMount .tech-note{font-size:.84cqw!important;bottom:5.4%!important;color:#d6d1c9!important}
+#masterMount .footer-brand{left:9.8%!important;bottom:4.1%!important;font-size:.70cqw!important;letter-spacing:.32em!important;color:var(--fx-champ2)!important}
+#masterMount .footer-brand:after{width:80cqw!important;background:linear-gradient(90deg,var(--fx-champ),rgba(226,184,111,.08))!important}
+#masterMount .page-badge{right:4.1%!important;bottom:3.1%!important;min-width:7.2cqw!important;padding:.75cqw 1.7cqw!important;font-size:1.35cqw!important;background:linear-gradient(135deg,#f0cf8a,#b47e35)!important}
+/* CAPA */
+#masterMount .page[data-page="1"] .cover-body{left:9.8%!important;top:7.2%!important;width:84.5%!important;height:84%!important}
+#masterMount .page[data-page="1"] .brand-logo{width:30%!important;height:10.5%!important;top:3.6%!important}
+#masterMount .page[data-page="1"] .phoenix-mark{right:-1%!important;top:12%!important;width:45%!important;height:74%!important;opacity:.19!important;filter:grayscale(1) brightness(1.7) contrast(.82)!important}
+#masterMount .page[data-page="1"] .cover-title{margin-top:5.2%!important;max-width:56%!important}
+#masterMount .page[data-page="1"] .cover-title span{font-size:6.4cqw!important;color:var(--fx-champ)!important}
+#masterMount .page[data-page="1"] .cover-title strong{font-size:6.15cqw!important}
+#masterMount .page[data-page="1"] .client-name{max-width:58%!important;font-size:3.1cqw!important;margin-top:2.8%!important;color:var(--fx-champ)!important}
+#masterMount .page[data-page="1"] .cover-tag{max-width:58%!important;font-size:1.48cqw!important}
+#masterMount .page[data-page="1"] .cover-sub{max-width:58%!important;font-size:.96cqw!important;color:var(--fx-muted)!important}
+#masterMount .page[data-page="1"] .cover-meta{width:66%!important;bottom:7%!important}
+/* P2 */
+#masterMount .page[data-page="2"] .page-title{max-width:72%!important}
+#masterMount .page[data-page="2"] .single-line-title span{font-size:3.75cqw!important;white-space:nowrap!important}
+/* P5 */
+#masterMount .page[data-page="5"] .page-title{max-width:72%!important}
+#masterMount .page[data-page="5"] .tech-title span{font-size:3.55cqw!important}
+#masterMount .page[data-page="5"] .tech-title strong{font-size:3.35cqw!important;white-space:nowrap!important}
+/* P7 */
+#masterMount .page[data-page="7"] .page-body{top:4.5%!important;height:90%!important}
+#masterMount .page[data-page="7"] .page-title{margin-top:3.2%!important;max-width:56%!important}
+#masterMount .page[data-page="7"] .page-title span,#masterMount .page[data-page="7"] .page-title strong{font-size:3.65cqw!important}
+#masterMount .page[data-page="7"] .subtitle{font-size:1.08cqw!important}
+#masterMount .commercial-section{padding:1.05% 2%!important;margin-top:.72%!important}
+#masterMount .commercial-section h3{color:var(--fx-champ2)!important;font-size:1.18cqw!important}
+#masterMount .section-tag{background:linear-gradient(135deg,#f1d08c,#ad7731)!important;color:#080808!important}
+#masterMount .price-table .total{background:linear-gradient(90deg,#b88238,#efd08d,#a46f2d)!important;color:#090909!important}
+/* P8 */
+#masterMount .page[data-page="8"] .page-title{max-width:70%!important}
+#masterMount .five-flow{height:20%!important;margin-top:1.5%!important}
+#masterMount .accept-declaration{height:28%!important;margin-top:1.4%!important}
+@media(max-width:760px){#masterMount .brand-logo{width:31%!important}#masterMount .phoenix-mark{opacity:.10!important}#masterMount .page-title span,#masterMount .page-title strong{font-size:4.5cqw!important}}
+@media print{#masterMount .brand-logo,#masterMount .phoenix-mark{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}

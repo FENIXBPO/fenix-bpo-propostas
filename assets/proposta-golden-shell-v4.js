@@ -1,17 +1,18 @@
 (function(){
   function mountBrand(){
     document.querySelectorAll('.page .logo').forEach(host=>{
-      host.innerHTML='<div class="brandMark"><span class="brandWord">FÊNIX</span><span class="brandSub">INTELLIGENT <b>BPO</b></span></div>';
+      host.innerHTML='';
       host.setAttribute('aria-label','FÊNIX Intelligent BPO');
+      host.setAttribute('role','img');
     });
     document.querySelectorAll('.footer .miniLogo').forEach(host=>{
-      host.innerHTML='<div class="miniBrand"><span>FÊNIX</span><small>INTELLIGENT BPO</small></div>';
+      host.innerHTML='';
       host.setAttribute('aria-label','FÊNIX Intelligent BPO');
+      host.setAttribute('role','img');
     });
-    document.querySelectorAll('.footer b').forEach(el=>{el.textContent='INTELIGÊNCIA QUE TRANSFORMA. RESULTADOS QUE PERMANECEM.'});
     document.querySelectorAll('.page .wing').forEach(host=>host.setAttribute('aria-hidden','true'));
     const gov=document.querySelector('.governance');
-    if(gov)gov.textContent='Seu aceite será registrado e encaminhado para validação interna da FÊNIX antes da geração do contrato.';
+    if(gov)gov.textContent='Seu aceite comercial será registrado e encaminhado para validação final da FÊNIX/CFO antes da geração do contrato.';
   }
   function normalizeEmptyManagerialScope(){
     const list=document.getElementById('managerialScope');

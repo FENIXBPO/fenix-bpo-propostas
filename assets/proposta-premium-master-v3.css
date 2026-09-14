@@ -1,0 +1,347 @@
+/* FÊNIX — Proposta V2 | Master visual premium V3
+   Direção: referência premium aprovada pelo cliente.
+   Preserva estrutura, dados, Composer, regras comerciais e aceite.
+   Esta folha deve ser carregada por último. */
+
+:root{
+  --fx-black:#030303;
+  --fx-black-2:#080808;
+  --fx-champagne:#e3b86f;
+  --fx-champagne-hi:#f4d995;
+  --fx-gold-deep:#9b6e31;
+  --fx-silver:#d7d7d7;
+  --fx-silver-hi:#f4f4f4;
+  --fx-text:#ece8e0;
+  --fx-muted:#bdb7ae;
+  --fx-line:rgba(227,184,111,.70);
+}
+
+#masterMount .page{
+  container-type:inline-size;
+  background:
+    radial-gradient(circle at 80% 34%,rgba(227,184,111,.055),transparent 28%),
+    radial-gradient(circle at 21% 12%,rgba(255,255,255,.022),transparent 25%),
+    linear-gradient(145deg,#050505 0%,#020202 56%,#070604 100%)!important;
+  border:1px solid rgba(227,184,111,.14)!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.58)!important;
+}
+
+/* Assinatura lateral — mesma em todas as lâminas */
+#masterMount .side-lines{
+  left:3.8%!important;
+  width:38px!important;
+  border-left:4px solid #b98231!important;
+  border-right:2px solid #c9c9c9!important;
+  box-shadow:-8px 0 0 #5b3c0c,9px 0 0 rgba(255,255,255,.12)!important;
+}
+#masterMount .side-lines:after{
+  left:13px!important;
+  background:linear-gradient(#f6d996,#aa7a35,#f2d391)!important;
+  box-shadow:0 0 10px rgba(240,207,145,.55)!important;
+}
+
+/* Logo oficial: presença real, sempre no topo direito. */
+#masterMount .brand-logo{
+  display:block!important;
+  position:absolute!important;
+  right:4.6%!important;
+  left:auto!important;
+  top:3.5%!important;
+  width:29.5%!important;
+  height:10.5%!important;
+  background-image:url('/assets/fenix-logo-transparent.webp')!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  background-position:right top!important;
+  opacity:1!important;
+  filter:none!important;
+  z-index:20!important;
+  pointer-events:none!important;
+}
+
+/* Marca d'água: UMA geometria fixa nas internas. */
+#masterMount .page[data-page]:not([data-page="1"]) .phoenix-mark{
+  display:block!important;
+  position:absolute!important;
+  right:-2.0%!important;
+  left:auto!important;
+  top:12.5%!important;
+  width:43%!important;
+  height:73%!important;
+  background-image:url('/assets/fenix-symbol.png')!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  background-position:center right!important;
+  opacity:.14!important;
+  filter:grayscale(.55) brightness(.56) contrast(1.18) sepia(.18)!important;
+  z-index:2!important;
+  pointer-events:none!important;
+}
+#masterMount .page[data-page]:not([data-page="1"]) .page-body,
+#masterMount .page[data-page]:not([data-page="1"]) .footer-brand,
+#masterMount .page[data-page]:not([data-page="1"]) .page-badge{z-index:6!important}
+
+/* Capa: composição específica; mesmo ativo oficial. */
+#masterMount .page[data-page="1"] .brand-logo{
+  width:31%!important;
+  height:11.5%!important;
+  top:3.6%!important;
+  right:4.4%!important;
+}
+#masterMount .page[data-page="1"] .phoenix-mark{
+  display:block!important;
+  position:absolute!important;
+  right:-1%!important;
+  top:13%!important;
+  width:42%!important;
+  height:72%!important;
+  background-image:url('/assets/fenix-symbol.png')!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  background-position:center right!important;
+  opacity:.13!important;
+  filter:grayscale(.45) brightness(.58) contrast(1.17) sepia(.16)!important;
+  z-index:2!important;
+}
+#masterMount .page[data-page="1"] .cover-body{
+  left:10.5%!important;
+  top:7.4%!important;
+  width:82%!important;
+  height:84%!important;
+  z-index:6!important;
+}
+#masterMount .page[data-page="1"] .cover-title{
+  margin-top:6.4%!important;
+  max-width:72%!important;
+}
+#masterMount .page[data-page="1"] .cover-title span{
+  font-size:6.2cqw!important;
+  color:var(--fx-champagne)!important;
+  text-shadow:0 0 18px rgba(227,184,111,.12)!important;
+}
+#masterMount .page[data-page="1"] .cover-title strong{
+  font-size:6.0cqw!important;
+}
+#masterMount .page[data-page="1"] .client-name{
+  font-size:3.15cqw!important;
+  line-height:.98!important;
+  margin-top:2.7%!important;
+  max-width:66%!important;
+  color:var(--fx-champagne)!important;
+}
+#masterMount .page[data-page="1"] .cover-tag{font-size:1.55cqw!important;max-width:68%!important}
+#masterMount .page[data-page="1"] .cover-sub{font-size:1.00cqw!important;max-width:68%!important;color:var(--fx-muted)!important}
+#masterMount .page[data-page="1"] .cover-meta{width:68%!important;bottom:7.2%!important}
+
+/* Cabeçalho editorial interno — mais próximo da referência aprovada */
+#masterMount .page:not([data-page="1"]) .page-body{
+  left:9.8%!important;
+  top:5.8%!important;
+  width:84.5%!important;
+  height:86.5%!important;
+}
+#masterMount .eyebrow{
+  font-size:1.02cqw!important;
+  letter-spacing:.34em!important;
+  color:var(--fx-silver)!important;
+  font-weight:600!important;
+}
+#masterMount .short-rule{
+  width:10.5cqw!important;
+  height:2px!important;
+  margin-top:1.15%!important;
+  background:linear-gradient(90deg,var(--fx-champagne-hi),var(--fx-gold-deep),transparent)!important;
+  box-shadow:0 0 12px rgba(227,184,111,.22)!important;
+}
+#masterMount .page-title{
+  margin-top:5.0%!important;
+  max-width:82%!important;
+  line-height:.91!important;
+  letter-spacing:-.025em!important;
+}
+#masterMount .page-title span,
+#masterMount .page-title strong{
+  font-size:4.15cqw!important;
+  line-height:.92!important;
+}
+#masterMount .page-title span{
+  color:var(--fx-champagne)!important;
+  text-shadow:0 0 14px rgba(227,184,111,.10)!important;
+}
+#masterMount .page-title strong{
+  background:linear-gradient(180deg,#fbfbfb 0%,#c7c7c7 45%,#f2f2f2 72%,#9b9b9b 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+}
+#masterMount .page[data-page="2"] .single-line-title{max-width:86%!important}
+#masterMount .page[data-page="2"] .single-line-title span{font-size:4.0cqw!important;white-space:nowrap!important}
+#masterMount .page[data-page="5"] .tech-title strong{font-size:3.55cqw!important;white-space:nowrap!important}
+#masterMount .page[data-page="7"] .page-title span,
+#masterMount .page[data-page="7"] .page-title strong{font-size:3.95cqw!important}
+#masterMount .subtitle{
+  margin-top:1.05%!important;
+  max-width:76%!important;
+  font-size:1.48cqw!important;
+  line-height:1.28!important;
+  color:var(--fx-silver)!important;
+}
+#masterMount .gold-rule{
+  width:15.5cqw!important;
+  height:1px!important;
+  margin:1.35% 0 1.65%!important;
+  background:linear-gradient(90deg,var(--fx-champagne-hi),rgba(227,184,111,.08))!important;
+}
+
+/* Cards — mais premium e com a marca respirando ao fundo */
+#masterMount .three-cards article,
+#masterMount .two-cards article,
+#masterMount .five-cards article,
+#masterMount .four-steps article,
+#masterMount .five-flow article,
+#masterMount .commercial-section,
+#masterMount .accept-declaration{
+  background:linear-gradient(145deg,rgba(18,18,18,.82),rgba(4,4,4,.77))!important;
+  border:1px solid rgba(227,184,111,.76)!important;
+  border-radius:18px!important;
+  box-shadow:
+    inset 0 0 22px rgba(255,255,255,.015),
+    0 10px 28px rgba(0,0,0,.22),
+    0 0 0 1px rgba(255,255,255,.006)!important;
+  backdrop-filter:blur(1px);
+}
+#masterMount .three-cards,
+#masterMount .two-cards,
+#masterMount .five-cards,
+#masterMount .four-steps{gap:1.25%!important}
+#masterMount .page[data-page="2"] .three-cards{height:47%!important;margin-top:1.5%!important}
+#masterMount .page[data-page="3"] .three-cards{height:45%!important;margin-top:1.5%!important}
+#masterMount .page[data-page="4"] .two-cards{height:50%!important;margin-top:1.7%!important}
+#masterMount .page[data-page="5"] .five-cards{height:43%!important;margin-top:2.0%!important}
+#masterMount .page[data-page="6"] .four-steps{height:45%!important;margin-top:2.0%!important}
+
+/* Ícones com brilho discreto e escala controlada */
+#masterMount .page:not([data-page="1"]) .icon,
+#masterMount .page:not([data-page="1"]) .head-icon{
+  width:46px!important;
+  height:46px!important;
+  border:1.4px solid rgba(244,217,149,.92)!important;
+  color:var(--fx-champagne-hi)!important;
+  background:radial-gradient(circle,rgba(227,184,111,.09),transparent 64%)!important;
+  box-shadow:0 0 14px rgba(227,184,111,.09)!important;
+  font-size:1.12cqw!important;
+}
+
+#masterMount .three-cards h3,
+#masterMount .two-cards h3,
+#masterMount .five-cards h3,
+#masterMount .four-steps h3{
+  color:var(--fx-champagne)!important;
+  font-weight:800!important;
+  letter-spacing:.015em!important;
+}
+#masterMount .three-cards p,
+#masterMount .three-cards li,
+#masterMount .two-cards li,
+#masterMount .five-cards p,
+#masterMount .four-steps p{
+  color:var(--fx-text)!important;
+}
+#masterMount .page[data-page="2"] .three-cards h3{font-size:1.43cqw!important}
+#masterMount .page[data-page="2"] .three-cards p,
+#masterMount .page[data-page="2"] .three-cards li{font-size:1.20cqw!important;line-height:1.44!important}
+#masterMount .page[data-page="3"] .scope-cards h3{font-size:1.25cqw!important}
+#masterMount .page[data-page="3"] .scope-cards li{font-size:1.08cqw!important;line-height:1.42!important}
+#masterMount .page[data-page="4"] .two-cards h3{font-size:1.55cqw!important}
+#masterMount .page[data-page="4"] .two-cards li{font-size:1.12cqw!important;line-height:1.44!important}
+#masterMount .page[data-page="5"] .five-cards h3{font-size:1.05cqw!important}
+#masterMount .page[data-page="5"] .five-cards p{font-size:.94cqw!important;line-height:1.38!important}
+#masterMount .page[data-page="6"] .four-steps h3{font-size:1.06cqw!important}
+#masterMount .page[data-page="6"] .four-steps p{font-size:.94cqw!important;line-height:1.38!important}
+
+/* P04 — bloco antigo permanece removido */
+#masterMount .page[data-page="4"] .principle{display:none!important}
+
+/* Notas inferiores em zona própria */
+#masterMount .bottom-note,
+#masterMount .tech-note,
+#masterMount .commercial-footer-note{
+  color:#d9d4cc!important;
+}
+#masterMount .page[data-page="2"] .bottom-note,
+#masterMount .page[data-page="3"] .bottom-note,
+#masterMount .page[data-page="6"] .bottom-note{
+  bottom:5.1%!important;
+  left:7%!important;
+  right:7%!important;
+  font-size:.82cqw!important;
+}
+#masterMount .page[data-page="5"] .tech-note{bottom:5.0%!important;font-size:.88cqw!important}
+
+/* Página comercial — barras e hierarquia próximas da referência premium */
+#masterMount .page[data-page="7"] .page-body{top:4.7%!important;height:90%!important}
+#masterMount .page[data-page="7"] .commercial-section{
+  border-radius:14px!important;
+  padding:1.05% 2.0% 1.20%!important;
+  margin-top:.75%!important;
+}
+#masterMount .page[data-page="7"] .section-tag{
+  width:4.2cqw!important;
+  height:3.2cqw!important;
+  clip-path:polygon(15% 0,100% 0,78% 100%,0 100%)!important;
+  border-radius:0!important;
+  background:linear-gradient(135deg,#f5d995,#d8a852 58%,#9c6a2e)!important;
+  box-shadow:3px 0 0 #111,6px 0 0 var(--fx-champagne)!important;
+  font-size:1.55cqw!important;
+}
+#masterMount .page[data-page="7"] .commercial-section h3{
+  padding-left:6.5%!important;
+  color:var(--fx-champagne-hi)!important;
+  font-size:1.28cqw!important;
+}
+#masterMount .page[data-page="7"] .dimension-grid strong{color:var(--fx-champagne-hi)!important}
+#masterMount .page[data-page="7"] .price-table{width:90%!important;margin-left:4.8%!important}
+#masterMount .page[data-page="7"] .price-table .total{
+  background:linear-gradient(90deg,#c4934a 0%,#f1d08c 47%,#ad7832 100%)!important;
+  color:#070707!important;
+}
+#masterMount .page[data-page="7"] .price-table .total strong{font-size:1.50cqw!important}
+
+/* Página 08 */
+#masterMount .page[data-page="8"] .five-flow{height:20%!important;margin-top:1.45%!important}
+#masterMount .page[data-page="8"] .accept-declaration{height:26%!important;margin-top:1.45%!important}
+
+/* Rodapé */
+#masterMount .footer-brand{
+  left:9.8%!important;
+  bottom:4.6%!important;
+  color:var(--fx-champagne-hi)!important;
+  font-size:.70cqw!important;
+  letter-spacing:.30em!important;
+}
+#masterMount .footer-brand:after{
+  width:78cqw!important;
+  background:linear-gradient(90deg,var(--fx-champagne),var(--fx-champagne-hi) 42%,rgba(227,184,111,.08))!important;
+}
+#masterMount .page-badge{
+  right:4.6%!important;
+  bottom:3.2%!important;
+  min-width:7.0cqw!important;
+  padding:.75cqw 1.55cqw!important;
+  font-size:1.45cqw!important;
+  background:linear-gradient(135deg,#f3d790,#dfaE62 54%,#a87530)!important;
+}
+
+@media(max-width:760px){
+  #masterMount .brand-logo{width:34%!important;height:8.5%!important;top:3.2%!important}
+  #masterMount .page[data-page]:not([data-page="1"]) .phoenix-mark{width:45%!important;opacity:.09!important;top:16%!important}
+  #masterMount .page:not([data-page="1"]) .page-body{left:8.5%!important;width:86%!important}
+}
+
+@media print{
+  #masterMount .brand-logo,
+  #masterMount .phoenix-mark,
+  #masterMount .page,
+  #masterMount .page-badge,
+  #masterMount .side-lines{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}

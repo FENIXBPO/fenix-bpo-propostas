@@ -1,0 +1,86 @@
+/* FÊNIX Proposta V2 — identidade oficial local e estável.
+   Regra: usar ativos do próprio repositório; sem dependência de Drive no runtime. */
+
+.brand-logo{
+  background-image:url('/assets/fenix-logo-transparent.webp')!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  background-position:center!important;
+  right:4.7%!important;
+  left:auto!important;
+  top:3.7%!important;
+  width:31.5%!important;
+  height:7.6%!important;
+  z-index:9!important;
+  pointer-events:none!important;
+}
+
+.phoenix-mark{
+  background-image:url('/assets/fenix-symbol.png')!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  background-position:center!important;
+  right:-1.2%!important;
+  left:auto!important;
+  top:15.5%!important;
+  width:35%!important;
+  height:67%!important;
+  opacity:.075!important;
+  filter:grayscale(1) brightness(.86) contrast(1.12)!important;
+  z-index:2!important;
+  pointer-events:none!important;
+}
+
+/* CAPA — tratamento próprio; usa os mesmos ativos oficiais. */
+.page[data-page="1"] .brand-logo{
+  right:4.7%!important;
+  top:4%!important;
+  width:34.5%!important;
+  height:8.35%!important;
+}
+.page[data-page="1"] .phoenix-mark{
+  right:2%!important;
+  top:18%!important;
+  width:32%!important;
+  height:59%!important;
+  opacity:.075!important;
+}
+.page[data-page="1"] .cover-body{top:8.5%!important;height:83%!important}
+.page[data-page="1"] .cover-title{margin-top:5.1%!important}
+.page[data-page="1"] .cover-title span{font-size:5.35vw!important;line-height:.88!important}
+.page[data-page="1"] .cover-title strong{font-size:5.18vw!important;line-height:.88!important}
+.page[data-page="1"] .client-name{font-size:2.75vw!important;margin-top:3.15%!important;margin-bottom:.65%!important;max-width:62%!important}
+.page[data-page="1"] .cover-tag{font-size:1.28vw!important;max-width:62%!important;white-space:nowrap!important}
+.page[data-page="1"] .cover-sub{font-size:.90vw!important;max-width:62%!important;white-space:nowrap!important}
+.page[data-page="1"] .gold-rule{margin-top:1.55%!important;margin-bottom:2%!important}
+.page[data-page="1"] .cover-meta{left:0!important;bottom:7.8%!important;width:69%!important}
+.page[data-page="1"] .footer-brand{bottom:4.5%!important}
+.page[data-page="1"] .page-badge{bottom:3.4%!important}
+
+/* INTERNAS — exatamente a mesma marca d'água nas páginas 02–08. */
+.page[data-page]:not([data-page="1"]) .brand-logo{
+  width:30%!important;
+  height:7.2%!important;
+  top:3.3%!important;
+  right:4.7%!important;
+}
+.page[data-page]:not([data-page="1"]) .phoenix-mark{
+  right:-1.2%!important;
+  top:15.5%!important;
+  width:35%!important;
+  height:67%!important;
+  opacity:.075!important;
+  filter:grayscale(1) brightness(.86) contrast(1.12)!important;
+  z-index:2!important;
+}
+.page[data-page]:not([data-page="1"]) .page-body,
+.page[data-page]:not([data-page="1"]) .footer-brand{z-index:5!important}
+.page[data-page]:not([data-page="1"]) .brand-logo,
+.page[data-page]:not([data-page="1"]) .page-badge{z-index:9!important}
+
+@media(max-width:900px){
+  .brand-logo{right:4%!important;width:32%!important;height:7.8%!important}
+  .phoenix-mark{right:-1%!important;width:35%!important;opacity:.06!important}
+  .page[data-page="1"] .brand-logo{width:35%!important;height:8.5%!important}
+  .page[data-page="1"] .phoenix-mark{right:1.5%!important;width:32%!important;opacity:.065!important}
+}
