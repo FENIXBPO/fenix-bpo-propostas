@@ -9,30 +9,12 @@
 :root{color-scheme:dark;--bg:#050505;--gold:#f1c04d;--muted:#a89f90;--line:#4f3c1d}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:#f7f2e8;overflow:hidden}
 #boot{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 70% 10%,rgba(217,154,29,.11),transparent 30%),#050505;z-index:3;transition:opacity .22s ease}
-#boot.hidden{opacity:0;pointer-events:none}
-.boot-card{width:min(560px,86vw);padding:34px 30px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#0b0b0b,#090806);box-shadow:0 24px 80px rgba(0,0,0,.42);text-align:center}
-.logo{width:min(360px,70vw);height:88px;margin:0 auto 22px;background:url('/assets/fenix-logo-header-crop.webp') center/contain no-repeat}
-.title{font-size:22px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
-.sub{font-size:14px;color:var(--muted);margin-top:10px}.bar{height:3px;background:#1e1a12;border-radius:999px;overflow:hidden;margin:24px auto 0;max-width:280px}.bar:after{content:"";display:block;height:100%;width:36%;background:linear-gradient(90deg,#a86f12,#f1c04d);animation:load 1.15s ease-in-out infinite}
-#error{display:none;margin-top:18px;color:#e6c27a;font-size:13px;line-height:1.5}
-@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(320%)}}
-#app{position:fixed;inset:0;width:100%;height:100%;border:0;background:#050505;opacity:0;pointer-events:none;transition:opacity .18s ease}
-#app.ready{opacity:1;pointer-events:auto}
+#boot.hidden{opacity:0;pointer-events:none}.boot-card{width:min(560px,86vw);padding:34px 30px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#0b0b0b,#090806);box-shadow:0 24px 80px rgba(0,0,0,.42);text-align:center}.logo{width:min(360px,70vw);height:88px;margin:0 auto 22px;background:url('/assets/fenix-logo-header-crop.webp') center/contain no-repeat}.title{font-size:22px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}.sub{font-size:14px;color:var(--muted);margin-top:10px}.bar{height:3px;background:#1e1a12;border-radius:999px;overflow:hidden;margin:24px auto 0;max-width:280px}.bar:after{content:"";display:block;height:100%;width:36%;background:linear-gradient(90deg,#a86f12,#f1c04d);animation:load 1.15s ease-in-out infinite}#error{display:none;margin-top:18px;color:#e6c27a;font-size:13px;line-height:1.5}@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(320%)}}#app{position:fixed;inset:0;width:100%;height:100%;border:0;background:#050505;opacity:0;pointer-events:none;transition:opacity .18s ease}#app.ready{opacity:1;pointer-events:auto}
 </style>
 </head>
 <body>
 <div id="boot"><div class="boot-card"><div class="logo" aria-label="FÊNIX Intelligent BPO"></div><div class="title">Painel Comercial</div><div class="sub">Carregando Kanban FÊNIX…</div><div class="bar"></div><div id="error">O painel demorou mais que o esperado para carregar. Atualize a página.</div></div></div>
-<iframe id="app" title="Painel Comercial FÊNIX" src="/painel/kanban-v2.html"></iframe>
-<script>
-(function(){
-  const frame=document.getElementById('app');
-  const boot=document.getElementById('boot');
-  const err=document.getElementById('error');
-  let done=false;
-  function ready(){if(done)return;done=true;frame.classList.add('ready');boot.classList.add('hidden');setTimeout(()=>boot.remove(),260)}
-  frame.addEventListener('load',()=>requestAnimationFrame(ready),{once:true});
-  setTimeout(()=>{if(!done)err.style.display='block'},8000);
-})();
-</script>
+<iframe id="app" title="Painel Comercial FÊNIX" src="/painel/kanban-v3.html"></iframe>
+<script>(function(){const frame=document.getElementById('app'),boot=document.getElementById('boot'),err=document.getElementById('error');let done=false;function ready(){if(done)return;done=true;frame.classList.add('ready');boot.classList.add('hidden');setTimeout(()=>boot.remove(),260)}frame.addEventListener('load',()=>requestAnimationFrame(ready),{once:true});setTimeout(()=>{if(!done)err.style.display='block'},8000)})();</script>
 </body>
 </html>
