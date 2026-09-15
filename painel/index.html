@@ -21,24 +21,32 @@
 </style>
 </head>
 <body>
-<div id="boot"><div class="boot-card"><div class="logo" aria-label="FÊNIX Intelligent BPO"></div><div class="title">Painel Comercial</div><div class="sub">Carregando Pipeline FÊNIX…</div><div class="bar"></div><div id="error">O painel demorou mais que o esperado para carregar. Atualize a página. A interface antiga não será exibida.</div></div></div>
+<div id="boot"><div class="boot-card"><div class="logo" aria-label="FÊNIX Intelligent BPO"></div><div class="title">Painel Comercial</div><div class="sub">Carregando Pipeline FÊNIX…</div><div class="bar"></div><div id="error">O painel demorou mais que o esperado para carregar. Atualize a página.</div></div></div>
 <iframe id="app" title="Painel Comercial FÊNIX" src="/app-v15.html?interno=1&painel_shell=1"></iframe>
 <script>
 (function(){
-  const frame=document.getElementById('app'),boot=document.getElementById('boot'),err=document.getElementById('error');
-  const started=Date.now();let done=false;
-  function ready(){if(done)return;done=true;frame.classList.add('ready');boot.classList.add('hidden');setTimeout(()=>boot.remove(),260)}
-  function check(){
+  const frame=document.getElementById('app');
+  const boot=document.getElementById('boot');
+  const err=document.getElementById('error');
+  let done=false;
+
+  function ready(){
     if(done)return;
-    try{
-      const doc=frame.contentDocument;
-      const dashboard=doc&&doc.getElementById('fenix-internal-dashboard');
-      if(dashboard&&dashboard.dataset.pipelineV2==='1'){ready();return}
-    }catch(e){}
-    if(Date.now()-started>15000){err.style.display='block';return}
-    setTimeout(check,120);
+    done=true;
+    frame.classList.add('ready');
+    boot.classList.add('hidden');
+    setTimeout(()=>boot.remove(),260);
   }
-  frame.addEventListener('load',check);check();
+
+  // O iframe é same-origin. O evento load é o contrato de prontidão do shell:
+  // assim que a aplicação termina de carregar seu documento, o painel é liberado.
+  // Não dependemos mais de um marcador DOM interno específico da Pipeline V2.
+  frame.addEventListener('load',()=>requestAnimationFrame(ready),{once:true});
+
+  // Fallback apenas para falha real de carregamento; não bloqueia um painel já carregado.
+  setTimeout(()=>{
+    if(!done)err.style.display='block';
+  },8000);
 })();
 </script>
 </body>
