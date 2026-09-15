@@ -6,20 +6,32 @@
 <meta name="robots" content="noindex,nofollow">
 <title>FÊNIX BPO — Painel Comercial</title>
 <style>
-:root{color-scheme:dark;--bg:#050505;--gold:#f1c04d;--muted:#a89f90;--line:#4f3c1d}
+:root{color-scheme:dark;--bg:#050505;--gold:#f1c04d;--muted:#a89f90;--line:#4f3c1d;--danger:#e28a8a}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:#f7f2e8;overflow:hidden}
-#boot{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 70% 10%,rgba(217,154,29,.11),transparent 30%),#050505;z-index:3;transition:opacity .22s ease}
-#boot.hidden{opacity:0;pointer-events:none}.boot-card{width:min(560px,86vw);padding:34px 30px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#0b0b0b,#090806);box-shadow:0 24px 80px rgba(0,0,0,.42);text-align:center}.logo{width:min(360px,70vw);height:88px;margin:0 auto 22px;background:url('/assets/fenix-logo-header-crop.webp') center/contain no-repeat}.title{font-size:22px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}.sub{font-size:14px;color:var(--muted);margin-top:10px}.bar{height:3px;background:#1e1a12;border-radius:999px;overflow:hidden;margin:24px auto 0;max-width:280px}.bar:after{content:"";display:block;height:100%;width:36%;background:linear-gradient(90deg,#a86f12,#f1c04d);animation:load 1.15s ease-in-out infinite}#error{display:none;margin-top:18px;color:#e6c27a;font-size:13px;line-height:1.5}@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(320%)}}#app{position:fixed;inset:0;width:100%;height:100%;border:0;background:#050505;opacity:0;pointer-events:none;transition:opacity .18s ease}#app.ready{opacity:1;pointer-events:auto}
+#boot,#login{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 70% 10%,rgba(217,154,29,.11),transparent 30%),#050505;z-index:4;transition:opacity .22s ease}
+.hidden{display:none!important}.fade{opacity:0;pointer-events:none}
+.card{width:min(560px,88vw);padding:34px 30px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#0b0b0b,#090806);box-shadow:0 24px 80px rgba(0,0,0,.42);text-align:center}
+.logo{width:min(360px,70vw);height:88px;margin:0 auto 22px;background:url('/assets/fenix-logo-header-crop.webp') center/contain no-repeat}.title{font-size:22px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}.sub{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.5}.bar{height:3px;background:#1e1a12;border-radius:999px;overflow:hidden;margin:24px auto 0;max-width:280px}.bar:after{content:"";display:block;height:100%;width:36%;background:linear-gradient(90deg,#a86f12,#f1c04d);animation:load 1.15s ease-in-out infinite}@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(320%)}}
+.login-form{display:grid;gap:12px;margin-top:24px;text-align:left}.login-form label{font-size:12px;color:#c9b98c}.login-form input{height:46px;border:1px solid #4d4333;border-radius:10px;background:#0b0d10;color:#fff;padding:0 13px;font:inherit;outline:0}.login-form input:focus{border-color:#b98525;box-shadow:0 0 0 3px rgba(185,133,37,.12)}.login-form button{height:46px;border:1px solid #9a6d17;border-radius:10px;background:linear-gradient(180deg,#e5b846,#a66d0c);color:#0d0d0d;font-weight:900;cursor:pointer}.login-form button:disabled{opacity:.6;cursor:wait}.msg{min-height:18px;margin-top:12px;font-size:12px;color:var(--danger);text-align:left}.hint{margin-top:16px;color:#7f786c;font-size:11px;line-height:1.5}
+#error{display:none;margin-top:18px;color:#e6c27a;font-size:13px;line-height:1.5}#app{position:fixed;inset:0;width:100%;height:100%;border:0;background:#050505;opacity:0;pointer-events:none;transition:opacity .18s ease}#app.ready{opacity:1;pointer-events:auto}
 </style>
 </head>
 <body>
-<div id="boot"><div class="boot-card"><div class="logo" aria-label="FÊNIX Intelligent BPO"></div><div class="title">Painel Comercial</div><div class="sub">Carregando Kanban FÊNIX…</div><div class="bar"></div><div id="error">O painel demorou mais que o esperado para carregar. Atualize a página.</div></div></div>
-<iframe id="app" title="Painel Comercial FÊNIX" src="/painel/kanban-v3.html"></iframe>
+<div id="boot"><div class="card"><div class="logo" aria-label="FÊNIX Intelligent BPO"></div><div class="title">Painel Comercial</div><div class="sub">Verificando acesso interno…</div><div class="bar"></div><div id="error">O painel demorou mais que o esperado para carregar. Atualize a página.</div></div></div>
+<div id="login" class="hidden"><div class="card"><div class="logo" aria-label="FÊNIX Intelligent BPO"></div><div class="title">Acesso FÊNIX</div><div class="sub">Digite a senha interna para acessar o Pipeline Comercial.</div><form id="loginForm" class="login-form"><label for="password">Senha interna</label><input id="password" name="password" type="password" autocomplete="current-password" autofocus required><button id="loginBtn" type="submit">Entrar no painel</button></form><div id="loginMsg" class="msg"></div><div class="hint">Este acesso é independente da autenticação da Vercel e protege os dados internos da operação.</div></div></div>
+<iframe id="app" title="Painel Comercial FÊNIX"></iframe>
 <script>
 (function(){
- const frame=document.getElementById('app'),boot=document.getElementById('boot'),err=document.getElementById('error');let done=false;
- function ready(){if(done)return;done=true;try{const s=frame.contentDocument.createElement('script');s.src='/painel/kanban-actions-v1.js';frame.contentDocument.body.appendChild(s)}catch(e){}frame.classList.add('ready');boot.classList.add('hidden');setTimeout(()=>boot.remove(),260)}
- frame.addEventListener('load',()=>requestAnimationFrame(ready),{once:true});setTimeout(()=>{if(!done)err.style.display='block'},8000);
+ const frame=document.getElementById('app'),boot=document.getElementById('boot'),login=document.getElementById('login'),err=document.getElementById('error');
+ const form=document.getElementById('loginForm'),password=document.getElementById('password'),btn=document.getElementById('loginBtn'),msg=document.getElementById('loginMsg');
+ let loaded=false;
+ function showLogin(text=''){boot.classList.add('hidden');login.classList.remove('hidden');msg.textContent=text;setTimeout(()=>password.focus(),40)}
+ function showBoot(text){login.classList.add('hidden');boot.classList.remove('hidden');const s=boot.querySelector('.sub');if(s)s.textContent=text||'Carregando Kanban FÊNIX…'}
+ function loadPanel(){if(loaded)return;loaded=true;showBoot('Carregando Kanban FÊNIX…');frame.src='/painel/kanban-v3.html';frame.addEventListener('load',()=>{try{const s=frame.contentDocument.createElement('script');s.src='/painel/kanban-actions-v1.js';frame.contentDocument.body.appendChild(s)}catch(e){}frame.classList.add('ready');boot.classList.add('fade');setTimeout(()=>boot.classList.add('hidden'),260)},{once:true})}
+ async function check(){try{const r=await fetch('/api/internal-auth',{credentials:'same-origin',cache:'no-store'});const j=await r.json().catch(()=>({}));if(r.ok&&j.authenticated){loadPanel();return}showLogin()}catch(e){showLogin('Não foi possível verificar o acesso. Tente novamente.') }}
+ form.addEventListener('submit',async e=>{e.preventDefault();msg.textContent='';btn.disabled=true;btn.textContent='Validando…';try{const r=await fetch('/api/internal-auth',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:password.value})});const j=await r.json().catch(()=>({}));if(!r.ok||!j.authenticated){msg.textContent=j.error||'Senha inválida.';password.select();return}password.value='';loadPanel()}catch(e){msg.textContent='Falha de conexão ao autenticar.'}finally{btn.disabled=false;btn.textContent='Entrar no painel'}});
+ setTimeout(()=>{if(!loaded&&!login.classList.contains('hidden'))return;if(!loaded)err.style.display='block'},8000);
+ check();
 })();
 </script>
 </body>
