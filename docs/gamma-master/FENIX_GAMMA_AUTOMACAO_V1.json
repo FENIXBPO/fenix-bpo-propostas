@@ -1,0 +1,85 @@
+{
+  "master": "FENIX_MASTER_GAMMA_OFICIAL_V1",
+  "status": "homologacao",
+  "base_pages": [
+    "capa",
+    "entendimento_cliente",
+    "escopo_atuacao",
+    "como_fenix_atua",
+    "tecnologia_inteligencia_operacional",
+    "implantacao",
+    "condicao_comercial",
+    "proximos_passos_aceite"
+  ],
+  "optional_modules": {
+    "estrutura_operacao": {
+      "show_if": ["qtd_cnpjs>1", "qtd_bancos>2", "qtd_cartoes>1", "complexidade_operacional=alta"]
+    },
+    "volume_operacional": {
+      "show_if": ["volume_previsto_relevante=true"]
+    },
+    "regras_limites_operacao": {
+      "show_if": ["regras_operacionais_aprovadas_present=true", "limites_escopo_present=true"]
+    },
+    "sistemas_integracoes": {
+      "show_if": ["erp_software_present=true", "integracoes_present=true"]
+    },
+    "responsabilidades": {
+      "show_if": ["responsabilidades_especificas_present=true"]
+    },
+    "condicoes_comerciais_especiais": {
+      "show_if": ["condicoes_especiais_present=true"]
+    },
+    "expansao": {
+      "show_if": ["cenario_expansao_present=true"]
+    }
+  },
+  "commercial_rules": {
+    "formula_total_mensal": "mensalidade_fenix + repasses_recorrentes",
+    "implantacao_in_total_mensal": false,
+    "hide_zero_repasses": true,
+    "show_zero_values": false,
+    "cfo_validation_required": true
+  },
+  "legal_positioning": {
+    "service": "BPO financeiro e apoio administrativo-financeiro",
+    "forbid": [
+      "gestora financeira do cliente",
+      "decisao financeira autonoma",
+      "movimentacao independente de recursos",
+      "pagamentos sem autorizacao"
+    ]
+  },
+  "dynamic_fields": [
+    "CLIENTE_NOME",
+    "RAZAO_SOCIAL",
+    "SEGMENTO",
+    "DATA_PROPOSTA",
+    "RESPONSAVEL_CLIENTE",
+    "CENARIO_ATUAL",
+    "PRINCIPAIS_DESAFIOS",
+    "OBJETIVO_OPERACAO",
+    "QTD_CNPJS",
+    "QTD_BANCOS",
+    "QTD_CARTOES",
+    "VOLUME_PREVISTO",
+    "ERP_SOFTWARE",
+    "ESCOPO_ROTINA",
+    "ESCOPO_DOCUMENTOS",
+    "ESCOPO_GERENCIAL",
+    "ESCOPO_BASE",
+    "REGRAS_OPERACIONAIS_APROVADAS",
+    "PRAZO_IMPLANTACAO",
+    "DEPENDENCIAS_IMPLANTACAO",
+    "MENSALIDADE_FENIX",
+    "SOFTWARE_VALOR",
+    "IMPLANTACAO",
+    "TOTAL_MENSAL",
+    "VALIDADE_PROPOSTA",
+    "CONDICOES_ESPECIAIS"
+  ],
+  "ai_rules": {
+    "may": ["resumir", "organizar", "ajustar_texto_ao_espaco"],
+    "must_not": ["inventar_dados", "inventar_escopo", "inventar_preco", "inventar_prazo", "inventar_sla", "inventar_resultados"]
+  }
+}
