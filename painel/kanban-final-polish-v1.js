@@ -17,6 +17,10 @@
     .fenix-opnext{font-size:10.5px!important;font-weight:500!important;color:#d6d9de!important}
     .fenix-opbtn{font-weight:600!important}
 
+    @media(min-width:761px) and (max-width:1050px){
+      .board{grid-template-columns:repeat(6,minmax(0,1fr))!important;min-width:0!important}
+    }
+
     @media(max-width:1050px){
       .brand img{width:142px!important;max-height:58px!important}
     }
