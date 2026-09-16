@@ -4,8 +4,8 @@
   style.id='fenix-kanban-final-polish-v1';
   style.textContent=`
     /* Acabamento visual final aprovado — sem alterar estrutura, cores ou fluxo */
-    .brand{height:88px!important;margin:0 0 10px!important;overflow:visible!important}
-    .brand img{width:180px!important;max-width:none!important;max-height:82px!important;object-fit:contain!important}
+    .brand{height:96px!important;margin:0 0 10px!important;padding:0!important}
+    .brand img{width:178px!important;max-width:100%!important;max-height:90px!important;object-fit:contain!important}
 
     .deal h3{font-size:13px!important;font-weight:500!important;line-height:1.34!important;letter-spacing:0!important}
     .cnpj{font-size:10.5px!important;font-weight:400!important;color:#9aa1aa!important}
@@ -18,7 +18,8 @@
     .fenix-opbtn{font-weight:600!important}
 
     @media(max-width:1050px){
-      .brand img{width:156px!important;max-width:none!important;max-height:70px!important}
+      .brand{height:88px!important}
+      .brand img{width:152px!important;max-height:82px!important}
     }
   `;
   document.head.appendChild(style);
