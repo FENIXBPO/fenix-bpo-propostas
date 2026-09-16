@@ -25,6 +25,6 @@
   const brandImg=document.querySelector('.brand img');
   if(brandImg){
     brandImg.onerror=null;
-    brandImg.src='/assets/fenix-sidebar-logo-reference.webp';
+    brandImg.src='/assets/fenix-logo-header-crop.webp';
   }
 })();
