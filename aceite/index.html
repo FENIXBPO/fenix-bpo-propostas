@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>FÊNIX — Aceite da Proposta</title>
+  <style>
+    :root{--bg:#090909;--panel:#121212;--gold:#d8b14a;--gold2:#f3d77c;--text:#f5f5f5;--muted:#b9b9b9;--line:#2a2a2a;--ok:#9fd6a5;--err:#f0a3a3}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0%,#211805 0,#0b0b0b 28%,#050505 70%);color:var(--text);font-family:Inter,Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px}
+    .wrap{width:min(760px,100%);background:linear-gradient(180deg,#151515,#0c0c0c);border:1px solid rgba(216,177,74,.45);border-radius:22px;padding:34px;box-shadow:0 22px 80px rgba(0,0,0,.55)}
+    .eyebrow{color:var(--gold2);text-transform:uppercase;letter-spacing:.18em;font-size:12px;margin-bottom:10px}.brand{font-size:14px;letter-spacing:.16em;color:#ddd;margin-bottom:26px}.brand strong{color:var(--gold2)}
+    h1{margin:0 0 12px;font-size:clamp(30px,5vw,48px);line-height:1.02}.intro{color:var(--muted);line-height:1.55;margin:0 0 24px}
+    .proposal{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:18px;border:1px solid var(--line);border-radius:14px;background:#0b0b0b;margin-bottom:24px}.proposal strong{display:block;font-size:18px}.proposal small{color:var(--muted)}.code{color:var(--gold2);font-weight:700}
+    label{display:block;font-weight:700;margin:15px 0 7px}input[type=text],input[type=email]{width:100%;border:1px solid #343434;background:#080808;color:white;border-radius:10px;padding:13px 14px;font-size:16px;outline:none}input:focus{border-color:var(--gold)}
+    .check{display:flex;gap:11px;align-items:flex-start;margin:20px 0;color:#ddd;line-height:1.45}.check input{margin-top:3px;transform:scale(1.2)}
+    button{width:100%;border:0;border-radius:12px;padding:15px 18px;font-weight:800;font-size:16px;cursor:pointer;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111}button:disabled{opacity:.55;cursor:not-allowed}
+    .status{min-height:24px;margin-top:14px;font-weight:700}.status.ok{color:var(--ok)}.status.err{color:var(--err)}
+    .flow{border-top:1px solid var(--line);margin-top:22px;padding-top:18px;color:#aaa;font-size:13px}.loading{color:var(--muted)}
+    @media(max-width:600px){.wrap{padding:24px 18px}.proposal{grid-template-columns:1fr}.code{justify-self:start}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="brand"><strong>FÊNIX</strong> INTELLIGENT BPO</div>
+    <div class="eyebrow">Aceite comercial</div>
+    <h1>Confirmar proposta</h1>
+    <p class="intro">Confirme os dados abaixo para registrar o aceite comercial. Após o aceite, a proposta segue para validação final da FÊNIX/CFO antes da emissão do contrato.</p>
+
+    <section id="proposalBox" class="proposal">
+      <div><small>Proposta</small><strong id="clientName" class="loading">Carregando...</strong></div>
+      <div id="proposalCode" class="code"></div>
+    </section>
+
+    <form id="acceptForm" novalidate>
+      <label for="name">Nome do responsável</label>
+      <input id="name" type="text" maxlength="120" autocomplete="name" required />
+
+      <label for="email">E-mail</label>
+      <input id="email" type="email" maxlength="160" autocomplete="email" required />
+
+      <label class="check"><input id="check" type="checkbox" required /><span>Confirmo o aceite desta proposta, do escopo e das condições comerciais apresentados.</span></label>
+
+      <button id="submit" type="submit" disabled>Aceitar proposta</button>
+      <div id="status" class="status" role="status"></div>
+    </form>
+
+    <div class="flow">Aceite do cliente → validação final FÊNIX/CFO → contrato → assinatura → implantação.</div>
+  </main>
+
+  <script>
+    const qs=new URLSearchParams(location.search);const ref=(qs.get('ref')||'').trim();
+    const nameEl=document.getElementById('clientName'),codeEl=document.getElementById('proposalCode'),form=document.getElementById('acceptForm'),btn=document.getElementById('submit'),statusEl=document.getElementById('status');
+    let proposal=null;
+    function setStatus(msg,type=''){statusEl.textContent=msg;statusEl.className='status '+type}
+    async function load(){
+      if(!ref){nameEl.textContent='Referência da proposta ausente';setStatus('Abra este aceite pelo botão da proposta FÊNIX.','err');return}
+      try{
+        const r=await fetch('/api/public-proposal?ref='+encodeURIComponent(ref),{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Proposta não localizada.');proposal=d.proposal;
+        nameEl.textContent=proposal.client?.name||proposal.client?.razao_social||'Cliente FÊNIX';codeEl.textContent=proposal.proposal_code||'';btn.disabled=false;
+      }catch(e){nameEl.textContent='Proposta não localizada';setStatus(e.message||'Não foi possível carregar a proposta.','err')}
+    }
+    form.addEventListener('submit',async(e)=>{
+      e.preventDefault();if(!proposal)return;const nome=document.getElementById('name').value.trim(),email=document.getElementById('email').value.trim(),accepted=document.getElementById('check').checked;
+      if(!nome){setStatus('Informe o nome do responsável.','err');return}if(!/^\S+@\S+\.\S+$/.test(email)){setStatus('Informe um e-mail válido.','err');return}if(!accepted){setStatus('Confirme o aceite da proposta.','err');return}
+      btn.disabled=true;setStatus('Registrando aceite...');
+      try{
+        const r=await fetch('/api/proposal-acceptance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({proposal_ref:ref,cnpj:proposal.client?.cnpj,nome,email,accepted:true})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Não foi possível registrar o aceite.');
+        setStatus('Aceite registrado com sucesso. A proposta seguirá para validação final da FÊNIX/CFO.','ok');form.querySelectorAll('input').forEach(i=>i.disabled=true);
+      }catch(err){btn.disabled=false;setStatus(err.message||'Não foi possível registrar o aceite.','err')}
+    });
+    load();
+  </script>
+</body>
+</html>
