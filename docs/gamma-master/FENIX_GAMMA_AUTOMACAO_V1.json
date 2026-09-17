@@ -1,6 +1,13 @@
 {
   "master": "FENIX_MASTER_GAMMA_OFICIAL_V1",
   "status": "homologacao",
+  "acceptance": {
+    "button_label": "Aceitar proposta",
+    "url_pattern": "https://proposta.fenixbpo.com.br/aceite/?ref={{PUBLIC_SLUG}}",
+    "api": "/api/proposal-acceptance",
+    "next_status": "proposta_aceita_aguardando_cfo",
+    "requires": ["PUBLIC_SLUG", "CLIENTE_CNPJ", "RESPONSAVEL_CLIENTE", "RESPONSAVEL_EMAIL"]
+  },
   "base_pages": [
     "capa",
     "entendimento_cliente",
@@ -51,11 +58,14 @@
     ]
   },
   "dynamic_fields": [
+    "PUBLIC_SLUG",
+    "CLIENTE_CNPJ",
     "CLIENTE_NOME",
     "RAZAO_SOCIAL",
     "SEGMENTO",
     "DATA_PROPOSTA",
     "RESPONSAVEL_CLIENTE",
+    "RESPONSAVEL_EMAIL",
     "CENARIO_ATUAL",
     "PRINCIPAIS_DESAFIOS",
     "OBJETIVO_OPERACAO",
