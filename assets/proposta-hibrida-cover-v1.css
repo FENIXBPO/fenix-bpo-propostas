@@ -1,0 +1,31 @@
+/* FÊNIX MASTER HÍBRIDO — CAPA V1
+   Arte fixa homologada + somente campos dinâmicos sobrepostos.
+   NENHUM elemento visual desta capa deve ser regenerado por IA.
+*/
+.cover{
+  background:#050505 url('https://drive.google.com/uc?export=view&id=19kay9CZeoFhKD-lQ3BcMZZPjCQffb6Lp') center/100% 100% no-repeat!important;
+}
+.cover::before,.cover::after{display:none!important}
+.cover .brand-logo,.cover .page-no,.cover .eyebrow,.cover h1,.cover .tagline{display:none!important}
+.cover .cover-content{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:9!important}
+.cover .client-name{
+  position:absolute!important;left:6.55%!important;top:48.7%!important;width:56%!important;
+  margin:0!important;color:#efbf57!important;font-family:Arial,Helvetica,sans-serif!important;
+  font-size:2.55cqw!important;line-height:1.05!important;font-weight:800!important;letter-spacing:.035em!important;
+  text-transform:uppercase!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+.cover .meta-grid{
+  position:absolute!important;left:17.55%!important;right:17.8%!important;bottom:6.65%!important;
+  height:5.7%!important;padding:0!important;border:0!important;display:grid!important;
+  grid-template-columns:1.38fr .78fr 1fr!important;align-items:start!important;
+}
+.cover .meta{padding:0!important;border:0!important;min-width:0!important}
+.cover .meta span{display:none!important}
+.cover .meta strong{
+  font-family:Arial,Helvetica,sans-serif!important;color:#f4f1ea!important;font-weight:600!important;
+  font-size:1.16cqw!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+.cover .meta:nth-child(2){padding-left:3.1%!important}
+.cover .meta:nth-child(3){padding-left:6.2%!important}
+@media(max-width:900px){.cover .client-name{font-size:2.45cqw!important}.cover .meta strong{font-size:1.08cqw!important}}
+@media print{.cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
