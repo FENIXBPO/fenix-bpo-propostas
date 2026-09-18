@@ -2,10 +2,13 @@
   "name": "fenix-bpo-propostas",
   "version": "1.0.0",
   "scripts": {
-    "test": "node tests/pricing-engine.test.js"
+    "test": "node tests/pricing-engine.test.js && node tests/proposal-master.test.js && node tests/master-pptx-generator.test.js && node tests/master-pdf-runtime.test.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@xmldom/xmldom": "^0.8.10",
+    "jszip": "^3.10.1",
     "nodemailer": "^6.9.13",
-    "@anthropic-ai/sdk": "^0.24.0"
+    "pdf-lib": "^1.17.1"
   }
 }
