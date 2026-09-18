@@ -1,6 +1,8 @@
 'use strict';
 
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { buildApprovedSnapshot, validateApprovedSnapshot, MASTER_PDF_SHA256 } = require('../lib/proposal-master');
 const { renderFromFrozenMaster } = require('../lib/master-pdf-runtime');
 
@@ -105,12 +107,6 @@ module.exports = async function handler(req, res) {
 
       const masterUrl = String(process.env.FENIX_MASTER_PDF_URL || '').trim();
       const configuredHash = String(process.env.FENIX_MASTER_PDF_SHA256 || MASTER_PDF_SHA256 || '').trim().toLowerCase();
-      if (!masterUrl) {
-        return res.status(503).json({
-          error: 'Master PDF congelado ainda não configurado no ambiente de homologação.',
-          code: 'MASTER_PDF_URL_AUSENTE',
-        });
-      }
       if (!/^[a-f0-9]{64}$/.test(configuredHash)) {
         return res.status(503).json({
           error: 'Hash do Master PDF não configurado corretamente.',
@@ -118,15 +114,27 @@ module.exports = async function handler(req, res) {
         });
       }
 
-      const masterResponse = await fetch(masterUrl, { cache: 'no-store' });
-      if (!masterResponse.ok) {
-        return res.status(502).json({
-          error: 'Não foi possível carregar o Master PDF congelado.',
-          code: 'MASTER_PDF_INDISPONIVEL',
-          status: masterResponse.status,
-        });
+      let masterBytes;
+      if (masterUrl) {
+        const masterResponse = await fetch(masterUrl, { cache: 'no-store' });
+        if (!masterResponse.ok) {
+          return res.status(502).json({
+            error: 'Não foi possível carregar o Master PDF congelado.',
+            code: 'MASTER_PDF_INDISPONIVEL',
+            status: masterResponse.status,
+          });
+        }
+        masterBytes = Buffer.from(await masterResponse.arrayBuffer());
+      } else {
+        const localMaster = path.join(process.cwd(), 'assets', 'master-oficial', 'FENIX_MASTER_CLEAN_RUNTIME.pdf');
+        if (!fs.existsSync(localMaster)) {
+          return res.status(503).json({
+            error: 'Master PDF congelado ainda não foi anexado à branch de homologação.',
+            code: 'MASTER_PDF_LOCAL_AUSENTE',
+          });
+        }
+        masterBytes = fs.readFileSync(localMaster);
       }
-      const masterBytes = Buffer.from(await masterResponse.arrayBuffer());
       const pdf = await renderFromFrozenMaster(masterBytes, result.body.snapshot, {
         expectedSha256: configuredHash,
         scopeIntro: 'Escopo validado a partir da coleta e aprovado pelo CFO.',
