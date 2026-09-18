@@ -1,7 +1,8 @@
 'use strict';
 
 const crypto = require('crypto');
-const { buildApprovedSnapshot, validateApprovedSnapshot } = require('../lib/proposal-master');
+const { buildApprovedSnapshot, validateApprovedSnapshot, MASTER_PDF_SHA256 } = require('../lib/proposal-master');
+const { renderFromFrozenMaster } = require('../lib/master-pdf-runtime');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://xfngupnsacddtdbcrkdk.supabase.co';
 const SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -91,11 +92,56 @@ module.exports = async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
     const action = String(req.body?.action || 'save');
-    if (!['save', 'approve', 'publish', 'snapshot'].includes(action)) return res.status(400).json({ error: 'Ação inválida.' });
+    if (!['save', 'approve', 'publish', 'snapshot', 'render_pdf'].includes(action)) return res.status(400).json({ error: 'Ação inválida.' });
 
     if (action === 'snapshot') {
       const result = await snapshotFor(intakeId, current);
       return res.status(result.status).json(result.body);
+    }
+
+    if (action === 'render_pdf') {
+      const result = await snapshotFor(intakeId, current);
+      if (result.status !== 200) return res.status(result.status).json(result.body);
+
+      const masterUrl = String(process.env.FENIX_MASTER_PDF_URL || '').trim();
+      const configuredHash = String(process.env.FENIX_MASTER_PDF_SHA256 || MASTER_PDF_SHA256 || '').trim().toLowerCase();
+      if (!masterUrl) {
+        return res.status(503).json({
+          error: 'Master PDF congelado ainda não configurado no ambiente de homologação.',
+          code: 'MASTER_PDF_URL_AUSENTE',
+        });
+      }
+      if (!/^[a-f0-9]{64}$/.test(configuredHash)) {
+        return res.status(503).json({
+          error: 'Hash do Master PDF não configurado corretamente.',
+          code: 'MASTER_PDF_HASH_AUSENTE',
+        });
+      }
+
+      const masterResponse = await fetch(masterUrl, { cache: 'no-store' });
+      if (!masterResponse.ok) {
+        return res.status(502).json({
+          error: 'Não foi possível carregar o Master PDF congelado.',
+          code: 'MASTER_PDF_INDISPONIVEL',
+          status: masterResponse.status,
+        });
+      }
+      const masterBytes = Buffer.from(await masterResponse.arrayBuffer());
+      const pdf = await renderFromFrozenMaster(masterBytes, result.body.snapshot, {
+        expectedSha256: configuredHash,
+        scopeIntro: 'Escopo validado a partir da coleta e aprovado pelo CFO.',
+        implementationTerm: String(result.body.snapshot?.commercial_terms?.implementation_term || current?.assumptions?.prazo_implantacao || '').trim(),
+        dependencies: String(current?.assumptions?.dependencias_implantacao || '').trim(),
+      });
+
+      const code = result.body.snapshot.proposal_code || `FENIX-${String(current?.version || 1)}`;
+      const safeName = String(code).replace(/[^A-Za-z0-9._-]+/g, '_');
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${safeName}.pdf"`);
+      res.setHeader('Cache-Control', 'private, no-store');
+      res.setHeader('X-Fenix-Master-Id', result.body.snapshot.master_id);
+      res.setHeader('X-Fenix-Master-Sha256', configuredHash);
+      return res.status(200).send(pdf);
     }
 
     if (action === 'publish') {
