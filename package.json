@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "node tests/pricing-engine.test.js && node tests/proposal-master.test.js && node tests/master-pptx-generator.test.js && node tests/master-pdf-runtime.test.js && node tests/alfa-live-integration.test.js",
-    "vercel-build": "npm test"
+    "vercel-build": "node scripts/build-alfa-homologacao.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
