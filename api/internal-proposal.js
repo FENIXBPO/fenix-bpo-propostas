@@ -74,6 +74,35 @@ async function snapshotFor(intakeId, proposal) {
 }
 
 module.exports = async function handler(req, res) {
+  // Rota técnica exclusiva da preview de homologação para QA do ALFA real.
+  // Não exige sessão do painel, mas nunca é liberada em produção e usa intake fixo.
+  if (req.method === 'GET' && String(req.query?.mode || '') === 'homologacao_alfa_pdf') {
+    if (process.env.VERCEL_ENV !== 'preview') return res.status(404).end();
+    if (!SECRET_KEY) return res.status(503).json({ error: 'Supabase não configurado na preview.' });
+
+    const alfaIntakeId = '66c8c6a9-9634-4039-8575-66dc86df53bb';
+    const currentRows = await sb(`bpo_proposals?intake_id=eq.${alfaIntakeId}&select=*&order=version.desc&limit=1`);
+    const current = Array.isArray(currentRows) ? currentRows[0] : null;
+    const result = await snapshotFor(alfaIntakeId, current);
+    if (result.status !== 200) return res.status(result.status).json(result.body);
+
+    const localMaster = path.join(process.cwd(), 'assets', 'master-oficial', 'FENIX_MASTER_CLEAN_RUNTIME.pdf');
+    if (!fs.existsSync(localMaster)) return res.status(503).json({ error: 'Master oficial ausente.' });
+    const masterBytes = fs.readFileSync(localMaster);
+    const pdf = await renderFromFrozenMaster(masterBytes, result.body.snapshot, {
+      expectedSha256: MASTER_PDF_SHA256,
+      scopeIntro: 'Escopo validado a partir da coleta e aprovado pelo CFO.',
+      implementationTerm: String(current?.assumptions?.prazo_implantacao || '').trim(),
+      dependencies: String(current?.assumptions?.dependencias_implantacao || '').trim(),
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="FENIX-HML-0001-V1.pdf"');
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('X-Fenix-Homologacao', 'ALFA-REAL');
+    return res.status(200).send(pdf);
+  }
+
   if (!password() || !SECRET_KEY) return res.status(503).json({ error: 'Área interna ainda não configurada.' });
   if (!authorized(req)) return res.status(401).json({ error: 'Acesso não autorizado.' });
 
